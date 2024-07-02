@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+	<!-- Meta -->
+	<meta name="description" content="Responsive Bootstrap 4 Dashboard Template" />
+	<meta name="author" content="ThemePixels" />
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="../../static/dashforge/img/favicon.png" />
+
+	<title>Welcome TMP ERP</title>
+
+	<!-- vendor css -->
+	<link href="../../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet" />
+	<link href="../../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet" />
+	<link href="../../../static/lib/typicons.font/typicons.css" rel="stylesheet" />
+	<link href="../../../static/lib/prismjs/themes/prism-vs.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../../static/lib/datatables.net-dt/css/jquery.dataTables.min.css" />
+	<link rel="stylesheet" href="../../../static/lib/select2/css/select2.min.css" />
+
+	<!-- DashForge CSS -->
+	<link rel="stylesheet" href="../../../static/dashforge/css/dashforge.css" />
+	<link rel="stylesheet" href="../../../static/dashforge/css/dashforge.demo.css" />
+
+	<!-- local css -->
+	<link rel="stylesheet" href="../../../static/css/main.css" />
+</head>
+
+<body data-spy="scroll" data-target="#navSection" data-offset="120">
+	<header class="navbar navbar-header navbar-header-fixed">
+		<a href="" id="sidebarMenuOpen" class="burger-menu"><i data-feather="arrow-left"></i></a>
+		<div class="navbar-brand">
+			<a href="/user/dashboard" class="df-logo">TMP<span>ERP</span></a>
+		</div>
+		<!-- navbar-brand -->
+		<div id="navbarMenu" class="navbar-menu-wrapper">
+			<div class="navbar-menu-header">
+				<a href="/user/dashboard" class="df-logo">TMP<span>ERP</span></a>
+				<a id="mainMenuClose" href=""><i data-feather="x"></i></a>
+			</div>
+			<!-- navbar-menu-header -->
+			<ul class="nav navbar-menu">
+				<li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">
+					Main Navigation
+				</li>
+
+				<li class="nav-item">
+					<h3 class="df-logo name-margin">
+						{{username}} | <span>{{role_position}}</span>
+					</h3>
+				</li>
+			</ul>
+		</div>
+		<!-- navbar-menu-wrapper -->
+		<div class="navbar-right" id="dateNow"></div>
+		<!-- navbar-right -->
+	</header>
+	<!-- navbar -->
+
+	<div id="sidebarMenu" class="sidebar sidebar-fixed sidebar-components">
+		<div class="sidebar-header">
+			<a href="" id="mainMenuOpen"><i data-feather="menu"></i></a>
+			<h5>Components</h5>
+			<a href="" id="sidebarMenuClose"><i data-feather="x"></i></a>
+		</div>
+		<!-- sidebar-header -->
+		<div class="sidebar-body">
+			<ul class="sidebar-nav">
+				{% for menu_item in menu_list_html%}
+				<li class="nav-item">
+					<a href="{{menu_item.href}}" class="nav-link"><i data-feather="{{menu_item.icon}}"></i>
+						{{menu_item.name}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<!-- sidebar-body -->
+		<!-- sidebar-body -->
+	</div>
+	<!-- sidebar -->
+
+	<div class="content content-components">
+		<div class="container">
+			<h3 class="config-title">{{config_all_rec.name}}</h3>
+			<form action="/process/config/add/web_menu" method="POST" class="mg-t-40">
+				<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Menu Name</label>
+						<div class="col-sm-6">
+								<input name="name" type="text" value="{{edit_item_rec.name}}" class="form-control">
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Value</label>
+						<div class="col-sm-6">
+								<input name="value" type="text" value="{{edit_item_rec.value}}" class="form-control">
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Status</label>
+						<div class="col-sm-6">
+								<select class="form-control"  name="status">
+									{% if edit_item_rec.status == ENABLE %}
+										<option value="ENABLE" selected>ENABLE</option>
+										<option value="DISABLE">DISABLE</option>
+									{% else %}
+										<option value="ENABLE" >ENABLE</option>
+										<option value="DISABLE" selected>DISABLE</option>
+									{% endif %}
+
+								</select>
+						</div>
+					</div>
+
+					<div class="form-group row">				
+						<label class="col-sm-2 col-form-label">Order</label>
+						<div class="col-sm-6">
+								<input name="order" type="text" value="{{edit_item_rec.order}}" class="form-control">
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Href</label>
+						<div class="col-sm-6">
+								<input name="href" type="text" value="{{edit_item_rec.href}}" class="form-control">
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Icon</label>
+						<div class="col-sm-6">
+								<input name="icon" type="text" value="{{edit_item_rec.icon}}" class="form-control">
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Description</label>
+						<div class="col-sm-6">
+							<input name="desc" type="text" value="{{edit_item_rec.desc}}" class="form-control">
+						</div>
+					</div>
+
+					<div class="form-group row mg-b-0 mg-t-30">
+						<div class="col-sm-10 d-flex justify-content-center">
+							<button type="submit" class="btn btn-primary btn-config-add-new">Update</button>
+						</div>
+					</div>
+			</form>
+											
+
+			<div class="table-container mg-t-90">
+				<h4>{{config_all_rec.name}} List</h4>
+				<hr class="negative-margin" />
+				<table class="config-table table-bordered table table-striped" id="portList">
+					<thead>
+						<tr>
+							<th style="width: 15%;">Menu Name</th>
+							<th style="width: 10%;">Value</th>
+							<th style="width: 10%;">Order</th>
+							<th style="width: 10%;">Status</th>
+							<th style="width: 10%;">Href</th>
+							<th style="width: 10%;">Icon</th>
+							<th style="width: 15%;">Description</th>
+							<th style="width: 20%;" class="text-center">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for web_menu_item in webapp_menu_item_list%}
+						<tr>
+							<td>
+								{{web_menu_item.name}}
+							</td>
+							<td>
+								{{web_menu_item.value}}
+							</td>
+							<td>
+								{{web_menu_item.order}}
+							</td>
+							<td>
+								{{web_menu_item.status}}
+							</td>
+							<td>
+								{{web_menu_item.href}}
+							</td>
+							<td>
+								<i class="{{web_menu_item.icon}}"></i> ( {{web_menu_item.icon}} )
+							</td>
+							<td>
+								{{web_menu_item.desc}}
+							</td>
+							<td class="align-center">
+								<div class="btn-group">
+									<a class="btn btn-outline-dark" href="/user/config/webapp-menu-all/add?id=WEBAPP_MENU_ALL_ITEMS&value={{web_menu_item.value}}"><i class="fa fa-edit"></i> Edit</a>
+									<a class="btn btn-outline-dark" href="/process/config/del/web_menu?id=WEBAPP_MENU_ALL_ITEMS&value={{web_menu_item.value}}"><i class="fa fa-trash"></i> Delete</a>
+								</div>
+
+								<!-- <a href="/user/config/webapp-menu-all/add?id=WEBAPP_MENU_ALL_ITEMS&value={{web_menu_item.value}}"
+									type="button" class="btn btn-warning btn-sm">
+									<i class="fa fa-pencil"></i>
+								</a>
+								<a href="/process/config/del/web_menu?id=WEBAPP_MENU_ALL_ITEMS&value={{web_menu_item.value}}" type="button"
+									class="btn btn-danger btn-sm">
+									<i class="fa fa-trash"></i>
+								</a> -->
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+
+			<footer class="content-footer mg-t-80">
+				<div>
+					<span>&copy; 2020 ERP TMP</span>
+				</div>
+				<div>
+					<nav class="nav">
+						<a href="https://themeforest.net/licenses/standard" class="nav-link">Licenses</a>
+						<a href="../change-log.html" class="nav-link">Change Log</a>
+						<a href="https://discordapp.com/invite/RYqkVuw" class="nav-link">Get Help</a>
+					</nav>
+				</div>
+			</footer>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- content -->
+
+	<script src="../../../static/lib/jquery/jquery.min.js"></script>
+	<script src="../../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../../../static/lib/feather-icons/feather.min.js"></script>
+	<script src="../../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script src="../../../static/lib/jqueryui/jquery-ui.min.js"></script>
+	<script src="../../../static/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="../../../static/lib/select2/js/select2.min.js"></script>
+
+	<script src="../../../static/dashforge/js/dashforge.js"></script>
+	<script src="../../../static/js/sytem_param/port_config.js"></script>
+</body>
+
+</html>

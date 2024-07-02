@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favico -->
+  <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+  <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+  <title>Brutor-J Terms & Conditions</title>
+  <!-- Lib Css -->
+  <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+  <!-- DashForge CSS -->
+  <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+  <link rel="stylesheet" href="../../static/css/atomic.css">
+</head>
+
+<body>
+  <div class="container d-flex flex-direction flex-column align-items-center justify-content-center">
+    <a href="" class="mg-b-20 mg-t-20 text-center">
+      <img class="w-50" src="../../static/assets/img/brutor_logo.png" alt="brutor_logo">
+    </a>
+    <div class="row pd-b-30 col-sm-10 col-xs-10">
+      <!--<div class="mg-b-50 mg-t-20 text-center"></div>-->
+        {% if tnc_rec == None %}
+          <fieldset class="form-fieldset pd-y-30 text-center" style="width: 100%;">
+            <h3 class="mg-b-0">Mohon Maaf! Data yang anda tuju tidak ditemukan.</h3>
+          </fieldset>
+        {% else %}
+
+          <fieldset class="form-fieldset pd-y-30" style="width: 100%;">
+            <!--
+            <legend>
+              <h1 class="mg-b-0 Fz(24px)">{{ tnc_rec.name | safe }}</h1>
+            </legend>
+            -->
+            
+            {{ tnc_rec.terms_and_conditions_html | safe }}
+
+          </fieldset>
+
+        {% endif %}
+    </div>
+    <footer class="mg-t-auto pd-b-15 font-weight-bold">©PT Brutor Jakarta 2020</footer>
+  </div>
+
+  <!-- Atomic Watch this is just to reload the page if you make any changes to the html -->
+  <!-- <script src="//localhost:35729/livereload.js"></script> -->
+  <script src="../../static/lib/jquery/jquery.min.js"></script>
+  <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

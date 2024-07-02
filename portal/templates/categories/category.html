@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Meta -->
+    <meta
+      name="description"
+      content="Responsive Bootstrap 4 Dashboard Template"
+    />
+    <meta name="author" content="ThemePixels" />
+
+    <!-- Favicon -->
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="../../static/dashforge/img/favicon.png"
+    />
+
+    <title>Welcome TMP ERP</title>
+
+    <!-- vendor css -->
+    <link
+      href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="../../static/lib/ionicons/css/ionicons.min.css"
+      rel="stylesheet"
+    />
+    <link href="../../static/lib/typicons.font/typicons.css" rel="stylesheet" />
+    <link
+      href="../../static/lib/prismjs/themes/prism-vs.css"
+      rel="stylesheet"
+    />
+    <link
+      href="../../static/lib/select2/css/select2.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="../../static/dashforge/css/dashforge.css" />
+    <link
+      rel="stylesheet"
+      href="../../static/dashforge/css/dashforge.demo.css"
+    />
+
+    <!-- local css -->
+    <link rel="stylesheet" href="../../static/css/main.css" />
+  </head>
+  <body data-spy="scroll" data-target="#navSection" data-offset="120">
+    <header class="navbar navbar-header navbar-header-fixed">
+      <a href="" id="sidebarMenuOpen" class="burger-menu"
+        ><i data-feather="arrow-left"></i
+      ></a>
+      <div class="navbar-brand">
+        <a href="/user/dashboard" class="df-logo">TMP<span>ERP</span></a>
+      </div>
+      <!-- navbar-brand -->
+      <div id="navbarMenu" class="navbar-menu-wrapper">
+        <div class="navbar-menu-header">
+          <a href="/user/dashboard" class="df-logo">TMP<span>ERP</span></a>
+          <a id="mainMenuClose" href=""><i data-feather="x"></i></a>
+        </div>
+        <!-- navbar-menu-header -->
+        <ul class="nav navbar-menu">
+          <li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">
+            Main Navigation
+          </li>
+
+          <li class="nav-item">
+            <h3 class="df-logo name-margin">
+              {{username}} | <span> {{role_position}}</span>
+            </h3>
+          </li>
+        </ul>
+      </div>
+      <!-- navbar-menu-wrapper -->
+      <div class="navbar-right" id="dateNow"></div>
+      <!-- navbar-right -->
+    </header>
+    <!-- navbar -->
+
+    <div id="sidebarMenu" class="sidebar sidebar-fixed sidebar-components">
+      <div class="sidebar-header">
+        <a href="" id="mainMenuOpen"><i data-feather="menu"></i></a>
+        <h5>Components</h5>
+        <a href="" id="sidebarMenuClose"><i data-feather="x"></i></a>
+      </div>
+      <!-- sidebar-header -->
+      <div class="sidebar-body">
+        <ul class="sidebar-nav">
+          {% for menu_item in menu_list_html%}
+          <li class="nav-item">
+            <a href="{{menu_item.href}}" class="nav-link"><i data-feather="{{menu_item.icon}}"></i> {{menu_item.name}}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <!-- sidebar-body -->
+    </div>
+    <!-- sidebar -->
+
+    <div class="content content-components">
+      <div class="container">
+  
+        {% if form.mode == "insert" %}
+          <h3 class="config-title">Add Category</h3>
+        {% else %}
+          <h3 class="config-title">Edit Category</h3>
+        {% endif %}
+        
+        <form class="mg-t-30" id ="form1" action="/process/admin/categories?mode={{form.mode}}" method="POST">
+        
+          <input name="pkey" type="hidden" value="{{edit_item_rec.pkey}}">
+          <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+
+          <div class="form-group row">
+            <label for="companyName" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" placeholder="Name" id="name" name="name" value="{{edit_item_rec.name}}" autocomplete="off"/>
+            </div>
+          </div>
+        
+          <div class="form-group row">
+            <label for="" class="col-sm-2 col-form-label">Description</label>
+            <div class="col-sm-5">
+              <input type="text" class="form-control" placeholder="Description" id="desc" name="desc" value="{{edit_item_rec.desc}}" autocomplete="off"/>
+            </div>
+          </div>
+
+          <div class="form-group row mg-b-0">
+            <div class="col-sm-10 text-center">
+            <button type="submit" class="btn btn-primary pd-x-30" > 
+            {% if form.mode == "insert" %}
+              Add Category
+            {% else %}
+              Update Category
+            {% endif %}
+            </button>
+            </div>
+          </div>
+
+        </form>
+
+        <footer class="content-footer">
+          <div>
+            <span>&copy; 2020 ERP TMP</span>
+          </div>
+          <div>
+            <nav class="nav">
+              <a
+                href="https://themeforest.net/licenses/standard"
+                class="nav-link"
+                >Licenses</a
+              >
+              <a href="../change-log.html" class="nav-link">Change Log</a>
+              <a href="https://discordapp.com/invite/RYqkVuw" class="nav-link"
+                >Get Help</a
+              >
+            </nav>
+          </div>
+        </footer>
+      </div>
+      <!-- container -->
+    </div>
+    <!-- content -->
+
+    <script src="../../static/lib/jquery/jquery.min.js"></script>
+    <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/lib/feather-icons/feather.min.js"></script>
+    <script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../../static/lib/jqueryui/jquery-ui.min.js"></script>
+    <script src="../../static/dashforge/js/dashforge.js"></script>
+    <script src="../../static/lib/select2/js/select2.min.js"></script>
+
+  </body>
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+  
+      $("#join_date").datepicker();
+      $("#comodity").select2({
+      width: "100%",
+      multiple: true,
+      allowClear: true,
+      placeholder: "Please Choose"
+      });
+
+      $("#ho_city").select2({
+      width: "100%",
+      placeholder: "Please Choose",
+      theme: "classic",
+      });
+      $("#operational_area").select2({
+      width: "100%",
+      multiple: true,
+      placeholder: "Please Choose"
+      });
+
+    });
+    
+  
+    </script>
+
+
+</html>

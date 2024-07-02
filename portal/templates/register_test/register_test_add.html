@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favico -->
+    <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <title>Brutor ADMIN - Tambah Kontent</title>
+    <!-- vendor css -->
+    <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="../../static/lib/select2/css/select2.min.css" rel="stylesheet">
+    <link href="../../static/lib/flatpicker/flatpickr.min.css" rel="stylesheet">
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+    <link rel="stylesheet" href="../../static/css/custom.css">
+    <!-- some additional css here -->
+</head>
+
+{% autoescape false %}
+<body>
+    <!-- LOADER -->
+    <div class="loader">
+        <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
+    </div>
+    <!-- VIEW IMAGE -->
+    <div class="modal" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="img-prev">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <div class="">
+                    <img src="" class="imagepreview">
+                </div>
+            </div>
+        </div>
+    </div>
+    <aside class="aside aside-fixed">
+        <div class="aside-header">
+            <a href="#" class="aside-logo img-logo"><img src="../../static/assets/img/brutor-logo-white.png" class="w-75"></a>
+            <a href="" class="aside-menu-link">
+                <i data-feather="menu"></i>
+                <i data-feather="x"></i>
+            </a>
+        </div>
+        <div class="aside-body">
+            <ul class="nav nav-aside">
+                {% for menu_item in menu_list_html %}
+                    {%if menu_item.value == 'MANAGER_TEST' %}
+                        <li class="nav-item nav-item-active ">
+                            <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+            </ul>
+        </div>
+    </aside>
+
+
+    <div class="content pd-0">
+        <div class="content-header">
+            <h5 class="mg-b-0 text-primary">
+                <a href="/starter?menu_value=MANAGER_CLASS">Manager Test</a> 
+                <i class="fas fa-caret-right"></i> 
+                <a href="{{ redirect }}">Register Test</a>
+                <span style="font-weight: bolder;"><i class="fas fa-caret-right"></i> Add Register Class</span>
+            </h5>
+            <div class="">
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
+                            class="rounded-circle" alt=""></div>
+                    <div class="p-3 d-flex flex-column">
+                        <span class="font-weight-bold">{{ username | safe }}</span>                        
+                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
+                                    data-feather="log-out"></i><span>Logout</span></a>
+                    </div>                                            
+                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+                </div>
+            </div>
+        </div>        
+
+        <div class="contents-body">
+
+            <form action="/register_test/add" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="redirect" value="{{ redirect }}">
+
+                <fieldset class="form-fieldset pd-x-50 field-shadow">
+                    <legend>
+                        <h1 class="font-weight-bold mg-b-0">ADD REGISTER TEST</h1>
+                    </legend>
+                    
+                    <div class="form-group row">
+                        <label for="class" class="col-sm-2 col-form-label text-right">Active Class</label>
+                        <div class="col-sm-10">
+                            <select id="class" class="form-control" name="activation_class_id" required>
+                                <option value="" type="hidden" selected disabled></option>
+                                {% for active_class_item in activation_class_list %}
+                                <option value="{{ active_class_item.activation_class_id }}">{{ active_class_item.active_class_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="dujul" class="col-sm-2 col-form-label text-right">Periode</label>
+                        <div class="col-sm-3">
+                            <div id="datepicker" class="d-flex align-items-center">
+                                <input id="datepicker" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
+                                <i data-toggle id="calendar2"
+                                    class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                            </div>
+                        </div>
+                        <span class="mg-t-10 col-sm-1 text-center">---</span>
+                        <div class="col-sm-3">
+                            <div id="datepicker2" class="d-flex align-items-center">
+                                <input name="end_datetime" data-input id="datepicker2" type="text" class="form-control" id=""
+                                    placeholder="Select Date.." autocomplete="off" required>
+                                <i data-toggle id="calendar2"
+                                    class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="form-group row">
+                        <label for="name_test" class="col-sm-2 col-form-label text-right">Name Test</label>
+                        <div class="col-sm-10">
+                            <input name="name_test" type="text" id="name_test" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="desc_test" class="col-sm-2 col-form-label text-right">Description Test</label>
+                        <div class="col-sm-10">
+                            <textarea name="desc_test" class="form-control" id="desc_test" cols="5" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="score_to_pass" class="col-sm-2 col-form-label text-right">score to pass</label>
+                        <div class="col-sm-10">
+                            <input name="score_to_pass" type="text" id="score_to_pass" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="type_test" class="col-sm-2 col-form-label text-right">Type Test</label>
+                        <div class="col-sm-10">
+                            <input name="type_test" type="text" id="type_test" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="source" class="col-sm-2 col-form-label text-right">Source</label>
+                        <div class="col-sm-10">
+                            <input name="source" type="text" id="source" class="form-control">
+                        </div>
+                    </div>
+                   
+                </fieldset>
+
+                <div class="mg-y-30 text-center">
+                    <button class="btn btn-primary pd-x-100 shadow-custom">SIMPAN</button>
+                </div>
+            </form>
+            <footer class="text-center mg-t-auto font-weight-bold">©PT Brutor Jakarta 2020</footer>
+        </div>
+    </div>
+
+    <script src="../../static/lib/jquery/jquery.min.js"></script>
+    <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/lib/feather-icons/feather.min.js"></script>
+    <script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../../static/lib/select2/js/select2.min.js"></script>
+    <script src="../../static/lib/flatpicker/flatpickr.js"></script>
+    <script src="../../static/assets/js/dashforge.js"></script>
+    <script src="../../static/assets/js/dashforge.aside.js"></script>
+    <script src="../../static/js/pytavia-js/custom/ckeditor/ckeditor.js"></script>
+
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            loader.classList.add('hidden');
+        });
+
+    
+        
+        $( document ).ready(function() {
+
+            const lists = [
+                {
+                    id: 'perusahaan',
+                    placeholder: '- Perusahaan -'
+                },
+                {
+                    id: 'posisiKonten',
+                    placeholder: '- Posisi Konten -'
+                },
+                {
+                    id: 'jenisTampilan',
+                    placeholder: '- Jenis Tampilan -'
+                },
+            ];
+
+
+            lists.forEach(list => {
+                $(`#${list.id}`).select2({
+                    width: '100%',
+                    placeholder: list.placeholder
+                })
+                $(`#${list.id}`).one('select2:open', function (e) {
+                    $('input.select2-search__field').prop('placeholder', 'Search');
+                });
+            });
+
+            ['datepicker', 'datepicker2'].forEach(el => {
+                $(`#${el}`).flatpickr({
+                    enableTime: true,
+                    dateFormat: "d/m/Y H:i",
+                    wrap: true,
+                    allowInput: true
+                })
+            });
+
+            CKEDITOR.replace( 'desc_test', { customConfig : 'config_toolbar_mnc_cs.js' } );            
+            
+            const file = document.getElementById('filePic');
+            const upContainer = document.querySelector('.upload-photo');    
+
+            file.addEventListener('change', function(){
+            const file = this.files[0];            
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                upContainer.src = reader.result;             
+                };
+            };
+            })
+        
+            //view img
+            $(function() {
+            $('.upload-photo').on('click', function() {        
+                $('.imagepreview').attr('src', $(this).attr('src'));
+                $('#imagemodal').modal('show');   
+            });		
+            });
+
+
+            
+        });
+
+        
+
+    </script>
+</body>
+{% endautoescape %}
+
+</html>

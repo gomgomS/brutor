@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favico -->
+  <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+  <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+  <title>MJ Admin - Sign In</title>
+  <!-- Lib Css -->
+  <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+  <!-- DashForge CSS -->
+  <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+  <link rel="stylesheet" href="../../static/css/atomic.css">
+</head>
+
+<body>  
+
+  <section class="pt-5 pb-100 mt-0 align-items-center d-flex bg-dark" style="min-height: 100vh; background-size: cover; background-image: url(../../static/assets/img/background_login.jpg);">
+    <div class="container-fluid">
+      <div class="row justify-content-center d-flex-row h-100">
+        <div class="col-6"></div>
+        <div class="col-8 col-lg-3">
+          <div class="card shadow mg-t-100 mg-l-50" style="border-radius: 25px; background-color:rgba(255, 255, 255, 0.9);" >
+            <div class="text-center mg-t-30">
+              <a href="" class=""><img class="w-50" src="../../static/assets/img/brutor_logo.png" alt="brutor_logo"></a>
+            </div>
+            <div class="card-body">
+              <form method="POST" action="/auth/login" >
+                <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">                
+                <div class="form-group">
+                  <label for="inputEmail3">Username</label>
+                  <input style="box-shadow: 1px 2px #888888; border:transparent " type="text" class="form-control" id="inputEmail3" placeholder="Username" name="txt_l_username">              
+                </div>
+                <div class="form-group">
+                  <label for="inputPassword3">Password</label>
+                  <input  style="box-shadow: 1px 2px #888888; border:transparent " type="password" class="form-control" id="inputPassword3" placeholder="Password" name="txt_l_password">
+                </div>                               
+                  <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>     
+                  <footer class="mg-t-30 font-weight-bold text-center">©Karen PROgrammer 2024</footer>           
+              </form>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ </section>
+
+  <!-- Atomic Watch this is just to reload the page if you make any changes to the html -->
+  <!-- <script src="//localhost:35729/livereload.js"></script> -->
+  <script src="../../static/lib/jquery/jquery.min.js"></script>
+  <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

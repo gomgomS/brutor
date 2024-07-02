@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favico -->
+    <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <title>Brutor ADMIN - Konfigurasi</title>
+    <!-- vendor css -->
+    <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="../../static/lib/select2/css/select2.min.css" rel="stylesheet">
+    <link href="../../static/lib/flatpicker/flatpickr.min.css" rel="stylesheet">
+    <link href="../../static/lib/datatables.net-dt/css/jquery.dataTables.min.css" rel="stylesheet">
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+    <link rel="stylesheet" href="../../static/css/custom.css">
+    <!-- some additional css here -->
+</head>
+
+{% autoescape false %}
+<body>
+    <div class="loader">
+        <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
+    </div>
+    <aside class="aside aside-fixed">
+        <div class="aside-header">
+            <a href="#" class="aside-logo img-logo"><img src="../../static/assets/img/brutor-logo-white.png" class="w-75"></a>
+            <a href="" class="aside-menu-link">
+                <i data-feather="menu"></i>
+                <i data-feather="x"></i>
+            </a>
+        </div>
+        <div class="aside-body">
+            <ul class="nav nav-aside">
+                {% for menu_item in menu_list_html %}
+                    {%if menu_item.value == 'CONFIGURATION' %}
+                        <li class="nav-item nav-item-active ">
+                            <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+            </ul>
+        </div>
+    </aside>
+
+    <div class="content pd-0">
+        <div class="content-header">
+            <h5 class="mg-b-0 text-primary">
+                <a href="/user/config">Konfigurasi</a> 
+                <span style="font-weight: bolder;">
+                    <i class="fas fa-caret-right"> Terms and Conditions</i> 
+                </span>
+            </h5>
+            <div class="">
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
+                            class="rounded-circle" alt=""></div>
+                    <div class="p-3 d-flex flex-column">
+                        <span class="font-weight-bold">{{ username | safe }}</span>                        
+                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
+                                    data-feather="log-out"></i><span>Logout</span></a>
+                    </div>                                            
+                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+                </div>
+            </div>
+        </div>
+
+        <div class="contents-body">
+
+            <form action="/configuration/terms_and_conditions/add" method="POST">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+
+
+                <fieldset class="form-fieldset pd-x-50 field-shadow">
+                    <legend>
+                        <h1 class="font-weight-bold">Terms and Conditions<span class="text-success"></span></h1>
+                    </legend>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label text-right">Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="name">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label text-right">Terms and Conditions</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" name="terms_and_conditions" id="terms_and_conditions" cols="30" rows="3"
+                                placeholder="Terms and Conditions . . . ."></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label text-right">Misc</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="misc">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label text-right">Kategori</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="kategori">
+                        </div>
+                    </div>
+                    
+
+                    <div class="mg-y-30 text-center">
+                        <button class="btn btn-primary pd-x-100 shadow-custom">Add Terms and Conditions</button>
+                    </div>
+
+                </fieldset>
+            </form>
+
+
+            <div style="padding-top: 80px;">
+                <h1 class="font-weight-bold">Terms and Conditions<span class="text-success"></span></h1>
+
+                <table class="config-table table-bordered table table-striped" id="dataTable">
+                    <thead class="thead-primary">
+                        <tr>
+                            <th style="width: 10%;">Name</th>
+                            <th style="width: 60%;">Terms and Conditions</th>
+                            <th style="width: 10%;">Misc</th>
+                            <th style="width: 10%;">Kategori</th>
+                            <th style="width: 10%;">Options</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for tnc_item in terms_and_conditions_list %}
+                        <tr>
+                            <td>{{tnc_item.name}}</td>
+                            <td>{{tnc_item.terms_and_conditions_html | safe }}</td>
+                            <td>{{tnc_item.misc}}</td>
+                            <td>{{tnc_item.kategori}}</td>
+                            <td style="width: 20%;">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Action
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="dropdown-item" href="/configuration/terms_and_conditions/edit_terms_and_conditions_form?fk_tnc_id={{ tnc_item.pkey }}"><span data-feather="edit"></span> Edit</a>
+                                        <a class="dropdown-item" href="#"
+                                            onclick="$('form#delete-{{ tnc_item.pkey }}>button').click();"><span data-feather="trash"></span>
+                                            Delete</a>
+                                        <form id="delete-{{ tnc_item.pkey }}" action="/configuration/terms_and_conditions/delete" method="POST"
+                                            onsubmit="return confirm('Are you sure you want to delete {{ tnc_item.name }} ?');">
+                                            <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+                                            <input type="hidden" value="{{ tnc_item.pkey }}" name="fk_terms_and_conditions_pkey">
+                                            <button style="display:none" type="submit"></button>
+                                        </form>
+                        
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+
+
+                        
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+
+            <footer class="text-center mg-t-auto font-weight-bold">©PT Brutor Jakarta 2020</footer>
+        </div>
+    </div>
+
+    <script src="../../static/lib/jquery/jquery.min.js"></script>
+    <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/lib/feather-icons/feather.min.js"></script>
+    <script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../../static/lib/select2/js/select2.min.js"></script>
+    <script src="../../static/lib/flatpicker/flatpickr.js"></script>
+    <script src="../../static/assets/js/dashforge.js"></script>
+    <script src="../../static/assets/js/dashforge.aside.js"></script>
+    <script src="../../static/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../../static/js/pytavia-js/custom/ckeditor/ckeditor.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            loader.classList.add('hidden');
+        });
+
+
+        $(document).ready(function () {
+            CKEDITOR.replace( 'terms_and_conditions', { customConfig : 'config_toolbar_mnc_cs.js' } );
+
+            
+
+            $("#dataTable").DataTable({
+                "aaSorting": []
+            })
+
+        });
+
+    </script>
+</body>
+{% endautoescape %}
+
+</html>

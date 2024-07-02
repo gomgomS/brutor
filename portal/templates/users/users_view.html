@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favico -->
+  <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+  <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+  <title>Brutor ADMIN - eKYC</title>  
+  <!-- vendor css -->
+  <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">  
+  <!-- DashForge CSS -->
+  <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+  <link rel="stylesheet" href="../../static/css/custom.css">
+  <!-- some additional css here -->
+</head>
+
+{% autoescape false %}
+<body>
+  <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">              
+        <div class="modal-body">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <img src="" class="imagepreview" style="width: 100%;" >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loader">
+    <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
+  </div>
+  <aside class="aside aside-fixed">
+    <div class="aside-header">
+      <a href="#" class="aside-logo img-logo"><img class=" w-75" src="../../static/assets/img/brutor_logo.png"></a>
+      <a href="" class="aside-menu-link">
+        <i data-feather="menu"></i>
+        <i data-feather="x"></i>
+      </a>
+    </div>
+    <div class="aside-body">     
+      <ul class="nav nav-aside">
+        {% for menu_item in menu_list_html %}
+            <li class="nav-item">
+                <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+                    <span>{{menu_item.menu_name}}</span></a>
+            </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </aside>
+
+  <div class="content pd-0">
+    <div class="content-header">
+      <h4 class="mg-b-0 text-primary">eKYC</h4> 
+      <div class="">
+        <div class="d-flex align-items-center">
+          <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg" class="rounded-circle" alt=""></div>
+          <span class="mg-l-5 mg-r-30 font-weight-bold">{{ username | safe }}</span>
+          <a href="/auth/logout" data-toggle="tooltip" title="Sign out"><i data-feather="log-out"></i><span>Logout</span></a>          
+        </div>        
+      </div>     
+    </div>
+
+    <div class="contents-body">         
+      <form action="">
+        <fieldset class="form-fieldset pd-x-50 field-shadow pd-b-50">
+          <legend><h1 class="font-weight-bold mg-b-0">Profile <span class="text-success">Pengguna</span></h1></legend>
+          <div class="d-flex flex-row-reverse">            
+            <div class="">
+              <img class="img-thumbnail Cur(p) align-self-center" style="width: 200px; height: 200px;" data-toggle="tooltip" title="View image" data-placement="right" width="130" height="130" src="{{ customer_rec.image }}" alt="..." >                
+              <br>
+              <img class="img-thumbnail Cur(p) align-self-center" style="width: 200px; height: 200px;" data-toggle="tooltip" title="View KTP image" data-placement="right" width="130" height="130" src="{{ customer_rec.ktp_image }}" alt="..." >       
+            </div>
+            <div class="flex-1 align-self-center mg-r-8">            
+              <div class="input-group mg-t-15" style="max-width: 400px;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-phone-square text-success"></i></span>
+                  <span class="input-group-text font-weight-bold" style="width: 150px;">fk user id</span>
+                </div>
+                <input disabled value="{{ customer_rec.fk_user_id }}" style="min-width: 150px;" type="text" class="form-control" >
+              </div>
+
+              
+
+              <div class="input-group mg-t-15" style="max-width: 400px;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text text-warning"><i class="far fa-calendar-check"></i></i></span>
+                  <span class="input-group-text font-weight-bold" style="width: 150px;">Tgl Daftar</span>
+                </div>
+                <input disabled value="{{ customer_rec.rec_timestamp_str }}" style="min-width: 150px;" type="text" class="form-control" >
+              </div>
+
+              <div class="input-group mg-t-15" style="max-width: 400px;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="far fa-credit-card text-danger"></i></span>
+                  <span class="input-group-text font-weight-bold" style="width: 150px;">Kartu MTT</span>
+                </div>
+                <input disabled value="{{ customer_rec.kartu_mtt }}" style="min-width: 150px;" type="text" class="form-control" >
+              </div> 
+              
+              <div class="input-group mg-t-15" style="max-width: 400px;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="far fa-credit-card text-danger"></i></span>
+                  <span class="input-group-text font-weight-bold" style="width: 150px;">NIK</span>
+                </div>
+                <input disabled value="{{ customer_rec.ktp_id }}" style="min-width: 150px;" type="text" class="form-control">
+              </div> 
+
+              <div class="input-group mg-t-15" style="max-width: 700px;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text text-info"><i class="fas fa-user"></i></i></span>
+                  <span class="input-group-text font-weight-bold" style="width: 150px;">Username</span>
+                </div>
+                <input disabled value="{{ customer_rec.username }}" style="min-width: 150px;" type="text" class="form-control" >
+              </div>
+
+              <div class="input-group mg-t-15" style="max-width: 700px;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text text-info"><i class="fas fa-file-signature"></i></i></span>
+                  <span class="input-group-text font-weight-bold" style="width: 150px;">Nama Lengkap</span>
+                </div>
+                <input disabled value="{{ customer_rec.nama_lengkap }}" style="min-width: 150px;" type="text" class="form-control" >
+              </div>
+
+              <div  class="input-group mg-t-15" style="max-width: 700px;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-phone-square text-success"></i></span>
+                  <span class="input-group-text font-weight-bold" style="width: 150px;">Telepon</span>
+                </div>
+                <input disabled value="{{ customer_rec.telepon }}" style="min-width: 150px;" type="text" class="form-control" >
+              </div>
+
+              <div class="input-group mg-t-15" style="max-width: 700px;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-envelope-open-text"></i></span>
+                  <span class="input-group-text font-weight-bold" style="width: 150px;">Email</span>
+                </div>
+                <input disabled value="{{ customer_rec.email }}" style="min-width: 150px;" type="text" class="form-control" >
+              </div>
+
+              <div class="input-group mg-t-15" style="max-width: 700px;">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="far fa-calendar-check text-info"></i></span>
+                  <span class="input-group-text font-weight-bold" style="width: 150px;">Freeze Date</span>
+                </div>
+                <input disabled value="{{ customer_rec.start_freeze_date }} - {{ customer_rec.end_freeze_date }}" style="min-width: 150px;" type="text" class="form-control" >
+              </div> 
+              
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="mg-y-30 text-center">
+          <a href="{{ redirect }}" class="btn btn-primary pd-x-100 shadow-custom font-weight-bold">Tutup</a>
+        </div>
+      </form>
+      <footer class="text-center mg-t-auto font-weight-bold">©PT Brutor Jakarta 2020</footer>       
+    </div>
+  </div>  
+
+  <script src="../../static/lib/jquery/jquery.min.js"></script>
+  <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../static/lib/feather-icons/feather.min.js"></script>  
+  <script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>    
+  <script src="../../static/assets/js/dashforge.js"></script>
+  <script src="../../static/assets/js/dashforge.aside.js"></script>   
+  <script>
+    window.addEventListener('load', () => {
+      const loader = document.querySelector('.loader');
+      loader.classList.add('hidden');
+    });    
+
+    // View img  
+    $(function() {
+      $('.img-thumbnail').on('click', function() {        
+        $('.imagepreview').attr('src', $(this).attr('src'));
+        $('#imagemodal').modal('show');   
+      });		
+    });
+  </script>
+</body>
+{% endautoescape %}
+
+</html>

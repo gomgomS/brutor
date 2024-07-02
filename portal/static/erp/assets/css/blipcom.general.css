@@ -1,0 +1,201 @@
+/*
+ * Company : PT Blipcom Teknologi Indonesia
+ * Project : Blipcom Digital Banking 
+ * Version : 0.1
+ * Author  : Aprilia Awaludin
+ *
+ */
+
+
+/*
+
+  Primary   : 21284B
+  Secondary : 015CAA
+  warning   : F36B26
+  Danger    : FD3140
+  Info      : 2AB6CD
+  Success   : 5DECA5
+
+
+  Green     : 5DECA5
+  Blue      : ACB9FF
+  Yellow    : F9EC5D
+  Orange    : F1A163
+  Red       : F87592
+
+
+  eaead9
+
+*/
+
+
+/*Body*/
+
+body {
+  background-color: #C2D5FA;;
+}
+
+
+
+/*Header*/
+
+.content-header {
+  background-image: linear-gradient(180deg, #242C50 0%, rgba(36, 44, 80, 0) 100%);
+  border-bottom: 0;
+  background-color: #C2D5FA;: 
+}
+
+
+
+
+/*Aside Header*/
+
+.aside-header .img-logo {
+    max-width: 160px;
+    width: 100%;
+}
+.aside-header .img-logo img {
+    width: 100%;
+    max-width: 100%;
+}
+.aside-header {
+  background-color: #21284B;
+}
+
+
+
+
+/*Aside*/
+
+.aside-body {
+  position: relative;
+  padding: 25px;
+  height: calc(100% - 59px);
+  border-top: 0;
+  border-right: 0;
+  background-color: #21284B;
+}
+.aside-alert-link a {
+  color:#ffffff;
+}
+.aside-alert-link a:hover {
+  color: #C2D5FA;
+}
+.aside-menu-link:hover,
+.aside-menu-link:focus {
+    color: #8392a5; 
+}
+
+.nav-aside .nav-label {
+  color: #C2D5FA;
+}
+.nav-aside .nav-link {
+  color: #C2D5FA; 
+}
+.nav-aside .nav-item.active .nav-link {
+  color: #44D2D1;
+}
+.nav-aside .with-sub.show:not(.active) .nav-link {
+  color: #C2D5FA;
+}
+.nav-aside .nav-link:hover, .nav-aside .nav-link:focus {
+  color: #C2D5FA;
+}
+.nav-aside .nav-item ul a {
+  color: #C2D5FA;
+}
+.nav-aside .nav-item ul a:hover, .nav-aside .nav-item ul a:focus {
+  color: #C2D5FA; 
+}
+
+
+
+
+
+
+
+/*Text Color*/
+
+.text-color-white {
+  color: #fff;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #3B4265;
+}
+
+
+
+/*link style*/
+a {
+   outline: 0;
+}
+
+
+
+
+/*Button*/
+
+.btn-primary {
+  color: #fff;
+  background-color: #21284b;
+  border-color: #21284b; }
+.btn-primary:hover {
+  color: #fff;
+  background-color: #293960;
+  border-color: #293960; }
+.btn-primary:focus, .btn-primary.focus {
+    box-shadow: 0 0 0 0.2rem #fdfdfd; }
+.btn-primary.disabled, .btn-primary:disabled {
+  color: #fff;
+  background-color: #21284b;
+  border-color: #21284b; }
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #21284b;
+  border-color: #21284b; }
+.btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
+.show > .btn-primary.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.2rem #fdfdfd; }
+
+
+
+/*datatables*/
+.table {
+    color: #565C79;
+}
+
+.dataTables_paginate {
+  margin: 20px 0 auto;
+  float: none !important;
+  text-align: center !important;
+}
+.table-striped tbody tr:nth-of-type(2n+1) {
+    background-color: #E7F4FF;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.next {
+  width: 40px;
+  border-radius: 0 5px 5px 0;
+  /*background: #565C79;*/
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous {
+  width: 40px;
+  border-radius: 5px 0 0 5px;
+  /*background: #565C79;*/
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  color: #797979 !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:focus {
+  background-color: #9CAFD4;
+  color: #f4f4f4;
+}
+
+
+
+/*General CSS Sets*/
+.no-border {
+  border:none !important;
+}

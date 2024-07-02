@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favico -->
+  <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}" type="image/x-icon">
+  <link rel="icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}" type="image/x-icon">
+  <title>Brutor ADMIN - Feeder</title>  
+  <!-- vendor css -->
+  <link href="{{ url_for('static', filename='lib/@fortawesome/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='lib/ionicons/css/ionicons.min.css') }}" rel="stylesheet">  
+  <link href="{{ url_for('static', filename='lib/select2/css/select2.min.css') }}" rel="stylesheet">  
+  <link href="{{ url_for('static', filename='lib/flatpicker/flatpickr.min.css') }}" rel="stylesheet">  
+  <!-- DashForge CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashforge.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <!-- some additional css here -->
+</head>
+<body>
+  <div class="loader">
+    <img src="{{ url_for('static', filename='assets/img/Pulse-1s-200px.gif') }}" alt="loader">
+  </div>
+
+  <aside class="aside aside-fixed">
+    <div class="aside-header">
+      <a href="#" class="aside-logo img-logo"><img src="{{ url_for('static', filename='assets/img/brutor_logo.png') }}" class="w-75"></a>
+      <a href="" class="aside-menu-link">
+        <i data-feather="menu"></i>
+        <i data-feather="x"></i>
+      </a>
+    </div>
+    <div class="aside-body">     
+      <ul class="nav nav-aside">
+        <li class="nav-label mg-t-25">Home</li>        
+        <li class="nav-item nav-item__active"><a href="{{ url_for('jadwal_feeder_html') }}" class="nav-link"><i data-feather="compass"></i> <span>Operations</span></a></li>      
+      </ul>
+    </div>
+  </aside>
+
+  <div class="content pd-0">
+    <div class="content-header">
+      <h4 class="mg-b-0 text-primary">Operation</h4> 
+      <div class="">
+        <div class="d-flex align-items-center">
+          <div class="avatar avatar-sm avatar-online"><img src="{{ url_for('static', filename='assets/img/placehold.jpg') }}" class="rounded-circle" alt=""></div>
+          <span class="mg-l-5 mg-r-30 font-weight-bold">Admin</span>
+          <a href="" data-toggle="tooltip" title="Sign out"><i data-feather="log-out"></i><span>Logout</span></a>          
+        </div>        
+      </div>     
+    </div>
+
+    <div class="contents-body">
+      <div class="mg-b-100">
+        <div class="mg-t-30">
+          <div class="d-flex justify-content-between align-items-center">
+            <h1 class="font-weight-bold">Upload <span class="text-success">Feeder</span></h1>            
+          </div>
+          <hr class="mg-t-0" />
+          <div class="">
+            <table class="table">
+              <thead>
+                <tr class="thead-primary">
+                  <th width="10%">StationID</th>
+                  <th width="18%">Nama Stasiun</th>
+                  <th width="18%">Feeder</th>
+                  <th width="18%">Rute</th>
+                  <th width="10%">NoBis</th>
+                  <th width="18%">Jam Berangkat</th>                  
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2</td>
+                  <td>Fatmawati</td>
+                  <td>TransJakarta</td>
+                  <td>Fatmawati - Depok</td>
+                  <td>T02</td>
+                  <td>09:10</td>                  
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Fatmawati</td>
+                  <td>TransJakarta</td>
+                  <td>Fatmawati - Depok</td>
+                  <td>T02</td>
+                  <td>09:10</td>                  
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>Fatmawati</td>
+                  <td>TransJakarta</td>
+                  <td>Fatmawati - Depok</td>
+                  <td>T02</td>
+                  <td>09:10</td>                  
+                </tr>
+              </tbody>
+            </table>
+            <div class="mg-y-30 text-center">
+              <a href="{{ url_for('jadwal_feeder_html') }}" class="btn btn-primary pd-x-100 shadow-custom">SIMPAN</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="text-center mg-t-auto font-weight-bold">©PT Brutor Jakarta 2020</footer>
+    </div>
+    
+
+  <script src="{{ url_for('static', filename='lib/jquery/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/feather-icons/feather.min.js') }}"></script>  
+  <script src="{{ url_for('static', filename='lib/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>    
+  <script src="{{ url_for('static', filename='lib/select2/js/select2.min.js') }}"></script>    
+  <script src="{{ url_for('static', filename='lib/flatpicker/flatpickr.js') }}"></script>    
+  <script src="{{ url_for('static', filename='assets/js/dashforge.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/dashforge.aside.js') }}"></script> 
+  <script>    
+    window.addEventListener('load', () => {
+      const loader = document.querySelector('.loader');
+      loader.classList.add('hidden');
+    });       
+$('#startDate').flatpickr({
+  allowInput:true
+})
+    
+$('#endDate').flatpickr({
+  allowInput:true
+})    
+$('#pageSearch').select2({      
+  width: '100%',
+  placeholder: 'Find'
+});
+//adding placeholder on the select search
+$('#pageSearch').one('select2:open', function(e) {
+  $('input.select2-search__field').prop('placeholder', 'page');
+});
+
+const resetBtn = document.getElementById('reset');
+resetBtn.addEventListener('click', (e) => {
+  e.preventDefault()
+  $('#startDate').val(undefined);
+  $('#endDate').val(undefined);
+});    
+</script>   
+</body>
+</html>
+

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+	<!-- Meta -->
+	<meta name="description" content="Responsive Bootstrap 4 Dashboard Template" />
+	<meta name="author" content="ThemePixels" />
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="../../../static/dashforge/img/favicon.png" />
+
+	<title>Welcome TMP ERP</title>
+
+	<!-- vendor css -->
+	<link href="../../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet" />
+	<link href="../../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet" />
+	<link href="../../../static/lib/typicons.font/typicons.css" rel="stylesheet" />
+	<link href="../../../static/lib/prismjs/themes/prism-vs.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../../static/lib/datatables.net-dt/css/jquery.dataTables.min.css" />
+	<link rel="stylesheet" href="../../../static/lib/select2/css/select2.min.css" />
+
+	<!-- DashForge CSS -->
+	<link rel="stylesheet" href="../../../static/dashforge/css/dashforge.css" />
+	<link rel="stylesheet" href="../../../static/dashforge/css/dashforge.demo.css" />
+
+	<!-- local css -->
+	<link rel="stylesheet" href="../../../static/css/main.css" />
+</head>
+
+<body data-spy="scroll" data-target="#navSection" data-offset="120">
+	<header class="navbar navbar-header navbar-header-fixed">
+		<a href="" id="sidebarMenuOpen" class="burger-menu"><i data-feather="arrow-left"></i></a>
+		<div class="navbar-brand">
+			<a href="/user/dashboard" class="df-logo">TMP<span>ERP</span></a>
+		</div>
+		<!-- navbar-brand -->
+		<div id="navbarMenu" class="navbar-menu-wrapper">
+			<div class="navbar-menu-header">
+				<a href="/user/dashboard" class="df-logo">TMP<span>ERP</span></a>
+				<a id="mainMenuClose" href=""><i data-feather="x"></i></a>
+			</div>
+			<!-- navbar-menu-header -->
+			<ul class="nav navbar-menu">
+				<li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">
+					Main Navigation
+				</li>
+
+				<li class="nav-item">
+					<h3 class="df-logo name-margin">
+						{{username}} | <span>{{role_position}}</span>
+					</h3>
+				</li>
+			</ul>
+		</div>
+		<!-- navbar-menu-wrapper -->
+		<div class="navbar-right" id="dateNow"></div>
+		<!-- navbar-right -->
+	</header>
+	<!-- navbar -->
+
+	<div id="sidebarMenu" class="sidebar sidebar-fixed sidebar-components">
+		<div class="sidebar-header">
+			<a href="" id="mainMenuOpen"><i data-feather="menu"></i></a>
+			<h5>Components</h5>
+			<a href="" id="sidebarMenuClose"><i data-feather="x"></i></a>
+		</div>
+		<!-- sidebar-header -->
+		<div class="sidebar-body">
+			<ul class="sidebar-nav">
+				{% for menu_item in menu_list_html%}
+				<li class="nav-item">
+					<a href="{{menu_item.href}}" class="nav-link"><i data-feather="{{menu_item.icon}}"></i>
+						{{menu_item.name}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<!-- sidebar-body -->
+		<!-- sidebar-body -->
+	</div>
+	<!-- sidebar -->
+
+	<div class="content content-components">
+		<div class="container">
+			<h3 class="config-title">{{config_all_rec.name}}</h3>
+			<form action="/process/config/add/setting-menu" method="POST" enctype="multipart/form-data" class="mg-t-40">
+				<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Idle Account</label>
+					<div class="col-sm-6">
+						<input type="text" name="idle_account" value="{{config_setting_menu.idle_account}}"
+							class="form-control" placeholder="15 Days">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Force Change Password</label>
+					<div class="col-sm-6">
+						<input type="text" name="force_change_password"
+							value="{{config_setting_menu.force_change_password}}" class="form-control"
+							placeholder="35 Days">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Password History</label>
+					<div class="col-sm-6">
+						<input type="text" name="password_history" value="{{config_setting_menu.password_history}}"
+							class="form-control" placeholder="7">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Password Length</label>
+					<div class="col-sm-6">
+						<input type="text" name="password_length" value="{{config_setting_menu.password_length}}"
+							class="form-control" placeholder="6 Characters">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Variable Password</label>
+					<div class="col-sm-6">
+						<div class="checkbox">
+							<label class="label-checkbox-form-setting-security">
+								<input type="checkbox" name="numeric" value="TRUE"
+									class="checkbox-form-setting-security"
+									{{ isChkBox_state_setting_menu.num_isChecked }}> Numeric &nbsp; &nbsp;
+								<input type="checkbox" name="lower_case" value="TRUE"
+									class="checkbox-form-setting-security"
+									{{ isChkBox_state_setting_menu.lowCs_isChecked }}> Lower Case &nbsp; &nbsp;
+								<input type="checkbox" name="upper_case" value="TRUE"
+									class="checkbox-form-setting-security"
+									{{ isChkBox_state_setting_menu.upCs_isChecked }}> Upper Case
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">&nbsp;</label>
+					<div class="col-sm-6">
+						<div class="checkbox">
+							<label class="form-inline label-checkbox-form-setting-security-symbol">
+								<input type="checkbox" name="symbol" value="True"
+									class="checkbox-form-setting-security-symbol"
+									{{ isChkBox_state_setting_menu.sym_isChecked }}>&nbsp; Symbol &nbsp; &nbsp;
+								<input type="text" name="symbol_str" value="{{ isChkBox_state_setting_menu.sym_str }}"
+									class="form-control" placeholder="">
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Wrong Counter</label>
+					<div class="col-sm-6">
+						<input type="text" name="wrong_counter" value="{{config_setting_menu.wrong_counter}}" class="form-control" placeholder="5">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Screen Timeout</label>
+					<div class="col-sm-6">
+						<input type="text" value="{{config_setting_menu.screen_timeout}}" name="screen_timeout" class="form-control" placeholder="60 Second">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Transaction Timeout</label>
+					<div class="col-sm-6">
+						<input type="text" value="{{config_setting_menu.tran_timeout}}" name="tran_timeout" class="form-control" placeholder="130 Second">
+					</div>
+				</div>
+
+
+
+
+
+
+
+
+
+				<div class="form-group row mg-b-0 mg-t-30">
+					<div class="col-sm-10 d-flex justify-content-center">
+						<button type="submit" class="btn btn-primary btn-config-add-new">Update</button>
+					</div>
+				</div>
+
+
+			</form>
+
+
+			<div class="table-container mg-t-90">
+				<h4>{{config_all_rec.name}} List</h4>
+				<hr class="negative-margin" />
+				<table class="config-table table-bordered table table-striped" id="portList">
+					<thead>
+						<tr>
+							<th>Idle Account</th>
+							<th>Force Change Password</th>
+							<th>Password History</th>
+							<th>Password Length</th>
+							<th>Variable Password</th>
+							<th>Wrong Counter</th>
+							<th>Screen Timeout</th>
+							<th>Transaction Timeout</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr>
+							<td> {{config_setting_menu.idle_account}}</td>
+							<td>{{config_setting_menu.force_change_password}}</td>
+							<td>{{config_setting_menu.password_history}}</td>
+							<td>{{config_setting_menu.password_length}}</td>
+							<td>
+								- Numeric : {{config_setting_menu.variable_password.numeric}} <br />
+								- Lower Case : {{config_setting_menu.variable_password.lower_case}} <br />
+								- Upper Case : {{config_setting_menu.variable_password.upper_case}} <br />
+								- Symbol : {{config_setting_menu.variable_password.symbol}} <br />
+								- Symbol String :{{config_setting_menu.variable_password.symbol_str}} <br />
+							</td>
+							<td>{{config_setting_menu.wrong_counter}}</td>
+							<td>{{config_setting_menu.screen_timeout}}</td>
+							<td>{{config_setting_menu.tran_timeout}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<footer class="content-footer mg-t-80">
+				<div>
+					<span>&copy; 2020 ERP TMP</span>
+				</div>
+				<div>
+					<nav class="nav">
+						<a href="https://themeforest.net/licenses/standard" class="nav-link">Licenses</a>
+						<a href="../change-log.html" class="nav-link">Change Log</a>
+						<a href="https://discordapp.com/invite/RYqkVuw" class="nav-link">Get Help</a>
+					</nav>
+				</div>
+
+			</footer>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- content -->
+
+	<script src="../../../static/lib/jquery/jquery.min.js"></script>
+	<script src="../../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../../../static/lib/feather-icons/feather.min.js"></script>
+	<script src="../../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script src="../../../static/lib/jqueryui/jquery-ui.min.js"></script>
+	<script src="../../../static/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="../../../static/lib/select2/js/select2.min.js"></script>
+
+	<script src="../../../static/dashforge/js/dashforge.js"></script>
+	<script src="../../../static/js/sytem_param/port_config.js"></script>
+
+</body>
+
+</html>

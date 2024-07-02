@@ -1,0 +1,404 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<title>List User</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		{{ core_css|safe  }}
+	</head>
+
+	<body id="body-list-user" class="">
+
+		{{ core_header|safe  }}
+		
+		<div class="page-container">
+			<div class="page-content">
+				<!-- inject:SIDEBAR -->
+				<div id="sidebar-main" class="sidebar sidebar-default">
+					<div class="sidebar-content">
+						<ul class="navigation">
+							{% for menu_item in menu_list_html%}
+								<li> <a href="{{menu_item.href}}"><i class="{{menu_item.icon}}"></i> <span>{{menu_item.name}}</span></a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+				<!-- inject:/SIDEBAR -->
+
+				<!-- PAGE CONTENT -->
+				<div class="content-wrapper">
+					<div class="content">
+						<!-- START - Form : Add User -->
+						<div class="row" id="form_add_user">
+							<div class="col-lg-12">
+								<div class="card">
+									<div class="card-block">
+										<h5 class="card-title" >Add User</h5>
+										<fieldset class="content-group">
+											<form onsubmit="return validatedForm()" action="/process/admin/user/add" method="POST" autocomplete="off">
+												<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">												
+
+												<div class="form-group row margin-top-10 col-md-12">
+													<div class="col-md-2">
+														<input type="text" id="add_fullname" name="add_fullname" class="username form-control" placeholder="Full Name" required>
+	                                                    <div class="help-block with-errors"></div>
+	                                                    <div class="err_user" style="display: none;color: red;">
+	                                                        Fullname cannot be empty
+	                                                    </div>
+														
+													</div>
+													<div class="col-md-2">
+														<input type="text" id="add_username" name="add_username" class="username form-control" placeholder="Username" required>
+	                                                    <div class="help-block with-errors"></div>
+	                                                    <div class="err_user" style="display: none;color: red;">
+	                                                        Username cannot be empty
+	                                                    </div>
+														
+													</div>
+													<div class="col-md-2">
+														<input type="password" id="add_password" name="add_password" class="password form-control" placeholder="Password" required>
+                                                        <div class="help-block with-errors"></div>
+                                                        <div class="err_pass" style="display: none;color: red;">
+                                                            Password cannot be empty
+                                                        </div>
+														
+													</div>
+													<div class="col-md-3">
+														<select class="form-control form-input-login" id="add_role" name="add_role" required>
+                                                            <option value="" disabled="disabled">- Pilih User Role -</option>
+														{% for config_role_item in config_role_list%}
+															<option value="{{config_role_item.value}}">
+																{{config_role_item.name}}
+															</option>
+														{% endfor %}
+
+														</select>														
+													</div>
+													<div class="col-md-3 btn-group">
+														<button type="submit" class="btn btn-primary button-form-add-user" style="margin-right: 10px;">Submit</button>
+														<button type="button" class="btn btn-warning button-form-add-user" onclick="reset_field();">Reset</button>												
+													</div>
+												</div>
+											</form>
+											
+										</fieldset>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- END - Form : Add User -->
+	
+						<!-- START - Form : Edit User -->
+						<div class="row" id="form_edit_user" style="display: none;">
+							<div class="col-lg-12">
+								<div class="card">
+									<div class="card-block">
+										<h5 class="card-title" id="edit_title">Edit User</h5>
+										<fieldset class="content-group">
+											<form onsubmit="return validatedForm()" action="/process/admin/user/edit" method="POST" autocomplete="off">
+												<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+												<input id="edit_pkey_id" name="edit_pkey_id" type="hidden">
+
+												<div class="form-group row margin-top-10 col-md-12">
+													<div class="col-md-2">
+														<input type="text" id="edit_fullname" name="edit_fullname" class="username form-control" placeholder="Full Name">
+	                                                    <div class="help-block with-errors"></div>
+	                                                    <div class="err_user" style="display: none;color: red;">
+	                                                        Fullname cannot be empty
+	                                                    </div>
+														
+													</div>
+													<div class="col-md-2">
+														<input type="text" id="edit_username" name="edit_username" class="username form-control" placeholder="Username" readonly="true">
+	                                                    <div class="help-block with-errors"></div>
+	                                                    <div class="err_user" style="display: none;color: red;">
+	                                                        Username cannot be empty
+	                                                    </div>
+														
+													</div>
+													<div class="col-md-2">
+														<input type="password" id="edit_password" name="edit_password" class="password form-control" placeholder="Password">
+                                                        <div class="help-block with-errors"></div>
+                                                        <div class="err_pass" style="display: none;color: red;">
+                                                            Password cannot be empty
+                                                        </div>
+														
+													</div>
+													<div class="col-md-3">
+														<select class="form-control form-input-login" id="edit_role" name="edit_role">
+														{% for config_role_item in config_role_list%}
+															<option value="{{config_role_item.value}}">
+																{{config_role_item.name}}
+															</option>
+														{% endfor %}
+
+														</select>														
+													</div>
+													<div class="col-md-3 btn-group">
+														<button type="submit" class="btn btn-primary button-form-add-user" style="margin-right: 10px;">Update</button>
+														<button type="button" class="btn btn-warning button-form-add-user" onclick="cancel_edit();">Cancel</button>												
+													</div>
+												</div>
+											</form>
+											
+										</fieldset>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- END - Form : Edit User -->
+
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="card">
+									<div class="card-block">
+										<h5 class="card-title">List User</h5>
+										<div class="table-responsive">
+											<table id="table-employee-management" class="display datatable table table-stripped spin-table-list-user" cellspacing="0" width="100%">
+												<thead>
+													<tr>
+														<th>Username</th>
+														<th>Fullname</th>
+														<th>Group</th>
+														<th>Status</th>
+														<th>Note</th>
+														<th><center>Login</center></th>
+														<th><center>Action</center></th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for user_item in user_list %}
+														<tr>
+															<td>																
+																{{ user_item.username }}																
+															</td>
+															<td>																
+																{{ user_item.name }}																
+															</td>
+															<td> 
+																{{ user_item.role_name }}
+															</td>
+															<td>
+																{{ user_item.inactive_status.status }}
+															</td>
+															<td>
+																{{user_item.inactive_note}}
+															</td>
+															<!-- <td>{{user_item.login_status}}</td> -->
+															<td>
+																<center>
+																	{% if user_item.login_status == "TRUE" %}
+																		<span class="icon-login-circle-green"></span>
+																	{% else %}    
+																		<span class="icon-login-circle-red"></span>
+																	{% endif %}
+																</center>
+															</td>
+															<td class="text-center">
+																<div class="btn-group ">
+																	
+																	<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+																	
+																	<button type="button" class="btn btn-primary" style="width:50px;" onclick="edituser('{{user_item.pkey}}','{{ user_item.name }}','{{ user_item.username }}','{{ user_item.role_value }}')"><i class="fa fa-edit position-left"></i>Edit</button>
+																	
+																	{% if user_item.inactive_status.value == "FALSE" %}
+																		<button type="button" class="btn btn-warning"  style="width:100px;" data-toggle="modal" data-target="#modal-user-active" onclick="flag_active_user('{{user_item.pkey}}','{{ user_item.username }}','TRUE', '{{ user_item.inactive_status.flag_btn_lbl }}')"><span class="fa fa-circle-o-notch position-left"></span>{{ user_item.inactive_status.flag_btn_lbl }}</button>
+
+																	{% else %}
+																		<button type="button" class="btn btn-warning" style="width:100px;" data-toggle="modal" data-target="#modal-user-active" onclick="flag_active_user('{{user_item.pkey}}','{{ user_item.username }}','FALSE', '{{ user_item.inactive_status.flag_btn_lbl }}')"><i class="fa fa-user position-left"></i>{{ user_item.inactive_status.flag_btn_lbl }}</button>
+																	{% endif %}
+																	<button type="button" class="btn btn-danger" style="width:50px;" data-toggle="modal" data-target="#modal-mpos-bca-delete-list-user" onclick="del_user('{{user_item.pkey}}')"><i class="fa fa-trash position-left"></i>Delete</button>
+																	<!-- <a href="/process/admin/user/remove?pkey={{user_item.fk_user_id}}" class="btn btn-danger btn-action-list-user-1" ><i class="fa fa-trash position-left"></i>Delete</a> -->
+																	
+																	
+
+																</div>
+															</td>  
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
+				</div>
+				<!-- /PAGE CONTENT -->
+				
+			</div>
+		</div>
+
+		
+
+		<!-- Modal Button Active / Inactive -->
+		<div class="modal fade" id="modal-user-active" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog modal-dialog-mpos-bca" role="document">
+				<div class="modal-content">
+					<div class="modal-header modal-header-mpos-bca">
+						<h4 class="modal-title modal-title-mpos-bca" id="activate_modal_title"><i class="fa fa-user"></i> &nbsp; </h4>
+						<button type="button" class="close button-close-modal-mpos-bca" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					</div>
+					<div class="modal-body">
+						<form method="POST" action="/process/admin/user/activate">
+							<input name="active"      type="hidden" id="activate_value_id" />
+							<input name="pkey"        type="hidden" id="activate_pkey_id"  />
+							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+							<div class="form-group">
+								<label class="label-form-mpos-bca">Username</label>
+								<input id="activate_username_id" name="activate_username" type="text" class="form-control" placeholder="" disabled="disabled">
+							</div>
+							<div class="form-group">
+								<label class="label-form-mpos-bca">Note</label>
+								<input id="activate_note_id" name="notes" type="text" class="form-control" placeholder="Note">
+							</div>
+							<div class="form-group">
+								<label class="label-form-mpos-bca">Apakah Anda yakin ?</label> &nbsp; 
+								<button type="submit" class="btn btn-primary">Yes</button>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer modal-footer-mpos-bca">
+						<span style="left:0;width:50%;">&nbsp;</span>
+						<span style="text-align:right;right:0;width:50%;"> 2019 &copy; MNC Credit Scoring</span>
+					</div>
+				</div>
+			</div>
+		</div>
+				
+		<!-- Modal Button Force Logout -->
+		<div class="modal fade bs-example-modal-sm" id="modal-mpos-bca-force-logout" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+			<div class="modal-dialog modal-sm modal-dialog-mpos-bca" role="document">
+				<div class="modal-content">
+					<div class="modal-header modal-header-mpos-bca">
+						<h4 class="modal-title modal-title-mpos-bca" id=""><i class="fa fa-user"></i> &nbsp; Force Logout</h4>
+						<!-- <button type="button" class="close button-close-modal-mpos-bca" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+					</div>
+					<div class="modal-body">
+						<form>
+							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+							<center>
+							<label class="label-form-mpos-bca">Apakah Anda Yakin ?</label>
+							<div class="form-group">
+								<button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">No</button>
+								<button type="button" class="btn btn-primary">Yes</button>
+							</div>
+							</center>
+						</form>
+					</div>
+					<div class="modal-footer modal-footer-mpos-bca">
+						<span style="left:0;width:50%;">&nbsp;</span>
+						<span style="text-align:right;right:0;width:50%;"> 2019 &copy; MNC Credit Scoring</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal Button Delete -->
+		<div class="modal fade bs-example-modal-sm" id="modal-mpos-bca-delete-list-user" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+			<div class="modal-dialog modal-sm modal-dialog-mpos-bca" role="document">
+				<div class="modal-content">
+					<div class="modal-header modal-header-mpos-bca">
+						<h4 class="modal-title modal-title-mpos-bca" id=""><i class="fa fa-trash"></i> &nbsp; Delete User</h4>
+						<!-- <button type="button" class="close button-close-modal-mpos-bca" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> -->
+					</div>
+					<div class="modal-body">
+						<form action="/process/admin/user/remove" method="POST" >
+							<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+							<input name="del_pkey_id" type="hidden"  id="del_pkey_id" name="del_pkey_id">
+							<center>
+							<label class="label-form-mpos-bca">Apakah Anda Yakin ?</label>
+							<div class="form-group">
+								<button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">No</button>
+								<button type="submit" class="btn btn-primary">Yes</button>
+							</div>
+							</center>
+						</form>
+					</div>
+					<div class="modal-footer modal-footer-mpos-bca">
+						<span style="left:0;width:50%;">&nbsp;</span>
+						<span style="text-align:right;right:0;width:50%;"> 2019 &copy; MNC Credit Scoring</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		
+		{{ core_footer|safe  }}			
+		
+		{{ core_script|safe  }}	
+		                
+                {{ core_dialog_message|safe}}
+		<script type="text/javascript">
+			$('#modal-mpos-bca').on('shown.bs.modal', function () {
+			  $('#myInput').focus()
+			})
+		</script>
+		
+		<script type="text/javascript">
+			$('#modal-mpos-bca-edit').on('shown.bs.modal', function () {
+			  $('#myInput').focus()
+			})
+		</script>
+		
+		<script type="text/javascript">
+			$('#modal-user-active').on('shown.bs.modal', function () {
+			  $('#myInput').focus()
+			})
+		</script>
+
+		<script type="text/javascript">
+			$('#modal-mpos-bca-inactive').on('shown.bs.modal', function () {
+			  $('#myInput').focus()
+			})
+		</script>
+		
+		<script type="text/javascript">
+			$('#modal-mpos-bca-active').on('shown.bs.modal', function () {
+			  $('#myInput').focus()
+			})
+		</script>
+		
+		<script type="text/javascript">
+			$('#modal-mpos-bca-lock').on('shown.bs.modal', function () {
+			  $('#myInput').focus()
+			})
+		</script>
+		
+		<script type="text/javascript">
+			$('#modal-mpos-bca-unlock').on('shown.bs.modal', function () {
+			  $('#myInput').focus()
+			})
+		</script>
+		
+		<script type="text/javascript">
+			$('#modal-mpos-bca-force-logout').on('shown.bs.modal', function () {
+			  $('#myInput').focus()
+			})
+		</script>
+		
+		<script type="text/javascript" src="/static/js/pytavia-js/custom/list_user.js"></script>
+		<script type="text/javascript" src="/static/js/pytavia-js/custom/list_user_custom.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#table-employee-management').DataTable({
+                    "destroy" : true,
+                    "order": [[ 3, "desc" ]]
+                });
+				
+				//document.getElementById("form_add_user").style.display = "block";
+				//document.getElementById("form_edit_user").style.display = "none";
+			} );
+
+			
+
+		</script>
+		
+	</body>
+
+</html>

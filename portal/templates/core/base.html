@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+      <!-- Meta -->
+      <meta name="description" content="Responsive Bootstrap 4 Dashboard Template" />
+      <meta name="author" content="ThemePixels" />
+      <!-- Favicon -->
+      <link rel="shortcut icon" type="image/x-icon" href=" {{ url_for('static', filename='dashforge/img/favicon.png') }}" />
+
+      <title>Welcome TMP ERP</title>
+
+      {% block styles %}
+      {{ core_css | safe }}
+      <style>
+      
+        .uif-hidden {
+            display: none;
+        }
+        button.sneaky {
+            border: 1px solid transparent;
+            border-bottom: 1px dashed transparent;
+            display: inline-block;
+            padding: 2px;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+        .dot.green{
+          height: 10px;
+          width: 10px;
+          background-color: greenyellow;
+          border-radius: 50%;
+          display: inline-block;
+        }
+        .dot.yellow{
+          height: 10px;
+          width: 10px;
+          background-color: rgb(243, 247, 45);
+          border-radius: 50%;
+          display: inline-block;
+        }
+        .dot.blue{
+          height: 10px;
+          width: 10px;
+          background-color: rgb(7, 145, 224);
+          border-radius: 50%;
+          display: inline-block;
+        }
+        .ff{
+          background-color: white;
+        }
+        .btn {
+          margin: 0px
+        }
+
+
+      </style>
+      {% endblock %}
+
+    </head>
+
+
+  <body class="app-filemgr">
+
+    
+    <header class="navbar navbar-header navbar-header-fixed">
+      <a href="" id="sidebarMenuOpen" class="burger-menu"><i data-feather="arrow-left"></i></a>
+      <div class="navbar-brand">
+        <a href="/user/dashboard" class="df-logo">TMP<span>ERP</span></a>
+      </div>
+
+      {% block header %}
+   
+        <div class="navbar-right" >
+          {% block navbar_right %}
+          {% endblock %}
+        </div>
+      {% endblock %}
+    </header>
+  
+
+      {% block content %}
+
+      {% endblock %}
+  
+    
+
+    {% block scripts %}
+    {{ core_script | safe }}
+    <script>
+      $('script').each(function (e) {
+
+        if ($(this).attr('src') != undefined && $(this).attr('src').lastIndexOf('jquery') == -1) {
+            var old_src = $(this).attr('src');
+            var that = $(this);
+            $(this).attr('src', '');
+
+            setTimeout(function () {
+                that.attr('src', old_src + '?' + new Date().getTime());
+            }, 250);
+        }
+    });
+    </script>
+    {% endblock %}
+
+  </body>
+
+  
+
+  {{ core_footer | safe }}
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+	<!-- Meta -->
+	<meta name="description" content="Responsive Bootstrap 4 Dashboard Template" />
+	<meta name="author" content="ThemePixels" />
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="../../../static/dashforge/img/favicon.png" />
+
+	<title>Welcome TMP ERP</title>
+
+	<!-- vendor css -->
+	<link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet" />
+	<link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet" />
+	<link href="../../static/lib/typicons.font/typicons.css" rel="stylesheet" />
+	<link href="../../static/lib/prismjs/themes/prism-vs.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../static/lib/datatables.net-dt/css/jquery.dataTables.min.css" />
+	<link rel="stylesheet" href="../../static/lib/select2/css/select2.min.css" />
+
+	<!-- DashForge CSS -->
+	<link rel="stylesheet" href="../../static/dashforge/css/dashforge.css" />
+	<link rel="stylesheet" href="../../static/dashforge/css/dashforge.demo.css" />
+
+	<!-- local css -->
+	<link rel="stylesheet" href="../../static/css/main.css" />
+</head>
+
+<body data-spy="scroll" data-target="#navSection" data-offset="120">
+	<header class="navbar navbar-header navbar-header-fixed">
+		<a href="" id="sidebarMenuOpen" class="burger-menu"><i data-feather="arrow-left"></i></a>
+		<div class="navbar-brand">
+			<a href="/user/dashboard" class="df-logo">TMP<span>ERP</span></a>
+		</div>
+		<!-- navbar-brand -->
+		<div id="navbarMenu" class="navbar-menu-wrapper">
+			<div class="navbar-menu-header">
+				<a href="/user/dashboard" class="df-logo">TMP<span>ERP</span></a>
+				<a id="mainMenuClose" href=""><i data-feather="x"></i></a>
+			</div>
+			<!-- navbar-menu-header -->
+			<ul class="nav navbar-menu">
+				<li class="nav-label pd-l-20 pd-lg-l-25 d-lg-none">
+					Main Navigation
+				</li>
+
+				<li class="nav-item">
+					<h3 class="df-logo name-margin">
+						{{username}} | <span>{{role_position}}</span>
+					</h3>
+				</li>
+			</ul>
+		</div>
+		<!-- navbar-menu-wrapper -->
+		<div class="navbar-right" id="dateNow"></div>
+		<!-- navbar-right -->
+	</header>
+	<!-- navbar -->
+
+	<div id="sidebarMenu" class="sidebar sidebar-fixed sidebar-components">
+		<div class="sidebar-header">
+			<a href="" id="mainMenuOpen"><i data-feather="menu"></i></a>
+			<h5>Components</h5>
+			<a href="" id="sidebarMenuClose"><i data-feather="x"></i></a>
+		</div>
+		<!-- sidebar-header -->
+		<div class="sidebar-body">
+			<ul class="sidebar-nav">
+				{% for menu_item in menu_list_html%}
+				<li class="nav-item">
+					<a href="{{menu_item.href}}" class="nav-link"><i data-feather="{{menu_item.icon}}"></i>
+						{{menu_item.name}}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<!-- sidebar-body -->
+	</div>
+	<!-- sidebar -->
+
+	<div class="content content-components">
+		<div class="container">
+			<h3 class="config-title">Update Konfigurasi</h3>
+			<form class="mg-t-40" action="/process/config/edit/all" method="POST">
+				<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+
+				<div class="form-group row">
+					<label for="menuName" class="col-sm-2 col-form-label">Menu Name</label>
+					<div class="col-sm-6">
+						<input value="{{ existing_config.name }}" type="text" class="form-control" name="name" />
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="addURL" class="col-sm-2 col-form-label">Add URL</label>
+					<div class="col-sm-6">
+						<input value="{{ existing_config.add_url }}" type="text" class="form-control" name="add_url" />
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="editURL" class="col-sm-2 col-form-label">Edit URL</label>
+					<div class="col-sm-6">
+						<input value="{{ existing_config.edit_url }}" type="text" class="form-control" name="edit_url" />
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Value</label>
+					<div class="col-sm-6">
+						<input value="{{ existing_config.value }}" type="text" class="form-control" name="value" />
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Type</label>
+					<div class="col-sm-6">
+						<input value="{{ existing_config.type }}" type="text" class="form-control" name="type" />
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Misc</label>
+					<div class="col-sm-6">
+						<input value="{{ existing_config.misc }}" type="text" class="form-control" name="misc" />
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Give Access to Back Office</label>
+					<div class="col-sm-6">
+						<select class="form-control" name="bo_access">
+							{% if existing_config.bo_access == TRUE %}
+							<option value="TRUE" selected> True</option>
+							<option value="FALSE"> False</option>
+							{% else %}
+							<option value="TRUE"> True</option>
+							<option value="FALSE" selected> False</option>
+							{% endif %}
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Give Access to Back Admin Bussiness</label>
+					<div class="col-sm-6">
+						<select class="form-control" name="bo_access_2">
+							{% if existing_config.bo_access_2 == TRUE %}
+								<option value="TRUE" selected> True</option>
+								<option value="FALSE"> False</option>
+							{% else %}
+								<option value="TRUE" > True</option>
+								<option value="FALSE" selected> False</option>
+							{% endif %}
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label">Descriptions</label>
+					<div class="col-sm-6">
+						<textarea name="desc" class="form-control" rows="6">{{ existing_config.desc }}</textarea>
+					</div>
+				</div>
+
+
+
+				<div class="form-group row mg-b-0 mg-t-30">
+					<div class="col-sm-10 d-flex justify-content-center">
+						<button type="submit" class="btn btn-primary">
+							Update Konfigurasi
+						</button>
+					</div>
+				</div>
+			</form>
+
+
+
+			<footer class="content-footer mg-t-80">
+				<div>
+					<span>&copy; 2020 ERP TMP</span>
+				</div>
+				<div>
+					<nav class="nav">
+						<a href="https://themeforest.net/licenses/standard" class="nav-link">Licenses</a>
+						<a href="../change-log.html" class="nav-link">Change Log</a>
+						<a href="https://discordapp.com/invite/RYqkVuw" class="nav-link">Get Help</a>
+					</nav>
+				</div>
+			</footer>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- content -->
+
+	<script src="../../static/lib/jquery/jquery.min.js"></script>
+	<script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../../static/lib/feather-icons/feather.min.js"></script>
+	<script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script src="../../static/lib/jqueryui/jquery-ui.min.js"></script>
+	<script src="../../static/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="../../static/lib/select2/js/select2.min.js"></script>
+
+	<script src="../../static/dashforge/js/dashforge.js"></script>
+</body>
+
+</html>

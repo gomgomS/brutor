@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>Blipcom</title>
+						
+		<!-- Bootstrap -->
+		<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,500,600,700,800" rel="stylesheet">
+		
+		<link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+		
+		<!-- styles -->
+		<link href="/static/css/style.css" rel="stylesheet">
+	</head>
+	
+	<body class="body-background-login">
+	
+		<div class="page-content-login-blipcom">
+			
+			<div class="form-login-blipcom">
+				<div class="logo-form-login-blipcom">
+					BLIPC<span class="color-yellow">O</span>M
+				</div>
+				<div class="text-form-login-blipcom">
+					LOGIN
+				</div>
+				
+				<form class="column-form-login-blipcom" method="POST" action="/auth/login">
+					<div class="form-group">
+						<label class="label-form-login-blipcom">
+							<i class="glyphicon glyphicon-user"></i> &nbsp; Username
+						</label>
+						<input type="text" name="username" class="form-control input-form-login-blipcom" id="" placeholder="Username">
+					</div>
+					<div class="form-group">
+						<label class="label-form-login-blipcom">
+							<i class="glyphicon glyphicon-lock"></i> &nbsp; Password
+						</label>
+						<input type="password" name="password" class="form-control input-form-login-blipcom" id="" placeholder="Password">
+					</div>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" class="checkbox-form-login-blipcom"> Remember me
+						</label>
+					</div>
+					<center>
+						<button type="submit" class="btn btn-submit-form-login-blipcom">Login</button>
+					</center>
+				</form>
+				
+				<div class="text-copyright-form-login-blipcom">
+					Copyright &copy; 2018 PT Blipcom Tbk,<br /> All Rights Reserved.
+				</div>
+				
+			</div>
+		
+		</div>
+		
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="/static/js/pytavia-js/custom/bootstrap.min.js"></script>
+		
+		<script  src="/static/js/pytavia-js/index.js"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#table-dealoka-point-reward").DataTable();
+			});
+		</script>
+		
+                <script type="text/javascript" src="/static/js/pytavia-js/jquery.dataTables.min.js"></script>
+                <script type="text/javascript" src="/static/js/pytavia-js/pages_datatables.min.js"></script>
+	
+	</body>
+	
+</html>

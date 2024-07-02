@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favico -->
+  <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+  <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+  <title>MJ Admin - Sign In</title>
+  <!-- Lib Css -->
+  <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+  <!-- DashForge CSS -->
+  <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+  <link rel="stylesheet" href="../../static/css/atomic.css">
+</head>
+
+<body>
+  <!-- <div class="container d-flex flex-direction flex-column align-items-center justify-content-center vh-100">
+    <a href="" class="mg-b-50 mg-t-80 text-center"><img class="w-50" src="../../static/assets/img/brutor_logo.png" alt="brutor_logo"></a>
+    <div class="row w-100">
+      <div class="offset-xl-4"></div>
+      <form method="POST" action="/auth/login" class="col-xl-5">
+        <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+        <fieldset class="form-fieldset pd-y-30 pd-x-30">
+          <legend>
+            <h1 class="mg-b-0 Fz(24px)">Admin Sign In</h1>
+          </legend>
+          <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 col-form-label">Username</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="inputEmail3" placeholder="Username" name="txt_l_username">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-3 col-form-label">Password</label>
+            <div class="col-sm-9">
+              <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name="txt_l_password">
+            </div>
+          </div>
+          <div class="row mg-t-30">
+            <div class="offset-sm-3"></div>
+            <div class="col-sm-9">
+              <button class="btn btn-primary pd-y-6 pd-x-50">Masuk</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <footer class="mg-t-auto pd-b-15 font-weight-bold">©PT Brutor Jakarta 2020</footer>
+  </div> -->
+
+  <section class="pt-5 pb-100 mt-0 align-items-center d-flex bg-dark" style="min-height: 100vh; background-size: cover; background-image: url(../../static/assets/img/background_login.jpg);">
+    <div class="container-fluid">
+      <div class="row justify-content-center d-flex-row h-100">
+        <div class="col-6"></div>
+        <div class="col-8 col-lg-3">
+          <div class="card shadow mg-t-100 mg-l-50" style="border-radius: 25px; background-color:rgba(255, 255, 255, 0.9);" >
+            <div class="text-center mg-t-30">
+              <a href="" class=""><img class="w-50" src="../../static/assets/img/brutor_logo.png" alt="brutor_logo"></a>
+            </div>
+             <div class="card-body">
+              <form method="POST" action="/auth/register">
+                <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">                
+                <div class="form-group">
+                  <label for="inputUsername">Username</label>
+                  <input style="box-shadow: 1px 2px #888888; border:transparent " type="text" class="form-control" id="inputUsername" placeholder="Username" name="username">
+                </div>
+                <div class="form-group">
+                  <label for="inputEmail">Email</label>
+                  <input style="box-shadow: 1px 2px #888888; border:transparent " type="email" class="form-control" id="inputEmail" placeholder="Email" name="email">
+                </div>
+                <div class="form-group">
+                  <label for="inputPassword">Password</label>
+                  <input style="box-shadow: 1px 2px #888888; border:transparent " type="password" class="form-control" id="inputPassword" placeholder="Password" name="password">
+                </div>                               
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Sign Up</button>     
+                <footer class="mg-t-30 font-weight-bold text-center">©PROGRAMMER KAREN 2024</footer>           
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ </section>
+
+  <!-- Atomic Watch this is just to reload the page if you make any changes to the html -->
+  <!-- <script src="//localhost:35729/livereload.js"></script> -->
+  <script src="../../static/lib/jquery/jquery.min.js"></script>
+  <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

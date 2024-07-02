@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<title>View Configuration</title>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE-Edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+                
+                {{ core_css|safe  }}
+	</head>
+
+	<body class="body-list-download">
+		{{ core_header|safe  }}
+		
+		<div class="page-container">
+			<div class="page-content">
+				<!-- inject:SIDEBAR -->
+				<div id="sidebar-main" class="sidebar sidebar-default">
+					<div class="sidebar-content">
+						<ul class="navigation">
+                                                        {% for menu_item in menu_list_html%}
+                                                                <li> <a href="{{menu_item.href}}"><i class="{{menu_item.icon}}"></i> <span>{{menu_item.name}}</span></a></li>
+                                                        {% endfor %}
+						</ul>
+					</div>
+				</div>
+				<!-- inject:/SIDEBAR -->
+
+				<!-- PAGE CONTENT -->
+				<div class="content-wrapper">
+					<div class="content">	
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="card">
+									<div class="card-block">
+										<h5 class="card-title">{{form.name}}</h5>
+										<fieldset class="content-group">
+											<form action="/process/config/region/add" method="POST">
+													<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+													<div class="form-group row margin-top-10">
+															<div class="col-md-3">
+																	<label class="control-label col-form-label">Name</label>
+															</div>
+															<div class="col-md-9">
+																	<input name="name" type="text" value="{{edit_item_rec.name}}" class="form-control">
+															</div>
+													</div>
+													<div class="form-group row margin-top-10">
+															<div class="col-md-3">
+																	<label class="control-label col-form-label">Value</label>
+															</div>
+															<div class="col-md-9">
+																{% if form.mode == "insert" %}
+																	<input name="value" type="text" class="form-control">
+																{% else %}
+																	<input name="value" type="text" value="{{edit_item_rec.value}}" class="form-control" readonly="true">
+																{% endif %}
+															</div>
+													</div>
+													<div class="form-group row margin-top-10">
+														<div class="col-md-3">
+																<label class="control-label col-form-label">Descriptions</label>
+														</div>
+														<div class="col-md-9">
+																<input name="desc" type="text" value="{{edit_item_rec.desc}}" class="form-control">
+														</div>
+													</div>
+				
+													<div class="form-group row margin-top-10">
+															<div class="col-md-3">
+																	<label class="control-label col-form-label">Misc</label>
+															</div>
+															<div class="col-md-9">
+																	<input name="misc" type="text" value="{{edit_item_rec.misc}}" class="form-control">
+															</div>
+													</div>
+													<div class="form-group row margin-top-10">
+														<div class="col-md-3">
+																<label class="control-label col-form-label">Context</label>
+														</div>
+														<div class="col-md-9">
+																<input name="context" type="text" value="{{edit_item_rec.context}}" class="form-control">
+														</div>
+													</div>
+					
+													<div class="form-group row margin-top-10">
+															<div class="col-md-3">
+																	&nbsp;
+															</div>
+															<div class="col-md-9">
+																	<button type="submit" class="btn btn-primary">Update</button>
+															</div>
+													</div>
+											</form>
+										</fieldset>
+									</div>
+								</div>
+							</div>
+						</div>	
+						<div class="row">
+							<div class="col-lg-12">
+								<div class="card">
+									<div class="card-block">
+										<h5 class="card-title">{{form.name}} List</h5>
+										<table id="table-achievement-status-list" class="display datatable table table-stripped" cellspacing="0" width="100%">
+											<thead>
+												<tr>
+													<th>Name</th>
+													<th>Value</th>
+													<th>Descriptions</th>
+													<th>Misc</th>
+													<th>Context</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for item in config_data_list%}
+													<tr>
+														<td>
+															{{item.name}}
+														</td>
+														<td>
+															{{item.value}}
+														</td>
+														<td>
+															{{item.desc}}
+														</td>
+														<td>
+															{{item.misc}}
+														</td>
+														<td>
+															{{item.context}}
+														</td>
+
+														<td>
+															<div class="btn-group">
+ 															<a href="/user/config/region/add?value={{item.value}}" type="button" class="btn btn-warning btn-sm"><i class="fa fa-pencil"></i></a>
+															<a href="/process/config/region/del?value={{item.value}}" type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+															</div>
+														</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
+				</div>
+				<!-- /PAGE CONTENT -->
+				
+			</div>
+		</div>
+                
+                
+                {{ core_footer|safe  }}			
+                
+		{{ core_script|safe  }}                
+                
+                {{ core_dialog_message|safe}}
+			
+	
+		
+	</body>
+
+</html>

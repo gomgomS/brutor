@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Favico -->
+  <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}" type="image/x-icon">
+  <link rel="icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}" type="image/x-icon">
+  <title>Brutor ADMIN - Feeder </title>  
+  <!-- vendor css -->
+  <link href="{{ url_for('static', filename='lib/@fortawesome/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='lib/ionicons/css/ionicons.min.css') }}" rel="stylesheet">  
+  <link href="{{ url_for('static', filename='lib/select2/css/select2.min.css') }}" rel="stylesheet">  
+  <link href="{{ url_for('static', filename='lib/flatpicker/flatpickr.min.css') }}" rel="stylesheet">  
+  <!-- DashForge CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashforge.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <!-- some additional css here -->
+</head>
+<body>
+  <div class="loader">
+    <img src="{{ url_for('static', filename='assets/img/Pulse-1s-200px.gif') }}" alt="loader">
+  </div>
+
+  <div class="modal fade" id="exampleModal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Pili File</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="main_form" action="{{ url_for('jadwal_upload_html') }}" method="GET" data-parsley-validate>
+            <fieldset class="form-fieldset">
+              <legend class="text-success">Main Form</legend>
+              <div class="form-row">                           
+                <div class="form-group col-md-12">
+                  <label>Pili File <span class="text-danger">*</span></label>
+                  <br>
+                  <input type="file" required>
+                </div>              
+                   
+              </div>    
+              <button type="submit" class="btn btn-xs btn-primary mg-t-20"><i class="fas fa-paper-plane"></i> Process</button>
+            </fieldset>                
+          </form>
+        </div>      
+      </div>
+    </div>
+  </div>
+
+  <!-- View Waktu -->
+  <div class="modal fade" id="view_waktu" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Jadwal <span class="text-success">Feeder</span></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="">
+            <fieldset class="form-fieldset">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Jadwal Feeder</label>
+                  <input id="jadwalFeeder" value="" readonly type="text" class="form-control" placeholder="Jadwal Feeder">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Rute</label>
+                  <input id="rute" value="" readonly type="text" class="form-control" placeholder="Jadwal Feeder">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Stasiun</label>
+                  <input id="stasiun" value="" readonly type="text" class="form-control" placeholder="Jadwal Feeder">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>No. Bis</label>
+                  <input id="noBis" value="" readonly type="text" class="form-control" placeholder="Jadwal Feeder">
+                </div>              
+              </div>
+            </fieldset>
+            <fieldset class="form-fieldset mg-t-15">
+              <div class="">
+                <h3 class="tx-15">Jadwal</h3>
+                <ul class="list-group">                             
+                </ul>
+              </div>
+            </fieldset>
+            
+          </div>
+        </div>      
+      </div>
+    </div>
+  </div>
+
+  <aside class="aside aside-fixed">
+    <div class="aside-header">
+      <a href="#" class="aside-logo img-logo"><img src="{{ url_for('static', filename='assets/img/brutor_logo.png') }}" class="w-75"></a>
+      <a href="" class="aside-menu-link">
+        <i data-feather="menu"></i>
+        <i data-feather="x"></i>
+      </a>
+    </div>
+    <div class="aside-body">     
+      <ul class="nav nav-aside">
+        <li class="nav-label mg-t-25">Home</li>        
+        <li class="nav-item nav-item__active"><a href="{{ url_for('jadwal_feeder_html') }}" class="nav-link"><i data-feather="compass"></i> <span>Operations</span></a></li>      
+      </ul>
+    </div>
+  </aside>
+
+  <div class="content pd-0">
+    <div class="content-header">
+      <h4 class="mg-b-0 text-primary">Operation</h4> 
+      <div class="">
+        <div class="d-flex align-items-center">
+          <div class="avatar avatar-sm avatar-online"><img src="{{ url_for('static', filename='assets/img/placehold.jpg') }}" class="rounded-circle" alt=""></div>
+          <span class="mg-l-5 mg-r-30 font-weight-bold">Admin</span>
+          <a href="" data-toggle="tooltip" title="Sign out"><i data-feather="log-out"></i><span>Logout</span></a>          
+        </div>        
+      </div>     
+    </div>
+
+<div class="contents-body">       
+  <div class="mg-b-100">     
+    <div class="mg-t-30">        
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="font-weight-bold">Jadwal <span class="text-success">Feeder</span></h1>              
+        <div class="">
+          <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-sm pd-x-15 btn-info btn-uppercase shadow-custom"><i class="fas fa-file-upload"></i> Upload</button>
+          <a href="{{ url_for('jadwal_add_html') }}" class="btn btn-sm pd-x-15 btn-primary btn-uppercase shadow-custom"><i class="fas fa-plus-square mg-r-5"></i> Tambah</a>
+        </div>
+      </div>  
+      <hr class="mg-t-0">
+      <form action="" class="mg-t-30">
+        <fieldset class="">
+          <div class="d-flex flex-wrap">
+            <div class="form-group mg-t-8 mg-r-8">
+              <label for="">Entries/page:</label>
+              <br>
+              <select name="" id="" class="custom-select W(80px)">
+                <option value="">1</option>
+                <option value="">2</option>
+                <option value="">3</option>
+                <option value="">4</option>
+              </select>
+            </div>              
+                      
+            <div class="form-group mg-t-8 mg-r-8">
+              <label for="">Sort By:</label>
+              <select name="" id="" class="custom-select ">
+                <option value="Name">Name</option>                
+              </select>
+            </div>   
+
+            <div class="form-group mg-t-8 mg-r-8">
+              <label for="">Order By:</label>
+              <select name="" id="" class="custom-select ">
+                <option value="Descending">Descending</option>
+                <option value="Ascending">Ascending</option>                
+              </select>
+            </div>
+                                 
+            <div class="form-group mg-t-8 mg-r-8">
+              <label for="">Keyword</label>
+              <input type="text" class="form-control ">
+            </div>              
+            <div class="form-group d-flex mg-t-auto">                  
+              <button id="reset" class="btn btn-danger shadow-custom mg-r-8">Reset</button>
+              <button class="btn btn-info shadow-custom">Submit</button>
+            </div>              
+          </div>
+        </fieldset>
+      </form>           
+
+          <div class="Ovy(a)--sm">   
+            <table class="table table-striped">
+              <thead class="thead-primary">
+                <tr>
+                  <th width="22%">Statsiun</th>
+                  <th width="22%">Feeder</th>
+                  <th width="22%">Rute</th>
+                  <th width="22%">Waktu</th>                  
+                  <th width="10%">&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Blok M</td>
+                  <td>Transjakarta</td>
+                  <td>Blok M-jakarta Kota</td>
+                  <td><button onclick="viewModal('jadwalFeeder', 'rute','stasiun','noBis', ['9.30','7.30'])" type="button" class="btn btn-outline-info btn-xs">Lihat</button></td>
+                  <td class="text-center">
+                    <div class="dropdown">
+                      <button class="btn btn-success pd-y-3 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Actions
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item text-primary" href="#"><i class="far fa-eye"></i> Lihat</a>
+                        <a class="dropdown-item text-danger" href="#"><i class="far fa-trash-alt"></i> Hapus</a>  
+                      </div>
+                    </div>
+                  </td>
+                </tr>                
+                <tr>
+                  <td>Blok M</td>
+                  <td>Transjakarta</td>
+                  <td>Blok M-jakarta Kota</td>
+                  <td><button onclick="viewModal('jadwalFeeder2', 'rute2','stasiun2','noBis2', ['9.302','7.302'])" type="button" class="btn btn-outline-info btn-xs">Lihat</button></td>
+                  <td class="text-center">
+                    <div class="dropdown">
+                      <button class="btn btn-success pd-y-3 dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Actions
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item text-primary" href="#"><i class="far fa-eye"></i> Lihat</a>
+                        <a class="dropdown-item text-danger" href="#"><i class="far fa-trash-alt"></i> Hapus</a>  
+                      </div>
+                    </div>
+                  </td>
+                </tr>                
+              </tbody>
+            </table>         
+          </div> 
+          
+          <div class="">            
+            <form action="">
+              <div class="d-flex justify-content-end align-items-center">
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination mg-b-0">
+                    <li class="page-item disabled"><a class="page-link page-link-icon" href="#"><i data-feather="chevron-left"></i></a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link page-link-icon" href="#"><i data-feather="chevron-right"></i></a></li>
+                  </ul>
+                </nav>
+                
+                <div class="input-group reset mg-l-15">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">Jump to page</span>
+                  </div>
+                  <div class="W(70px)">
+                    <select name="" id="pageSearch" class="custom-select">
+                      <option value=""></option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                    </select>
+                  </div>
+                  <div class="input-group-append">
+                    <button class="input-group-text bg-primary text-white">Go</button>
+                  </div>
+                </div>
+              </div>
+            </form>                        
+          </div>
+         
+        </div>
+      </div>
+      <footer class="text-center mg-t-auto font-weight-bold">©PT Brutor Jakarta 2020</footer>       
+    </div>
+  </div>  
+
+  <script src="{{ url_for('static', filename='lib/jquery/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='lib/feather-icons/feather.min.js') }}"></script>  
+  <script src="{{ url_for('static', filename='lib/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>    
+  <script src="{{ url_for('static', filename='lib/select2/js/select2.min.js') }}"></script>    
+  <script src="{{ url_for('static', filename='lib/flatpicker/flatpickr.js') }}"></script>    
+  <script src="{{ url_for('static', filename='assets/js/dashforge.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/js/dashforge.aside.js') }}"></script> 
+  <script>    
+    window.addEventListener('load', () => {
+      const loader = document.querySelector('.loader');
+      loader.classList.add('hidden');
+    });       
+    $('#startDate').flatpickr({
+      allowInput:true
+    })
+        
+    $('#endDate').flatpickr({
+      allowInput:true
+    })    
+    $('#pageSearch').select2({      
+      width: '100%',
+      placeholder: 'Find'
+    });
+    //adding placeholder on the select search
+    $('#pageSearch').one('select2:open', function(e) {
+      $('input.select2-search__field').prop('placeholder', 'page');
+    });
+
+    const resetBtn = document.getElementById('reset');
+    resetBtn.addEventListener('click', (e) => {
+      e.preventDefault()
+      $('#startDate').val(undefined);
+      $('#endDate').val(undefined);
+    });    
+
+    function viewModal(jadwalFeeder, rute,stasiun,noBis, arr) {
+      $('#view_waktu').modal('show');   
+      $('#jadwalFeeder').val('').val(jadwalFeeder)   
+      $('#rute').val('').val(rute)   
+      $('#stasiun').val('').val(stasiun)   
+      $('#noBis').val('').val(noBis)             
+      $('.list-group').val('').empty();
+
+      arr.forEach(el => {
+        $('.list-group').append(`<li class="list-group-item">${el}</li>`);
+      });
+    }  
+</script>   
+</body>
+</html>
+

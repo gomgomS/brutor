@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Favico -->
+	<link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+	<link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+	<title>Brutor ADMIN - Laporan Online</title>
+	<!-- vendor css -->
+	<link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+	<link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+	<link href="../../static/lib/datatables.net-dt/css/jquery.dataTables.min.css" rel="stylesheet">
+	<!-- DashForge CSS -->
+	<link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+	<link rel="stylesheet" href="../../static/css/custom.css">
+	<!-- some additional css here -->
+</head>
+
+<body class="body">
+	<aside class="aside aside-fixed">
+		<div class="aside-header">
+		    <a href="#" class="aside-logo img-logo"><img src="../../static/assets/img/brutor-logo-white.png" class="w-75"></a>
+		    <a href="" class="aside-menu-link">
+			  <i data-feather="menu"></i>
+			  <i data-feather="x"></i>
+		    </a>
+		</div>
+		<div class="aside-body">
+		    <ul class="nav nav-aside">
+			  {% for menu_item in menu_list_html %}
+				{%if menu_item.value == 'CONFIGURATION' %}
+				    <li class="nav-item nav-item-active ">
+					  <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
+						<span>{{menu_item.menu_name.title()}}</span></a>
+				    </li>
+				{% else %}
+				    <li class="nav-item">
+					  <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+						<span>{{menu_item.menu_name.title()}}</span></a>
+				    </li>
+				{% endif %}
+			  {% endfor %}
+    
+		    </ul>
+		</div>
+	  </aside>
+    
+	  <div class="content pd-0">
+		<div class="content-header">
+		    <h5 class="mg-b-0 text-primary">
+			  <a href="/user/config">Konfigurasi</a> 			 
+		    </h5>
+		    <div class="">
+			  <div class="d-flex align-items-center">
+				<div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
+					  class="rounded-circle" alt=""></div>
+				<div class="p-3 d-flex flex-column">
+				    <span class="font-weight-bold">{{ username | safe }}</span>                        
+				    <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
+						    data-feather="log-out"></i><span>Logout</span></a>
+				</div>                                            
+				<h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+			  </div>
+		    </div>
+		</div>
+
+		<!-- BODY -->
+		<div class="contents-body">
+			<h1 class="font-weight-bold">Daftar <span class="text-success">Konfigurasi</span></h1>
+			</br>
+			<table class="table" id="portList">
+				<thead>
+					<tr>
+						<th width="30%">Menu Name</th>
+						<th width="40%">Description</th>
+						<th width="10%">Count</th>
+						<th width="10%">Options</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for config_item in config_list %}
+					<tr>
+						<td>{{config_item.config_title}}</td>
+						<td>{{config_item.desc}}</td>
+						<td>{{config_item.count}}</td>
+						<td>
+							<div class="btn-group">
+								<a class="btn btn-outline-dark" href="{{ config_item.url }}"><span data-feather="eye"></span> View</a>
+							</div>
+						</td>
+					
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+		<!-- END BODY -->
+
+	</div>
+	<!-- Atomic Watch this is just to reload the page if you make any changes to the html -->
+	<!-- <script src="//localhost:35729/livereload.js"></script> -->
+
+
+	<script src="../../static/lib/jquery/jquery.min.js"></script>
+	<script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="../../static/lib/feather-icons/feather.min.js"></script>
+	<script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	<script src="../../static/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="../../static/assets/js/dashforge.js"></script>
+	<script src="../../static/assets/js/dashforge.aside.js"></script>
+	<script src="../../static/js/sytem_param/port_distance_config.js"></script>
+
+</body>
+
+</html>

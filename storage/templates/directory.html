@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>Blipcom</title>
+
+        <!-- Bootstrap -->
+		<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,500,600,700,800" rel="stylesheet">
+
+		<link href="/static/css/jquery.dataTables.min.css" rel="stylesheet">
+		
+		<!-- styles -->
+		<link href="/static/css/style.css" rel="stylesheet">
+	</head>
+	
+	<body>
+		
+		<!-- Modal Button Upload -->
+		<div class="modal fade" id="modal-cfs-upload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog modal-dialog-cfs" role="document">
+				<div class="modal-content">
+					<div class="modal-header modal-header-cfs">
+						<h4 class="modal-title modal-title-cfs" id=""><i class="fa fa-upload"></i> &nbsp; Upload</h4>
+						<button type="button" class="close button-close-modal-cfs" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form class="form-modal-upload-cfs">
+							<div class="form-group row margin-top-10">
+								<div class="col-md-3">
+									<label class="control-label col-form-label label-form-modal-cfs">Upload File</label>
+								</div>
+								<div class="col-md-9">
+									<div class="form-group form-group-file-input-cfs">
+										<input name="document" type="file" id="" class="file-input-upload-file-cfs">
+									</div>
+								</div>
+							</div>
+							<div class="form-group row margin-top-10">
+								<div class="col-md-3">
+									<label class="control-label col-form-label label-form-modal-cfs-note">Note</label>
+								</div>
+								<div class="col-md-9">
+									<input name="notes" type="text" class="form-control" placeholder="Note">
+								</div>
+							</div>
+							<div class="form-group row margin-top-10">
+								<div class="col-md-3">
+									&nbsp;
+								</div>
+								<div class="col-md-9">
+									<button type="submit" class="btn btn-primary btn-normalize">
+										<i class="fa fa-upload"></i> &nbsp; Upload
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer modal-footer-cfs">
+						<center>
+							<span class="text-footer-modal-cfs"> 2018 &copy; BLIPC<span class="color-yellow">O</span>M CFS</span>
+						</center>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal Button Create Folder -->
+		<div class="modal fade" id="modal-cfs-create-folder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog modal-dialog-cfs" role="document">
+				<div class="modal-content">
+					<div class="modal-header modal-header-cfs">
+						<h4 class="modal-title modal-title-cfs" id=""><i class="fa fa-plus"></i> &nbsp; Create Folder</h4>
+						<button type="button" class="close button-close-modal-cfs" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form class="form-modal-upload-cfs" method="POST" action="/v1/process/cfs/api_create_directory">
+							<input type="hidden" name="parent_node_id" value="{{ pnode_id }}" />
+							<div class="form-group row margin-top-10">
+								<div class="col-md-3">
+									<label class="control-label col-form-label label-form-modal-cfs-note">Name</label>
+								</div>
+								<div class="col-md-9">
+									<input name="directory_name" type="text" class="form-control" placeholder="Name">
+								</div>
+							</div>
+							<div class="form-group row margin-top-10">
+								<div class="col-md-3">
+									&nbsp;
+								</div>
+								<div class="col-md-9">
+									<div class="form-group">
+										<button type="submit" class="btn btn-primary btn-normalize">
+											<i class="fa fa-save"></i> &nbsp; Save
+										</button>
+										<button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">
+											<i class="fa fa-remove"></i> &nbsp; Cancel
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer modal-footer-cfs">
+						<center>
+							<span class="text-footer-modal-cfs"> 2018 &copy; BLIPC<span class="color-yellow">O</span>M CFS</span>
+						</center>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Modal Button Delete -->
+		<div class="modal fade" id="modal-cfs-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog modal-dialog-cfs-delete" role="document">
+				<div class="modal-content">
+					<div class="modal-header modal-header-cfs">
+						<h4 class="modal-title modal-title-cfs" id=""><i class="fa fa-trash"></i> &nbsp; Delete</h4>
+						<button type="button" class="close button-close-modal-cfs" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form class="form-modal-upload-cfs">
+							<center>
+								<label class="label-form-cfs-text-delete">Apakah Anda Yakin ?</label>
+								<div class="form-group">
+									<button type="button" class="btn btn-primary">Submit</button>
+									<button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel</button>
+								</div>
+							</center>
+						</form>
+					</div>
+					<div class="modal-footer modal-footer-cfs">
+						<center>
+							<span class="text-footer-modal-cfs"> 2018 &copy; BLIPC<span class="color-yellow">O</span>M CFS</span>
+						</center>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<!-- Header -->
+		<header>
+			<div class="container">
+				
+				<div class="xs-menu-cont">
+					<a id="menutoggle">
+						<i class="fa fa-align-justify"></i> 
+					</a>
+					<nav class="xs-menu displaynone">
+						<ul>
+							<li class="active">
+								BLIPCOM
+							</li>
+							<!--
+							<li>
+								<a href="#">Services</a>
+							</li>
+							<li>
+								<a href="#">Resource Groups</a>
+							</li>
+							!-->
+							<li>
+								<a href="#">Icon</a>
+							</li>
+							<li>
+								<a href="#">Icon</a>
+							</li>
+							<li>
+								<a href="#">Sidnei Budiman</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+				
+				<nav class="menu">
+					<ul>
+						<li class="active li-active-logo">
+							<a href="/console/bucket" class="active-top-logo">
+								BLIPC<span class="color-yellow">O</span>M
+							</a>
+						</li>
+						<!-- <li class="drop-down">
+							<a href="#">Services</a>
+							<div class="mega-menu fadeIn animated">
+								<div class="mm-3column">
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Computer</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; EC2</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Lightsail</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; ECS</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; EKS</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Lambda</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Batch</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Elastic Beanstalk</li>
+										</ul>
+									</span>	
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Storage</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; S3</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; EFS</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Glacier</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Storage Gateway</li>
+										</ul>
+									</span>	
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Database</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; RDS</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; DynamoDB</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; ElastiCache</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Neptune</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Amazon Redshift</li>
+										</ul>
+									</span>	
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Migration</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; AWS Migration Hub</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Application Discovery Service</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Database Migration Service</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Server Migration Service</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Snowball</li>
+										</ul>
+									</span>	
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Networking & Content Delivery</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; VPC</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; CloudFront</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Route 53</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; API Gateway</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Direct Connect</li>
+										</ul>
+									</span>	
+								</div>
+								<div class="mm-3column">
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Developer Tools</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; CodeStar</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; CodeCommit</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; CodeBuild</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; CodeDeploy</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; CodePipeline</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Cloud9</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; X-Ray</li>
+										</ul>
+									</span>							
+								</div>
+								<div class="mm-3column">
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Analytics</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Athena</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; EMR</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; CloudSearch</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Elasticsearch Service</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Kinesis</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; QuickSight</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Data Pipeline</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; AWS Glue</li>
+										</ul>
+									</span>							
+								</div>
+								<div class="mm-3column">
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Customer Engagement</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Amazon Connect</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Pinpoint</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Simple Email Service</li>
+										</ul>
+									</span>
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Business Productivity</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Alexa for Business</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Amazon Chime</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; WorkDocs</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; WorkMail</li>
+										</ul>
+									</span>
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Desktop & App Streaming</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; WorkSpaces</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; AppStream 2.0</li>
+										</ul>
+									</span>
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Internet of Things</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; IoT Core</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; IoT 1-Click</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; IoT Device Management</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; IoT Analytics</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Greengrass</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Amazon FreeRTOS</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; IoT Device Defender</li>
+										</ul>
+									</span>
+									<span class="categories-list">
+										<ul>
+											<li class="title-text-menu-mega">Game Development</li>
+											<li><i class="glyphicon glyphicon-arrow-right"></i> &nbsp; Amazon GameLift</li>
+										</ul>
+									</span>
+								</div>
+							</div>
+						</li>
+						<li>
+							<a href="#">Resource Groups</a>
+						</li> -->
+						<li>
+							<a href="#"><i class="glyphicon glyphicon-pushpin"></i></a>
+						</li>
+						<li style="float:right;">
+							<a href="#">Sidnei Budiman</a>
+						</li>
+						<li class="link-icon-menu-header" style="float:right;">
+							<a href="#"><i class="glyphicon glyphicon-bell"></i></a>
+						</li>
+					</ul>
+				</nav>
+				
+			</div>
+		</header>
+		<!-- /Header -->
+		
+		<!-- Header -->
+		<div class="bottom-header">
+			<div class="container">
+				<p class="text-bottom-header-left">
+					Blipcom central file storage system
+					<a href="http://www.blipcom.com" class="link-text-bottom-header">Learn More »</a>
+				</p>
+				<p class="text-bottom-header-right">
+					<a href="#" class="link-text-bottom-header">Documentation</a>
+				</p>
+			</div>
+		</div>
+		
+		<!-- Content -->
+		<div class="page-content-blipcom">
+			<div class="container">
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div class="top-text-page-content-blipcom-left">
+							BLIPC<span class="color-yellow">O</span>M &nbsp;| &nbsp; 
+							<a href="/console/bucket">ALL BUCKETS</a> &nbsp;| &nbsp; 
+							<a href="/console/directory?pnode_id={{ root_bucket_item.bucket_id }}">{{ root_bucket_item.bucket_name }}</a>
+							&nbsp;
+							{% for file_item in bc_file_system_list %}
+								/&nbsp;<a href="/console/directory?pnode_id={{ file_item.pnode_id }}">{{ file_item.current_node }}</a>	
+							{% endfor %}
+						</div>
+						<div class="top-text-page-content-blipcom-right">
+							<!--
+							<a href="#">
+								<i class="glyphicon glyphicon-facetime-video"></i>&nbsp; Discover the new console
+							</a>
+							 &nbsp; &nbsp; 
+							!-->
+							<a href="#"><i class="glyphicon glyphicon-list-alt"></i>&nbsp; Quick Tips</a>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-block card-block-box-column-cfs">
+								
+								<div class="nav-tab-column">
+									<ul class="nav nav-tabs nav-tabs-dealoka-point-reward ">
+										<li class="active">
+											<a data-toggle="tab" href="#overview">Overview</a>
+										</li>
+										<!--
+										<li>
+											<a data-toggle="tab" href="#properties">Properties</a>
+										</li>
+										<li>
+											<a data-toggle="tab" href="#permissions">Permissions</a>
+										</li>
+										<li>
+											<a data-toggle="tab" href="#management">Management</a>
+										</li>
+										!-->
+									</ul>
+									<div class="tab-content">
+										
+										<div id="overview" class="tab-pane fade in active">
+											<div class="form-group">
+												<div class="input-group">
+													<input type="text" class="form-control input-text-search-table-bucket-blipcom" id="" placeholder="Type a prefix and press Enter to search. Press ESC to clear.">
+													<div class="input-group-addon input-text-search-table-bucket-blipcom">
+														<button type="submit" class="btn-search-table-bucket-blipcom"><i class="fa fa-search"></i></button>
+													</div>
+												</div>
+											</div>
+											<div class="column-bottom-search">
+												<div class="form-group float-left">
+													<button type="button" class="btn btn-primary btn-top-table-bucket-blipcom" data-toggle="modal" data-target="#modal-cfs-upload">
+														<i class="glyphicon glyphicon-open"></i> &nbsp; Upload
+													</button>
+													<button type="button" class="btn btn-primary btn-top-table-bucket-blipcom" data-toggle="modal" data-target="#modal-cfs-create-folder">
+														<i class="glyphicon glyphicon-plus"></i> &nbsp; Create folder
+													</button>
+													<!-- Single button -->
+													<div class="btn-group btn-action-dealoka-point-reward">
+														<button type="button" class="btn btn-default dropdown-toggle btn-top-table-bucket-blipcom" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															Action <span class="caret"></span>
+														</button>
+														<ul class="dropdown-menu">
+															<li><a href="#">Action</a></li>
+															<li><a href="#">Another action</a></li>
+															<li><a href="#">Something else here</a></li>
+														</ul>
+													</div>
+													<button type="button" class="btn btn-danger btn-top-table-bucket-blipcom" data-toggle="modal" data-target="#modal-cfs-delete">
+														<i class="glyphicon glyphicon-trash"></i> &nbsp; Delete
+													</button>
+												</div>
+												<div class="form-group float-right">
+													<label class="text-top-table-bucket-blipcom-1">
+													</label> &nbsp;  &nbsp;  
+													<a href="/console/directory?pnode_id={{ pnode_id }}" class="btn btn-warning btn-top-table-bucket-blipcom">
+														<i class="glyphicon glyphicon-refresh"></i>
+													</a>
+												</div>
+											</div>
+											
+											<table id="table-dealoka-point-reward" class="display datatable table table-stripped" cellspacing="0" width="100%">
+												<thead>
+													<tr>
+														<th><input type="checkbox"></th>
+														<th>Name</th>
+														<th>Content Type</th>
+														<th>Extension</th>
+														<th>Created</th>
+														<th>Modified</th>
+														<th>Size</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for directory in list_directory %}
+														<tr>
+															<td>
+																<input type="checkbox">
+															</td>
+															<td>
+																<a href="{{ directory.down_link }}">
+																	<i class="{{ directory.icon_type }}"></i>&nbsp;
+																	{{ directory.current_node }}
+																</a>
+															</td>
+															<td>
+																{{ directory.content_type }}
+															</td>
+															<td>
+																{{ directory.extension }}
+															</td>
+															<td>
+																{{ directory.str_created_time }}
+															</td>
+															<td>
+																--
+															</td>
+															<td>
+																{{ directory.file_size }}
+															</td>
+														</tr>
+													{% endfor %}
+												</tbody>
+											</table>
+											
+										</div>
+										
+										<div id="properties" class="tab-pane fade">
+											<h3>Menu 1</h3>
+											<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+										</div>
+										
+										<div id="permissions" class="tab-pane fade">
+											<h3>Menu 2</h3>
+											<p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+										</div>
+										
+										<div id="management" class="tab-pane fade">
+											<h3>Menu 3</h3>
+											<p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+										</div>
+										
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<!-- /Content -->
+		
+		<!-- Footer -->
+		<!-- <footer>
+			<div class="container">
+				<p class="text-footer-float-left">
+					Copyright &copy; 2018 PT BLIPC<span class="color-yellow">O</span>M
+				</p>
+				<p class="text-footer-float-right">
+					<a href="#">Privacy & Police</a> &nbsp; | &nbsp; 
+					<a href="#">Term & Condition</a> &nbsp; | &nbsp; 
+					<a href="#">Contact Us</a>
+				</p>
+			</div>
+		</footer> -->
+		<!-- /Footer -->
+		
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script  src="/static/js/pytavia-js/custom/bootstrap.min.js"></script>
+		
+		<script  src="/static/js/pytavia-js/index.js"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#table-dealoka-point-reward").DataTable();
+			});
+		</script>
+
+		<script type="text/javascript" src="/static/js/pytavia-js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="/static/js/pytavia-js/pages_datatables.min.js"></script>
+
+	</body>
+	
+</html>

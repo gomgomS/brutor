@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+        <title>Add Advertising</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE-Edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600,800" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+
+        <link rel="stylesheet" href="/static/css/jquery.dataTables.min.css">
+        <link href="https://cdn.datatables.neFt/buttons/1.5.2/css/buttons.dataTables.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css" rel="stylesheet">
+
+        <link rel="stylesheet" href="/static/js/lib/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="/static/js/lib/bootstrap/dist/styles.min.css">
+        
+        
+        <script type="text/javascript" src="/static/js/pytavia-js/jquery.min.js"></script>
+        <script type="text/javascript" src="/static/js/pytavia-js/tether.min.js"></script>
+
+        <script type="text/javascript" src="/static/js/pytavia-js/custom/bootstrap.min.js"></script>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+
+        
+        <script>
+            $(document).ready(function(){            
+                $("#conType").change(function(){                    
+                    conType = $( "#conType option:selected" ).text();
+                    //conType = $("#conType").val() 
+                    console.log(conType)
+                    $("#extension").val(conType)
+                });
+            });
+            
+        </script>
+    <body>
+        
+        <h1>Server Actived</h1>
+
+        <form action="/cfs_put_file" method="POST" enctype="multipart/form-data" >
+            <input name="extension" id="extension" type="hidden" value="">
+            <div class="form-group row margin-top-10">
+                <div class="col-md-3">
+                    <label class="control-label col-form-label">Document Key</label>
+                </div>
+                <div class="col-md-9">
+                    <input name="key" type="text" class="form-control" placeholder="Document Key">
+                </div>
+            </div>
+            <div class="form-group row margin-top-10">
+                <div class="col-md-3">
+                    <label class="control-label col-form-label">Document Bucket</label>
+                </div>
+                <div class="col-md-9">
+                    <input name="bucket" type="text" class="form-control" placeholder="Document Bucket">
+                </div>
+            </div>
+            <div class="form-group row margin-top-10">
+                <div class="col-md-3">
+                    <label class="control-label col-form-label">Document Label</label>
+                </div>
+                <div class="col-md-9">
+                    <input name="label" type="text" class="form-control" placeholder="Document Label">
+                </div>
+            </div>
+            <div class="form-group row margin-top-10">
+                <div class="col-md-3">
+                    <label class="control-label col-form-label">Upload Document</label>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group form-group-list-download-file-input">
+                        <input name="document" type="file" id="document" class="file-input-upload-file-list-download">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row margin-top-10">
+                <div class="col-md-3">
+                    <label class="control-label col-form-label">Content-Type</label>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group form-group-list-download-file-input">
+                        <select class="form-control" name="conType" id="conType" >
+                            {% for conType in conType_list %}
+                            <option value="{{ conType.content_type}}">{{ conType.key }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row margin-top-10">
+                <div class="col-md-3">
+                    <label class="control-label col-form-label">Description </label>
+                </div>
+                <div class="col-md-9">
+                    <textarea name="notes" class="form-control" placeholder="Description" ></textarea>   
+                </div>
+            </div>
+            <div class="form-group row margin-top-10">
+                <div class="col-md-3">
+                    &nbsp;
+                </div>
+                <div class="col-md-9">
+                    <button type="submit" class="btn btn-primary button-save-image-add-advertising">Save Image</button>
+                </div>
+            </div>
+        </form>      
+
+    </body>
+
+</html>

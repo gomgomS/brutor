@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favico -->
+    <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <title>Brutor ADMIN - Tambah Belanja Online</title>
+    <!-- vendor css -->
+    <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="../../static/lib/select2/css/select2.min.css" rel="stylesheet">
+    <link href="../../static/lib/flatpicker/flatpickr.min.css" rel="stylesheet">
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+    <link rel="stylesheet" href="../../static/css/custom.css">
+    <!-- some additional css here -->
+</head>
+
+<body>
+    <div class="loader">
+        <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
+    </div>
+    <div class="modal" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="img-prev">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <div class="">
+                    <img src="" class="imagepreview">
+                </div>
+            </div>
+        </div>
+    </div>
+    <aside class="aside aside-fixed">
+        <div class="aside-header">
+            <a href="#" class="aside-logo img-logo"><img src="../../static/assets/img/brutor-logo-white.png" class="w-75"></a>
+            <a href="" class="aside-menu-link">
+                <i data-feather="menu"></i>
+                <i data-feather="x"></i>
+            </a>
+        </div>
+        <div class="aside-body">
+            <ul class="nav nav-aside">
+                {% for menu_item in menu_list_html %}
+                    {%if menu_item.value == 'BELANJA_ONLINE' %}
+                        <li class="nav-item nav-item-active ">
+                            <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+            </ul>
+        </div>
+    </aside>
+
+    <div class="content pd-0">
+        <div class="content-header">
+            <h5 class="mg-b-0 text-primary">
+                <a href="/starter?menu_value=BELANJA_ONLINE"> Belanja Online</a> 
+                <i class="fas fa-caret-right"></i> 
+                <a href="{{ redirect }}">Daftar Belanja Online</a>
+                <span style="font-weight: bolder;"><i class="fas fa-caret-right"></i> Edit Belanja Online</span>
+            </h5>
+            <div class="">
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
+                            class="rounded-circle" alt=""></div>
+                    <div class="p-3 d-flex flex-column">
+                        <span class="font-weight-bold">{{ username | safe }}</span>                        
+                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
+                                    data-feather="log-out"></i><span>Logout</span></a>
+                    </div>                                            
+                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+                </div>
+            </div>
+        </div>
+
+        <div class="contents-body">
+
+            <form action="/belanja_online/edit" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="fk_belanja_online_id" value="{{ belanja_online_rec.pkey }}">
+                <input type="hidden" name="redirect" value="{{ redirect }}">
+
+
+                <fieldset class="form-fieldset pd-x-50 field-shadow">
+                    <legend>
+                        {% if type != "VIEW" %}
+                            <h1 class="font-weight-bold mg-b-0">Edit <span class="text-success">Belanja Online</span></h1>
+                        {% else %}
+                            <h1 class="font-weight-bold mg-b-0">View <span class="text-success">Belanja Online</span></h1>
+                        {% endif %}
+                        
+                    </legend>
+
+                    <div class="form-group row">
+                        <label for="namaToko" class="col-sm-2 col-form-label text-right">Nama Toko</label>
+                        <div class="col-sm-10">
+                            <select id="namaToko" class="form-control" name="fk_perusahaan_id">
+                                <option value="" type="hidden" selected disabled></option>
+                                {% for perusahaan_item in perusahaan_list %}
+                                    {% if belanja_online_rec.fk_perusahaan_id == perusahaan_item.pkey %}
+                                        <option value="{{ perusahaan_item.pkey }}" selected>{{ perusahaan_item.nama_perusahaan }}</option>
+                                    {% else %}
+                                        <option value="{{ perusahaan_item.pkey }}">{{ perusahaan_item.nama_perusahaan }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="url" class="col-sm-2 col-form-label text-right">URL</label>
+                        <div class="col-sm-10">
+                            <input name="url" type="text" id="url" class="form-control" value="{{ belanja_online_rec.url }}">
+                        </div>
+                    </div>
+
+                    
+                    <div class="form-group row">
+                        <label for="posisiBanner" class="col-sm-2 col-form-label text-right">Posisi Banner</label>
+                        <div class="col-sm-10">
+                            <select id="posisiBanner" class="form-control" name="fk_posisi_id">
+                                <option value="" type="hidden" selected disabled></option>
+                                {% for posisi_item in posisi_list %}
+                                    {% if belanja_online_rec.fk_posisi_id == posisi_item.pkey %}
+                                        <option value="{{ posisi_item.pkey }}" selected>{{ posisi_item.name }}</option>
+                                    {% else %}
+                                        <option value="{{ posisi_item.pkey }}">{{ posisi_item.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="urutan" class="col-sm-2 col-form-label text-right">Urutan</label>
+                        <div class="col-sm-10">
+                            <input name="urutan" type="number" id="urutan" class="form-control" value="{{ belanja_online_rec.urutan }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="jenisTampilan" class="col-sm-2 col-form-label text-right">Jenis Tampilan</label>
+                        <div class="col-sm-10">
+                            <select id="jenisTampilan" class="form-control" name="fk_jenis_tampilan_id">
+                                <option value="" type="hidden" selected disabled></option>
+                                {% for jenis_tampilan_item in jenis_tampilan_list %}
+                                    {% if jenis_tampilan_item.pkey == belanja_online_rec.fk_jenis_tampilan_id %}
+                                        <option value="{{ jenis_tampilan_item.pkey }}" selected>{{ jenis_tampilan_item.name }}</option>
+                                    {% else %}
+                                        <option value="{{ jenis_tampilan_item.pkey }}">{{ jenis_tampilan_item.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label for="" class="col-sm-2 col-form-label">Gambar</label>
+                        <div class="col-sm-7">              
+                          <img style="width: 200px;height: 200px;" src="{{ image_rec.image }}" alt="" class="upload-photo img-thumbnail">
+                          <input type="file" id="filePic" class="d-none" name="image"> 
+                            {% if type != "VIEW" %}
+                                <label for="filePic" class="d-flex Cur(p) mg-l-25 mg-t-10">
+                                    <i class="rounded-left bg-dark text-white pd-10 fas fa-cloud-upload-alt cbs-1"></i>
+                                    <span class="bg-success pd-7 cbs-1 text-white rounded-right">Upload Photo</span>
+                                </label>
+                            {% endif %}
+                        </div>
+                    </div> 
+                    <div class="form-group row">
+                        <label for="dujul" class="col-sm-2 col-form-label text-right">Periode</label>
+                        <div class="col-sm-3">
+                            <div id="datepicker" class="d-flex align-items-center">
+                                <input id="datepicker" name="start_datetime" class="form-control" type="text"
+                                    placeholder="Select Date.." data-input autocomplete="off" value="{{ belanja_online_rec.str_start_datetime }}">
+                                <i data-toggle id="calendar2"
+                                    class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                            </div>
+                        </div>
+                        <span class="mg-t-10 col-sm-1 text-center">---</span>
+                        <div class="col-sm-3">
+                            <div id="datepicker2" class="d-flex align-items-center">
+                                <input name="end_datetime" data-input id="datepicker2" type="text" class="form-control"
+                                    id="" placeholder="Select Date.." autocomplete="off" value="{{ belanja_online_rec.str_end_datetime }}">
+                                <i data-toggle id="calendar2"
+                                    class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="update_notes" value="">
+                        
+                        <!-- <div class="form-group row">
+                            <label for="dujul" class="col-sm-2 col-form-label text-right text-right">Update notes</label>
+                            <div class="col-sm-7">
+                                <textarea class="form-control" name="update_notes" id="" cols="5" rows="5"
+                                    placeholder="Update notes . . . ." required></textarea>
+                            </div>
+                        </div> -->
+
+                    </div>
+                </fieldset>
+
+                <div class="mg-y-30 text-center">
+                    {% if type != "VIEW" %}
+                        <button class="btn btn-primary pd-x-100 shadow-custom">UPDATE</button>
+                    {% endif %}
+                </div>
+            </form>
+            <footer class="text-center mg-t-auto font-weight-bold">©PT Brutor Jakarta 2020</footer>
+        </div>
+    </div>
+
+    <script src="../../static/lib/jquery/jquery.min.js"></script>
+    <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/lib/feather-icons/feather.min.js"></script>
+    <script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../../static/lib/select2/js/select2.min.js"></script>
+    <script src="../../static/lib/flatpicker/flatpickr.js"></script>
+    <script src="../../static/assets/js/dashforge.js"></script>
+    <script src="../../static/assets/js/dashforge.aside.js"></script>
+
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            loader.classList.add('hidden');
+        });
+
+        
+        $( document ).ready(function() {
+
+            const lists = [
+                {
+                    id: 'namaToko',
+                    placeholder: '- Nama Toko -'
+                },
+                {
+                    id: 'posisiBanner',
+                    placeholder: '- Posisi Banner -'
+                },
+                {
+                    id: 'jenisTampilan',
+                    placeholder: '- Jenis tampilan -'
+                }
+
+            ];
+
+
+            lists.forEach(list => {
+                $(`#${list.id}`).select2({
+                    width: '100%',
+                    placeholder: list.placeholder
+                })
+                $(`#${list.id}`).one('select2:open', function (e) {
+                    $('input.select2-search__field').prop('placeholder', 'Search');
+                });
+            });
+
+            ['datepicker', 'datepicker2'].forEach(el => {
+                $(`#${el}`).flatpickr({
+                    enableTime: true,
+                    dateFormat: "d/m/Y H:i",
+                    wrap: true,
+                    allowInput: true
+                })
+            });
+
+            const file = document.getElementById('filePic');
+            const upContainer = document.querySelector('.upload-photo');    
+
+            file.addEventListener('change', function(){
+            const file = this.files[0];            
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                upContainer.src = reader.result;             
+                };
+            };
+            })
+        
+            //view img
+            $(function() {
+            $('.upload-photo').on('click', function() {        
+                $('.imagepreview').attr('src', $(this).attr('src'));
+                $('#imagemodal').modal('show');   
+            });		
+            });
+
+        });
+
+    </script>
+</body>
+
+</html>

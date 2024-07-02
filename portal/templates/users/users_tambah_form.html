@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favico -->
+    <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <title>Brutor ADMIN - Tambah User</title>
+    <!-- vendor css -->
+    <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="../../static/lib/select2/css/select2.min.css" rel="stylesheet">
+    <link href="../../static/lib/flatpicker/flatpickr.min.css" rel="stylesheet">
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+    <link rel="stylesheet" href="../../static/css/custom.css">
+    <!-- some additional css here -->
+</head>
+
+{% autoescape false %}
+<body>
+    <div class="loader">
+        <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
+    </div>
+
+    <aside class="aside aside-fixed">
+        <div class="aside-header">
+            <a href="#" class="aside-logo img-logo"><img src="../../static/assets/img/brutor-logo-white.png" class="w-75"></a>
+            <a href="" class="aside-menu-link">
+                <i data-feather="menu"></i>
+                <i data-feather="x"></i>
+            </a>
+        </div>
+        <div class="aside-body">
+            <ul class="nav nav-aside">
+                {% for menu_item in menu_list_html %}
+                    {%if menu_item.value == 'USERS' %}
+                        <li class="nav-item nav-item-active ">
+                            <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+            </ul>
+        </div>
+    </aside>
+
+    <div class="content pd-0">
+        <div class="content-header">
+            <h5 class="mg-b-0 text-primary">
+                <a href="http://0.0.0.0:5000/users/active">Users</a> 
+                <span style="font-weight: bolder;"><i class="fas fa-caret-right"></i> Tambah User</span>
+            </h5>
+            <div class="">
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
+                            class="rounded-circle" alt=""></div>
+                    <div class="p-3 d-flex flex-column">
+                        <span class="font-weight-bold">{{ username | safe }}</span>                        
+                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
+                                    data-feather="log-out"></i><span>Logout</span></a>
+                    </div>                                            
+                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+                </div>
+            </div>
+        </div>
+
+        <div class="contents-body">
+
+            <form action="/users/add" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="redirect" value="{{ redirect }}">
+
+
+
+                <fieldset class="form-fieldset pd-x-50 field-shadow">
+                    <legend>
+                            <h1 class="font-weight-bold mg-b-0">Tambah <span class="text-success">User</span></h1>
+                    </legend>
+
+                    <div class="form-group row">
+                        <label for="nama" class="col-sm-2 col-form-label text-right">Nama Lengkap</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="nama" class="form-control" name="name">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="username" class="col-sm-2 col-form-label text-right">Username</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="username" class="form-control" name="username">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="username" class="col-sm-2 col-form-label text-right">Password</label>
+                        <div class="col-sm-4">
+                            <input type="password" id="username" class="form-control" name="password">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label text-right">Role Position</label>
+                        <div class="col-sm-4">
+                            <select id="role_position_value" class="form-control" name="role_position_value" required>
+                                <option selected disabled></option>
+                                {% for role_position_item in role_position_list %}
+                                    <option value="{{ role_position_item.value }}">{{ role_position_item.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label text-right">Status</label>
+                        <div class="col-sm-4">
+                            <select id="status_value" class="form-control" name="status_value" required>
+                                <option selected disabled></option>
+                                <option selected value="ACTIVE">Active</option>
+                                <option value="INACTIVE">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    
+
+                </fieldset>
+
+                <div class="mg-y-30 text-center">
+                        <button class="btn btn-primary pd-x-100 shadow-custom">ADD</button>
+                </div>
+            </form>
+            <footer class="text-center mg-t-auto font-weight-bold">©PT Brutor Jakarta 2020</footer>
+        </div>
+    </div>
+
+    <script src="../../static/lib/jquery/jquery.min.js"></script>
+    <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/lib/feather-icons/feather.min.js"></script>
+    <script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../../static/lib/select2/js/select2.min.js"></script>
+    <script src="../../static/lib/flatpicker/flatpickr.js"></script>
+    <script src="../../static/assets/js/dashforge.js"></script>
+    <script src="../../static/assets/js/dashforge.aside.js"></script>
+    <script src="../../static/js/pytavia-js/custom/ckeditor/ckeditor.js"></script>
+
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            loader.classList.add('hidden');
+        });
+
+        
+        $( document ).ready(function() {
+
+            const lists = [
+
+                {
+                    id: 'status_value',
+                    placeholder: '- Status -'
+                },
+                {
+                    id: 'role_position_value',
+                    placeholder: '- Role Position -'
+                }
+            ];
+
+            lists.forEach(list => {
+                $(`#${list.id}`).select2({
+                    width: '100%',
+                    placeholder: list.placeholder
+                })
+                $(`#${list.id}`).one('select2:open', function (e) {
+                    $('input.select2-search__field').prop('placeholder', 'Search');
+                });
+            });
+
+        });
+
+    </script>
+</body>
+{% endautoescape %}
+
+</html>
