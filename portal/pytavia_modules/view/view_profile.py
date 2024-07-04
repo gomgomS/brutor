@@ -28,7 +28,7 @@ from view import view_core_script
 from view import view_core_css
 from view import view_core_dialog_message
 
-class view_dashboard:
+class view_profile:
 
     mgdDB = database.get_db_conn(config.mainDB)
 
@@ -41,7 +41,7 @@ class view_dashboard:
         user_uuid   = session["user_uuid"]
         query = { "user_uuid": user_uuid}
         user = self.mgdDB.db_user.find_one(query)     
-        # ver_status = user['ver_email']          
+        # data_user = user['ver_email']          
 
         return user
        
@@ -56,10 +56,10 @@ class view_dashboard:
         core_css                = view_core_css.view_core_css().html(params)
         core_dialog_message     = view_core_dialog_message.view_core_dialog_message().html(params)
 
-        ver_status         = self._data_user()                          
+        data_user         = self._data_user()                          
 
         return render_template(
-            "dashboard/index.html",
+            "profile/profile.html",
             menu_list_html      = menu_list               ,
             core_display        = core_display            , 
             core_header         = core_header             , 
@@ -70,7 +70,7 @@ class view_dashboard:
             username            = params["username"      ],
             role_position       = params["role_position" ],
 
-            ver_status  = ver_status
+            data_user  = data_user
 
            # users_total         = users_total,
             

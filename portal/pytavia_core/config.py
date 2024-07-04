@@ -36,3 +36,11 @@ G_DATABASE_CONNECT=[
 
 JKTA_TZ = 7
 MS_24_HOURS = 86399999
+
+MAIL_SERVER ="smtp.gmail.com"
+MAIL_PORT  = 465
+MAIL_USERNAME  = "bersihinyabang@gmail.com"
+MAIL_PASSWORD  = "mxfk ezha kgjh sixk"
+MAIL_USE_TLS  = False
+MAIL_USE_SSL  = True
+

@@ -306,20 +306,26 @@ db = {
 
     "db_user"                         : {
         "fk_user_id"                : "",
+        "user_uuid"                 : "",
         "username"                  : "",
         "password"                  : "",
-        "role"                      : "STUDENT", # STUDENT | ADMIN
+        "role"                      : "STUDENT", # TUTOR | STUDENT | ADMIN
         "name"                      : "",
         "phone"                     : "",
         "email"                     : "",
+        "ver_email"                 : "FALSE",
+        'ver_rec'                   : [],
         "saldo"                     : "",
+        "rec_transaction"           : [],
         "last_login"                : "",
         "str_last_login"            : "",       
         "login_status"              : "",      # TRUE | FALSE
-        "inactive_status"           : "FALSE", # TRUE | FALSE        
+        "inactive_status"           : "FALSE", # TRUE | FALSE
         "lock_status"               : "FALSE", # TRUE | FALSE
         "lock_note"                 : "",
-        "image"                     : ""
+        "image"                     : "",
+        "register_student"          : "TRUE",   # TRUE | FALSE
+        "register_teacher"          : "FALSE",  # TRUE | FALSE
     },
 
     # CLASS REGISTER

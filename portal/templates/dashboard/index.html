@@ -116,8 +116,45 @@
 			</div>
 		</div>
 
-		<!-- BODY -->		
-				
+		<!-- BODY -->	
+		<!-- The Modal -->
+		<div class="modal fade" id="numberModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+	
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h4 class="modal-title">Please enter a 4-digit number verification code we sent to {{ver_status["email"]}}. </h4>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+	
+					<!-- Modal Body -->
+					<div class="modal-body">
+						<form id="numberForm" action="/auth/check_verification_email" method="POST">
+							<div class="form-group">
+								<label for="fourDigitNumber">4 Digit Number:</label>
+								<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+								<input type="text" name="unique_4_number" class="form-control" id="fourDigitNumber" maxlength="4" pattern="\d{4}" required>
+								<div class="invalid-feedback">
+									Please enter a 4-digit number.
+								</div>
+							</div>
+							<button type="submit" class="btn btn-primary">Submit</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		{% if ver_status["ver_email"] == "FALSE" %}		
+		<div class="card bg-danger text-white">
+			<div class="card-body">please verification your email first!! verification email already sent to <b>{{ver_status["email"]}}</b> or 
+				<span class="badge bg-light text-dark"><a href="/auth/send_verification_email">sent verification number</a></span></div>
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#numberModal">
+				input number
+			</button>
+		  </div>
+		{% endif %}
 		<div class="m-3">		
 			<div class="row mb-3">
 				<div class="col-xl-3 col-lg-6">
@@ -125,7 +162,7 @@
 						<div class="card-block bg-light card-light">
 							<div class="rotate">								
 								<i class="fa fa-user  fa-5x"></i>
-							</div>
+							</div>							
 							<div class="mt-3 ml-3">
 								<div class="row">
 									<div class="col-3">

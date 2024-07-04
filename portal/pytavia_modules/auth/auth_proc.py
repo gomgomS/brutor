@@ -4,6 +4,7 @@ import datetime
 import time
 import ast # use to convert string to dictionary 
 from   datetime import datetime
+import random
 
 from view   import view_core_menu
 
@@ -15,8 +16,10 @@ sys.path.append("pytavia_storage" )
 
 from pytavia_stdlib import idgen
 from pytavia_stdlib import utils
+from pytavia_stdlib import emailproc
 from pytavia_core   import database
 from pytavia_core   import config
+from uuid     import uuid4
 from flask import request 
 
 class auth_proc:
@@ -247,7 +250,9 @@ class auth_proc:
                     response["message_data"  ] = {
                         "fk_user_id"      : user_rec["pkey"                 ],
                         "username"        : user_rec["username"             ],
-                        "role"            : user_rec["role"                 ]
+                        "role"            : user_rec["role"                 ],
+                        "user_uuid"       : user_rec["user_uuid"            ],
+                        "email"           : user_rec["email"                ],
                     }
                     return response
 
@@ -326,7 +331,7 @@ class auth_proc:
             username        = params["username"]
             password        = params["password"]
             email           = params["email"]
-            role            = "STUDENT"
+            
             hashed_password = utils._get_passwd_hash({
                 "id"        : username,
                 "password"  : password
@@ -343,13 +348,16 @@ class auth_proc:
                 return response
             # end if                     
             
-            mdl_register_user = database.new(self.mgdDB, "db_user")
-            fk_user_id   = mdl_register_user.get()["pkey"]
+            mdl_register_user   = database.new(self.mgdDB, "db_user")            
+            fk_user_id          = mdl_register_user.get()["pkey"]
+            
+            
             mdl_register_user.put( "fk_user_id", fk_user_id )
+            mdl_register_user.put( "user_uuid", str(uuid4()) )
             mdl_register_user.put( "username", username    )
             mdl_register_user.put( "email"   , email)
-            mdl_register_user.put( "name"   , username)
-            mdl_register_user.put( "role"   , role)
+            mdl_register_user.put( "name"   , "")
+            mdl_register_user.put( "role"   , "STUDENT")
             mdl_register_user.put( "password" , hashed_password)
             mdl_register_user.insert()         
         except:
@@ -375,4 +383,53 @@ class auth_proc:
         return result_url
     #end def
 
+    def send_verification_email(self, params):
+        result_url = "/user/dashboard"
+        
+        unique_4_number             = random.randint(1000,9999)
+        params["unique_4_number"]   = str(unique_4_number)
+
+        # Get the current date
+        verification_date           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Create the new verification record
+        ver_rec_entry = {
+            "unique_4_number"       : unique_4_number,
+            "verification_date"     : verification_date
+        }
+
+        # Update the document in MongoDB
+        user_rec                    = self.mgdDB.db_user.update_one(
+            {"fk_user_id"           : params["fk_user_id"]},
+            {"$push"                : {"ver_rec": ver_rec_entry}}
+        )
+
+        html                        = emailproc.send_verification_email(params)
+
+        return result_url
+
+    def check_verification_email(self, params):
+        result_url = "/user/dashboard"
+
+        # Update the document in MongoDB
+        user_rec                    = self.mgdDB.db_user.find_one(
+            {"fk_user_id"           : params["fk_user_id"]},            
+        )
+
+        # check if input number its in a list of verification number
+        list_number_verification = []
+        for unique_4_number in user_rec['ver_rec']:              
+            list_number_verification.append(unique_4_number['unique_4_number'])
+
+        if int(params['unique_4_number']) in list_number_verification : 
+            user_rec         = self.mgdDB.db_user.update_one(
+                {"fk_user_id"         : params["fk_user_id"]}, 
+                {"$set"               : {"ver_email":"TRUE"}}
+            )        
+
+        return result_url
+
+    #end def
+
 # end class
+

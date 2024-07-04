@@ -35,6 +35,7 @@ from pytavia_stdlib     import cfs_lib
 from pytavia_stdlib     import idgen
 from pytavia_stdlib     import sanitize
 from pytavia_stdlib     import security_lib
+from pytavia_stdlib     import emailproc
 
 
 ##########################################################
@@ -66,6 +67,13 @@ from view               import view_signup
 from view               import view_user_custom
 
 from view               import view_error_page
+##########################################################
+# ADDITIONAL
+##########################################################
+# profile
+
+from view               import view_profile
+
 ##########################################################
 # LANDINGPAGE
 ##########################################################
@@ -184,6 +192,7 @@ csrf                  = CSRFProtect(app)
 #     return redirect(url_for("login_html"))
 # # end def
 
+
 def login_precheck(params):
     fk_user_id  = session.get("fk_user_id")
 
@@ -209,6 +218,46 @@ def role_precheck(params):
 #     return redirect(url_for('login_html'))
 # end def
 
+
+@app.route("/send")
+def send_ver_email():      
+    
+    html   = emailproc.send_verification_email(email)
+    return redirect(url_for("landingpage"))
+
+@app.route("/auth/send_verification_email")
+def auth_send_verification_email():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["email"]           = session.get("email")
+    params["fk_user_id"     ] = session.get("fk_user_id")
+    params["username"       ] = session.get("username")
+    params["role_position"  ] = session.get("role_position")
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    landing_url = auth_proc.auth_proc(app).send_verification_email( params )
+    return redirect( landing_url )
+   
+    # end if
+
+@app.route("/auth/check_verification_email", methods=["POST"])
+def auth_check_verification_email():
+    redirect_return = login_precheck({})
+    params     = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id")
+    landing_url   = auth_proc.auth_proc(app).check_verification_email( params )   
+       
+    return redirect( landing_url )   
+    # end if
+
 @app.route("/")
 def landingpage():
     fk_user_id  = session.get("fk_user_id")
@@ -222,7 +271,7 @@ def landingpage():
     html   = view_landing_page.view_landing_page().html( params )
     return html
 
-@app.route("/user/signup")
+@app.route("/signup")
 def signup_html():
     fk_user_id  = session.get("fk_user_id")
     params = request.form.to_dict()
@@ -241,12 +290,12 @@ def auth_register():
     token      = session.pop('_csrf_token', None)
     params     = sanitize.clean_html_dic(request.form.to_dict())
     response   = auth_proc.auth_proc(app).register( params )   
-   
+    
     return redirect(url_for("login_html"))
     # end if
 # end def
 
-@app.route("/user/login")
+@app.route("/login")
 def login_html():
     fk_user_id  = session.get("fk_user_id")
     params = request.form.to_dict()
@@ -275,9 +324,11 @@ def auth_login():
         flash(m_desc,"desc")
     #end if
     if m_action == "LOGIN_SUCCESS":
+        session["user_uuid"     ] = m_data["user_uuid"     ]
         session["fk_user_id"    ] = m_data["fk_user_id"     ]
         session["username"      ] = m_data["username"       ]
         session["role"          ] = m_data["role"           ]
+        session["email"         ] = m_data["email"           ]
         security_login.security_login(app).add_cookie({})
 
         landing_url = auth_proc.auth_proc(app).get_landing_url( params )
@@ -315,7 +366,31 @@ def auth_logout():
 # end def
 
 
+#
+# Profile
+#
+@app.route("/profile")
+def profile_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id")
+    params["username"       ] = session.get("username")
+    params["role_position"  ] = session.get("role_position")
 
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : "USER_DASHBOARD"
+    })
+    
+    html      = view_profile.view_profile(app).html( params )
+    html_resp = make_response( html )
+    html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return html_resp
+# end def
 #
 # Dashboard
 #
@@ -421,7 +496,7 @@ def proc_user_edit():
     if m_action == "EDIT_USER_SUCCESS":
         return redirect("/user/list")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -451,7 +526,7 @@ def proc_user_activated():
     if m_action == "ACTIVE_USER_SUCCESS":
         return redirect("/user/list")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -481,7 +556,7 @@ def proc_user_remove():
     if m_action == "REMOVE_USER_SUCCESS":
         return redirect("/user/list")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -585,7 +660,7 @@ def proc_config_update_all():
     if m_action == "ADD_CONFIG_ALL_SUCCESS":
         return redirect("/user/config")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -615,7 +690,7 @@ def proc_config_edit_all():
     if m_action == "EDIT_CONFIG_ALL_SUCCESS":
         return redirect("/user/config")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -672,7 +747,7 @@ def config_user_setting_security():
     if m_action == "UPDATE_CONFIG_SET_SECURITY_SUCCESS":
         return redirect("/user/setting")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -703,7 +778,7 @@ def proc_config_setting_menu():
     if m_action == "ADD_CONFIG_MENU_SETTING_SUCCESS":
         return redirect("/user/config/setting-menu/add?id=CONF_SETTING_MENU")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -733,7 +808,7 @@ def config_user_setting_timeout():
     if m_action == "UPDATE_CONFIG_SET_TIMEOUT_SUCCESS":
         return redirect("/user/setting")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -792,7 +867,7 @@ def proc_config_update_general_config():
     if m_action == "ADD_CONFIG_GENERAL_SUCCESS":
         return redirect("/user/config/general/add?id=GENERAL_CONFIGURATION")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -822,7 +897,7 @@ def proc_config_remove_general_config():
     if m_action == "REMOVE_CONFIG_DONGLE_FUNCTION_SUCCESS":
         return redirect("/user/config/general/add?id=GENERAL_CONFIGURATION")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -879,7 +954,7 @@ def proc_config_update_web_menu_all():
     if m_action == "ADD_MENU_CONFIG_ITEM_SUCCESS":
         return redirect("/user/config/webapp-menu-all/add?id=WEBAPP_MENU_ALL_ITEMS")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -909,7 +984,7 @@ def proc_config_del_web_menu_all():
     if m_action == "REMOVE_MENU_CONFIG_ITEM_SUCCESS":
         return redirect("/user/config/webapp-menu-all/add?id=WEBAPP_MENU_ALL_ITEMS")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -968,7 +1043,7 @@ def proc_config_update_role():
     if m_action == "ADD_CONFIG_ROLE_SUCCESS":
         return redirect("/user/config/role/add?id=USER_ROLE")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -998,7 +1073,7 @@ def proc_config_remove_role():
     if m_action == "REMOVE_CONFIG_ROLE_SUCCESS":
         return redirect("/user/config/role/add?id=USER_ROLE")
     else:
-        return redirect("/user/login")
+        return redirect("/login")
     # end if
 # end def
 
@@ -1707,7 +1782,7 @@ def view_users_active_html():
             "message_action": response.get("status"),
             "message_desc": response.get("desc"),
             "message_data": response_data["error_message"],
-            "redirect": "/user/login"
+            "redirect": "/login"
         }
         return redirect(url_for("view_error_page_html", data=err_message))
 # end def
