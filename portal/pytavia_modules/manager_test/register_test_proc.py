@@ -57,7 +57,8 @@ class register_test_proc:
 
             test_rec  = database.new(self.mgdDB, "db_test")
             test_rec.put("test_id",                   test_rec.get()["pkey"          ])
-            test_rec.put("activation_class_id",       params["activation_class_id" ]             ) #pkey from db_user
+            test_rec.put("activation_class_id",       params["activation_class_id" ]  ) #pkey from db_user
+            test_rec.put("fk_user_id",                 params["fk_user_id" ]               ) #pkey from db_user
             test_rec.put("name_test",                 params["name_test"             ])
             test_rec.put("desc_test",			      params["desc_test"             ])
             test_rec.put("desc_test_html",		      desc_test_html                  )

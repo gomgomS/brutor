@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favico -->
+    <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <title>Brutor ADMIN - Pengelolaan Konten</title>
+    <!-- vendor css -->
+    <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="../../static/lib/select2/css/select2.min.css" rel="stylesheet">
+    <link href="../../static/lib/flatpicker/flatpickr.min.css" rel="stylesheet">
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+    <link rel="stylesheet" href="../../static/css/custom.css">
+
+    <style>
+        .card-custom {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.2s;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header-custom {
+            background-color: #f8f9fa;
+            border-bottom: none;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .btn-custom {
+            border-radius: 50px;
+        }
+
+        .text-muted-custom {
+            color: #6c757d;
+        }
+
+        .btn-info-custom {
+            background-color: #17a2b8;
+            border: none;
+        }
+
+        .btn-primary-custom {
+            background-color: #007bff;
+            border: none;
+        }
+    </style>
+    <!-- some additional css here -->
+</head>
+
+{% autoescape false %}
+
+<body>
+    <div class="loader">
+        <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
+    </div>
+    <aside class="aside aside-fixed">
+        <div class="aside-header">
+            <a href="#" class="aside-logo img-logo"><img src="../../static/assets/img/brutor-logo-white.png"
+                    class="w-75"></a>
+            <a href="" class="aside-menu-link">
+                <i data-feather="menu"></i>
+                <i data-feather="x"></i>
+            </a>
+        </div>
+        <div class="aside-body">
+            <ul class="nav nav-aside">
+                {% for menu_item in menu_list_html %}
+                {% if menu_item.value == 'MANAGER_CLASS' %}
+                <li class="nav-item nav-item-active ">
+                    <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i
+                            data-feather="{{ menu_item.icon_class }}"></i>
+                        <span>{{menu_item.menu_name.title()}}</span></a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+                        <span>{{menu_item.menu_name.title()}}</span></a>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+
+    <div class="content pd-0">
+        <div class="content-header">
+            <h5 class="mg-b-0 text-primary"><a href="/starter?menu_value=MANAGER_CLASS">Manager Class</a> <span
+                    style="font-weight: bolder;"><i class="fas fa-caret-right"></i> Register Class List</span></h5>
+            <div class="">
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
+                            class="rounded-circle" alt=""></div>
+                    <div class="p-3 d-flex flex-column">
+                        <span class="font-weight-bold">{{ username | safe }}</span>
+                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
+                                data-feather="log-out"></i><span>Logout</span></a>
+                    </div>
+                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="contents-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} success-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <div class="mg-b-100">
+                <div class="mg-t-60">
+                    <div class="">
+                    </div>
+
+                    <div class="container mt-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="card card-custom shadow-sm">
+                                    <div class="card-header card-header-custom text-center">
+                                        <h4>Top-up Saldo</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Nav tabs -->
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link active" id="bca-tab" data-toggle="tab" href="#bca"
+                                                    role="tab" aria-controls="bca" aria-selected="true">Cara Topup via
+                                                    BCA</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" id="gopay-tab" data-toggle="tab" href="#gopay"
+                                                    role="tab" aria-controls="gopay" aria-selected="false">Cara Topup
+                                                    via GoPay</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" id="shopeepay-tab" data-toggle="tab"
+                                                    href="#shopeepay" role="tab" aria-controls="shopeepay"
+                                                    aria-selected="false">Cara Topup via ShopeePay</a>
+                                            </li>
+                                        </ul>
+
+                                        <!-- Tab panes -->
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="bca" role="tabpanel"
+                                                aria-labelledby="bca-tab">
+                                                <div class="mt-3">
+                                                    <h5>Instruksi Topup via BCA:</h5>
+                                                    <ol>
+                                                        <li>Masuk ke aplikasi BCA Mobile.</li>
+                                                        <li>Pilih menu Transfer.</li>
+                                                        <li>Masukkan nomor rekening tujuan dan jumlah yang akan diisi.
+                                                        </li>
+                                                        <li>Upload bukti transfer pada form di bawah ini.</li>
+                                                    </ol>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="gopay" role="tabpanel"
+                                                aria-labelledby="gopay-tab">
+                                                <div class="mt-3">
+                                                    <h5>Instruksi Topup via GoPay:</h5>
+                                                    <ol>
+                                                        <li>Masuk ke aplikasi GoJek.</li>
+                                                        <li>Pilih menu GoPay dan klik Isi Saldo.</li>
+                                                        <li>Pilih metode pembayaran dan masukkan jumlah yang akan diisi.
+                                                        </li>
+                                                        <li>Upload bukti transfer pada form di bawah ini.</li>
+                                                    </ol>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="shopeepay" role="tabpanel"
+                                                aria-labelledby="shopeepay-tab">
+                                                <div class="mt-3">
+                                                    <h5>Instruksi Topup via ShopeePay:</h5>
+                                                    <ol>
+                                                        <li>Masuk ke aplikasi Shopee.</li>
+                                                        <li>Pilih menu ShopeePay dan klik Isi Saldo.</li>
+                                                        <li>Pilih metode pembayaran dan masukkan jumlah yang akan diisi.
+                                                        </li>
+                                                        <li>Upload bukti transfer pada form di bawah ini.</li>
+                                                    </ol>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Form Section -->
+                                        <div id="formSection" class="mt-4">
+                                            <form id="topupForm" action="/topup/submit" method="POST"
+                                                enctype="multipart/form-data">
+                                                <div class="form-group">
+                                                    <label for="amount">Jumlah Saldo</label>
+                                                    <input type="hidden" name="_csrf_token"
+                                                        value="{{ csrf_token() }}">
+                                                    <input type="number" class="form-control" id="amount"
+                                                        name="amount" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="payment_method">Pilih Metode Pembayaran</label>
+                                                    <select class="form-control" id="payment_method"
+                                                        name="payment_method" required>
+                                                        <option value="">Pilih Metode</option>
+                                                        <option value="BCA">BCA</option>
+                                                        <option value="GoPay">GoPay</option>
+                                                        <option value="ShopeePay">ShopeePay</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="bukti">Bukti Transfer</label>
+                                                    <input type="file" class="form-control-file" id="bukti"
+                                                        name="bukti" required>
+                                                </div>
+                                                <button type="button" class="btn btn-custom btn-block"
+                                                    id="submitBtn">Submit</button>
+                                            </form>
+                                        </div>
+                                        <!-- Card displaying request information -->
+                                        {% if latest_topup_request_resp %}
+                                        <div class="card mt-5 shadow-sm">
+                                            {% if latest_topup_request_resp.request_status == 'APPROVE'  %}
+                                            <div class="card-header bg-success text-white">
+                                                <h5 class="card-title mb-0">Latest Topup request Information</h5>
+                                            </div>
+                                            {% else %}
+                                            <div class="card-header bg-primary text-white">
+                                                <h5 class="card-title mb-0">Latest Topup request Information</h5>
+                                            </div>
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <img src="{{ latest_topup_request_resp.source }}" class="img-fluid rounded" alt="request Image">
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <ul class="list-group list-group-flush">
+                                                            <li class="list-group-item">
+                                                                <strong>Status:</strong> {{ latest_topup_request_resp.request_status }}
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <strong>Metode Pembayaran:</strong> {{ latest_topup_request_resp.payment_method }}
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <strong>Dibuat pada:</strong> {{ latest_topup_request_resp.created_at }}
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <strong>ID Referensi:</strong> {{ latest_topup_request_resp.reference_id }}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer text-muted">
+                                                {% if latest_topup_request_resp.request_status == 'PENDING' %}
+                                                Waiting for response by admin right now.
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+
+                                        <!-- Status Message Section -->
+                                        <div id="statusSection" class="mt-4" style="display: none;">
+                                            <div class="card card-custom">
+                                                <div class="card-body text-center">
+                                                    <h5 class="text-muted-custom">Waiting for response by admin.</h5>
+                                                    <p class="text-muted-custom">Right now your status is pending.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Modal Konfirmasi -->
+                    <div class="modal fade" id="konfirmasiModal" tabindex="-1" role="dialog"
+                        aria-labelledby="konfirmasiModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="konfirmasiModalLabel">Konfirmasi Transfer</h5>
+                                    <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Apakah saldo sejumlah <span id="saldoKonfirmasi"></span> sudah ditransfer sesuai
+                                    dengan informasi yang dimasukkan?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary"
+                                        id="confirmTransferBtn">Confirm Transfer</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="text-center mg-t-auto font-weight-bold">©Brutor a,k,a BRUTAR TUTOR</footer>
+        </div>
+    </div>
+
+    <script src="../../static/lib/jquery/jquery.min.js"></script>
+    <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            loader.classList.add('hidden');
+        });
+
+        $(document).ready(function () {
+            // Function to toggle form visibility based on request status
+            function toggleFormVisibility(showForm) {
+                if (showForm) {
+                    $('#formSection').show();
+                    $('#statusSection').hide();
+                } else {
+                    $('#formSection').hide();
+                    $('#statusSection').show();
+                }
+            }
+
+            $('#submitBtn').click(function () {
+                var amount = $('#amount').val();
+                $('#saldoKonfirmasi').text(amount); // Mengisi nilai saldo ke dalam modal
+                $('#konfirmasiModal').modal('show');
+            });
+
+            // Aksi saat tombol "Confirm Transfer" ditekan
+            $('#confirmTransferBtn').click(function () {
+                $('#topupForm').submit(); // Submit form jika konfirmasi transfer
+            });
+
+            // Initial check of latest top-up status
+            var requestStatus = "{{ latest_topup_request_resp.request_status }}";
+            if (requestStatus === "PENDING") {
+                toggleFormVisibility(false); // Hide form and show status message
+            } else {
+                toggleFormVisibility(true); // Show form
+            }
+        });
+    </script>
+
+</body>
+{% endautoescape %}
+
+</html>

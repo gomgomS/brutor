@@ -58,6 +58,7 @@ class register_meeting_proc:
             meeting_rec   = database.new(self.mgdDB, "db_meeting")
             meeting_rec.put("meeting_id",                 meeting_rec.get()["pkey"          ])
             meeting_rec.put("activation_class_id",        params["activation_class_id"      ]) #pkey from db_user
+            meeting_rec.put("fk_user_id",                 params["fk_user_id" ]               ) #pkey from db_user
             meeting_rec.put("name_meeting",               params["name_meeting"             ])
             meeting_rec.put("desc_meeting",			      params["desc_meeting"             ])
             meeting_rec.put("desc_meeting_html",		  desc_meeting_html                 )

@@ -38,6 +38,14 @@ class view_register_class:
 
     
 
+    def _find_creator_class(self,fk_user_id):                                    
+        user = self.mgdDB.db_user.find_one({
+            "fk_user_id" : fk_user_id
+        })
+        
+        response =  user
+        return response
+
     def _find_register_class(self, params):
         #PAGINATION
         page            = params["page"         ]
@@ -122,10 +130,9 @@ class view_register_class:
         # END OF PAGINATION
 
         for class_item in class_view:
+            creator_class                       = self._find_creator_class(class_item['creator_id'])
+            class_item['creator_name']          = creator_class['name']
             class_list.append(class_item)
-
-        print(class_list)
-        print("back up-----------------xx")
 
         response = {
             "class_list"   : class_list,

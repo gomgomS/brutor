@@ -122,7 +122,7 @@ class view_register_test:
         # END OF PAGINATION
 
         for test_item in test_view:                     
-            class_resp        = self._find_activation_class( test_item["activation_class_id"] )            
+            class_resp                          = self._find_activation_class( test_item["activation_class_id"] )            
             test_item["active_class_name"]      = class_resp["active_class_name"     ] 
             test_list.append(test_item)
 

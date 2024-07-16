@@ -39,9 +39,6 @@ class view_core_menu:
         for permission_item in permission_view:
             permitted_menu_list.append(permission_item["menu_value"])
         
-        print(permitted_menu_list)
-        print(role)
-        print("looking up -----------")
 
         # FIND THE MENU THAT IS ALLOWED FOR THE ROLE POSITION
         menu_list = []
@@ -62,80 +59,7 @@ class view_core_menu:
     # end def
     
 
-    def old_menu_display(self, params):
-        # fk_user_id  = params["fk_user_id"]
-        fk_user_id    = session.get("fk_user_id")
-        menu_list     = []
-        user_role_rec = self.mgdDB.db_user.find_one({
-            "pkey" : fk_user_id
-        })
-        """
-            If the user role is not found then check the super user
-            if it is not then we just exit this 
-        """
-        
-        if user_role_rec == None:
-            superuser_role_rec = self.mgdDB.db_super_user.find_one({
-                "pkey" : fk_user_id
-            })
-            if superuser_role_rec != None:
-                menu_list = self.mgdDB.db_config_menu_webapp_item_all.find({"status":"ENABLE"}, { "_id" : 0 }).sort(
-                     "order",pymongo.ASCENDING
-                )
-                #menu_list_2 = self.mgdDB.db_config_webapp_route_privileges.find({ "status" : "ENABLE" , "route_type" : "MENU" }, {"_id" : 0}).sort(
-                #     "order",pymongo.ASCENDING
-                #)
-                final_menu = []
-                for each_menu in menu_list :
-                    final_menu.append( each_menu )
-                
-                #for each_menu2 in menu_list_2 :
-                #    final_menu.append( each_menu2 )
-               
-                
-            # end if
-            response = { "menu_list" : final_menu }
-            return response
-        # end if
-        """
-            process this if the user role is found in db_user_role table and 
-            the user has a specific role
-        """
-        fk_role_id          = user_role_rec["role"]
-        role_privilege_view = self.mgdDB.db_config_webapp_role_privilege.find({
-            "fk_role_id" : fk_role_id
-        })
-        check_duplicate = {}
-        for role_privilege_rec in role_privilege_view:
-            fk_privilege_id    = role_privilege_rec["fk_privilege_id"]
-            menu_privilege_rec = self.mgdDB.db_config_webapp_menu_privilege.find_one({
-                "fk_privilege_id" : fk_privilege_id
-            })
-            if menu_privilege_rec != None:
-                fk_menu_id    = menu_privilege_rec["fk_menu_id"]
-                menu_item_rec = self.mgdDB.db_config_menu_webapp_item_all.find_one({
-                    "value"   : fk_menu_id,
-                    "status"  : "ENABLE"
-                })
-                if menu_item_rec != None :
-                    if not fk_menu_id in check_duplicate:
-                        menu_list.append( menu_item_rec )
-                        check_duplicate[ fk_menu_id ] = fk_menu_id
-                    # end if
-            # end if
-        # end for
-        
-        new_list = sorted(menu_list, key=lambda k: k['order']) 
-
-        #print( "core menu : new list sorted ---------------------------------------------" )
-        #print( new_list )
-        #print( "---------------------------------------------" )
-
-        response = { "menu_list" : new_list }
-        #response = { "menu_list" : menu_list }
-        return response
-    # end def
-
+    
     # get from route_privilege
     def menu_display_2(self, params):
         # fk_user_id  = params["fk_user_id"]
@@ -157,8 +81,7 @@ class view_core_menu:
             )
         # end if
         response = { "menu_list" : menu_list }
-        print(response)
-        print("---------------------")
+
         return response
 
         # end if

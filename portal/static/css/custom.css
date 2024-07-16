@@ -138,39 +138,67 @@ table.dataTable:first-child {
 
 /* Starter */
 .starter {
-  width: 150px;
-  height: 150px;
-  border: 1px solid #10b759;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  width: 200px;
+  height: 100px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #06121a, #1b3a4b);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
   padding: 16px;
-  line-height: 18px;
-
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   font-weight: 700;
+  color: white;
+  text-align: center;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.starter::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.starter:hover::before {
+  opacity: 0.1;
 }
 
 .starter:hover {
-  background-color: #10b75930;
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .starter i {
-  font-size: 39px;
-  color: #4499d6;
+  font-size: 36px;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.3s ease;
 }
+
+.starter:hover i {
+  color: white;
+}
+
 .starter span {
-  font-size: 20px;  
-  text-align: center;
-  margin-top: 15px;
-  
+  font-size: 18px;
+  margin-top: 10px;
+  transition: color 0.3s ease;
 }
+
+.starter:hover span {
+  color: white;
+}
+
 /* Starter End */
+
 
 .input-group.reset {
   width: auto;
@@ -306,10 +334,12 @@ table.dataTable:first-child {
 
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-body{ 
-  font-family: "Poppins" , sans-serif;  
-  background: linear-gradient(90deg, rgba(254,255,255,1) 0%, rgba(248,249,254,1) 100%);
+body {
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(90deg, rgba(254, 255, 255, 1) 0%, rgb(255, 255, 255) 100%);
+
 }
 
 /* table new design */
@@ -413,64 +443,88 @@ ul li.page-item .page-link{
 /* end pagniation */
 
 /* new navigation design */
-  /* side bar */
-  aside .aside-header{
-    /* background-color:#0168fa;   */
-    /* background-color: #0067A5; */
-    background-color: black;
-    border-top-right-radius: 25px;      
-  }
-  svg.feather.feather-menu{
-    color: white;
-  }
-  .aside-body{
-    /* background-color: #0067A5;     */
-    background-color: #06121a;    
-    border-bottom-right-radius: 25px;
-    border: none;
-  }
-  .nav-item{
-    position: relative;
-    font-weight: bolder;
-    color: #fff;
-  }
-  .nav-aside .nav-link {
-    color: #fff;
-  }
-  
-  .nav-aside svg {
-    color: #fff;
-  }
-  .aside-body li:hover{
-    background: #FFF;
-  }
-  .aside-body li{    
-    border-radius: 12px;
-  }
-  .aside-body li a{
-    margin-left: 10px;            
-    margin-right: 10px;
-  } 
+/* Aside Header */
+.aside-header {
+  background-color: #06121a;
+  border-top-right-radius: 25px;
+  padding: 16px;
+  transition: background-color 0.3s ease;
+}
 
-  /* if aside nav active */
-  .nav-item-active{
-    position: relative;
-    font-weight: bolder;
-    background: #feffff;    
-    padding-right: 150px;            
-  }
-  .nav-aside .nav-link-active {
-    color: #020a0e;
-  }
+svg.feather.feather-menu {
+  color: white;
+  transition: color 0.3s ease;
+}
 
-  .nav-item-active svg {
-    color: #06121a;
-  }
-  /* end aside nav */
+/* Aside Body */
+.aside-body {
+  background-color: #0d1e28;
+  border-bottom-right-radius: 25px;
+  padding: 16px;
+  transition: background-color 0.3s ease;
+}
 
-/* end nav new design */
-  
-.text-truncate{
+/* Nav Item */
+.nav-item {
+  position: relative;
+  font-weight: bolder;
+  color: #fff;
+  margin: 8px 0;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+/* Nav Link */
+.nav-aside .nav-link {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-aside .nav-link svg {
+  color: #fff;
+  margin-right: 8px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.aside-body li:hover {
+  background: #ffffff30; /* Add transparency for subtle effect */
+  transform: translateX(5px); /* Slide effect on hover */
+}
+
+.aside-body li {
+  border-radius: 12px;
+  transition: transform 0.3s ease;
+}
+
+.aside-body li a {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+/* Active Nav Item */
+.nav-item-active {
+  position: relative;
+  font-weight: bolder;
+  background: #feffff;
+  padding-right: 150px;
+  border-radius: 12px;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.nav-aside .nav-link-active {
+  color: #06121a;
+  transform: translateX(5px); /* Slide effect for active item */
+}
+
+.nav-item-active svg {
+  color: #06121a;
+}
+
+/* Text Truncate */
+.text-truncate {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -44,7 +44,8 @@ class activation_class_proc:
             
             class_rec  = database.new(self.mgdDB, "db_activation_class")
             class_rec.put("activation_class_id",        class_rec.get()["pkey"             ])
-            class_rec.put("active_class_name",          params["active_class_name"                  ]) 
+            class_rec.put("fk_user_id",                 params["fk_user_id" ]               ) #pkey from db_user
+            class_rec.put("active_class_name",          params["active_class_name"         ]) 
             class_rec.put("class_id",                   params["class_id"                  ]) 
             class_rec.put("activate_timestamp",         activate_timestamp                  )            
             class_rec.put("str_activate_timestamp",      params["activate_timestamp"         ])            

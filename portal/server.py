@@ -73,6 +73,11 @@ from view               import view_error_page
 # profile
 
 from view               import view_profile
+from view               import view_apply_for_tutor
+
+# _pr ngak bisa dibaca
+from _profile          import profile_proc
+
 
 ##########################################################
 # LANDINGPAGE
@@ -124,6 +129,10 @@ from view               import view_activation_class_add
 
 from manager_class      import activation_class_proc
 
+from view               import view_public_class
+
+from manager_class      import public_class_proc
+
 ##########################################################
 # MAGISTER TEST
 ##########################################################
@@ -143,6 +152,35 @@ from view               import view_register_meeting
 from view               import view_register_meeting_add
 
 from manager_meeting       import register_meeting_proc
+
+##########################################################
+# MAGISTER USERS
+##########################################################
+# TUTOR APPROVAL
+
+from view               import view_tutor_approval
+from view               import view_tutor_approval_add
+
+from manager_users      import tutor_approval_proc
+
+
+##########################################################
+# MAGISTER PAYMENT
+##########################################################
+# PAYMENT CONFIRMATION
+
+from view               import view_payment_confirmation
+
+from manager_payment   import payment_confirmation_proc
+
+##########################################################
+# PAYMENT
+##########################################################
+# TOPUP
+
+from view               import view_topup
+
+from payment            import topup_proc
 
 ##########################################################
 # CONFIG
@@ -204,8 +242,8 @@ def login_precheck(params):
 
 def role_precheck(params):
     role  = session.get("role")
-
-    if role != 'ADMIN':     
+  
+    if role not in params['role_with_access']:     
         flash("You do not have the authority to access this page.", "danger")   
         return redirect(url_for("dashboard_html"))
 
@@ -365,7 +403,6 @@ def auth_logout():
     # end if
 # end def
 
-
 #
 # Profile
 #
@@ -391,6 +428,100 @@ def profile_html():
     html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     return html_resp
 # end def
+
+@app.route("/profile/update", methods=["POST"])
+def profile_update_cv():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["old_email"]           = session.get("email")
+    params["old_username"   ] = session.get("username")
+    params["fk_user_id"     ] = session.get("fk_user_id")
+    params["role_position"  ] = session.get("role_position")
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    landing_url = profile_proc.profile_proc(app).update_cv( params )
+    return redirect( landing_url )
+   
+    # end if
+
+@app.route("/profile/send_cv", methods=["POST"])
+def profile_send_cv():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["email"]           = session.get("email")
+    params["fk_user_id"     ] = session.get("fk_user_id")
+    params["username"       ] = session.get("username")
+    params["role_position"  ] = session.get("role_position")
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    landing_url = profile_proc.profile_proc(app).send_cv( params )
+    return redirect( landing_url )
+   
+    # end if
+
+@app.route("/profile/change_portal/tutor")
+def profile_change_portal_tutor():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["email"]           = session.get("email")
+    params["fk_user_id"     ] = session.get("fk_user_id")
+    params["username"       ] = session.get("username")
+    params["role_position"  ] = session.get("role_position")
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    landing_url = profile_proc.profile_proc(app).change_portal_tutor( params )
+
+    session["role"          ] = 'TUTOR'
+    return redirect( landing_url )
+   
+    # end if
+
+@app.route("/apply_for_tutor")
+def apply_for_tutor_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id")
+    params["username"       ] = session.get("username")
+    params["role_position"  ] = session.get("role_position")
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : "USER_DASHBOARD"
+    })
+    
+    html      = view_apply_for_tutor.view_apply_for_tutor(app).html( params )
+    html_resp = make_response( html )
+    html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return html_resp
+# end def
 #
 # Dashboard
 #
@@ -404,7 +535,7 @@ def dashboard_html():
     params["fk_user_id"     ] = session.get("fk_user_id")
     params["username"       ] = session.get("username")
     params["role_position"  ] = session.get("role_position")
-
+   
     logging_tm           = int(time.time() * 1000)
     browser_resp = browser_security.browser_security(app).check_route({
         "fk_user_id" : params["fk_user_id"],
@@ -1705,9 +1836,9 @@ def view_starter_html():
         return redirect_return
     # end if
 
-    params                           = sanitize.clean_html_dic(request.form.to_dict())
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
-    params["role_position"  ] = session.get("role_position"     )
+    params["role_position"  ] = session.get("role"     )
     params["username"       ] = session.get("username"          )
     params["menu_value"     ] = request.args.get('menu_value'     )
 
@@ -1719,6 +1850,14 @@ def view_starter_html():
 
     response = view_starter.view_starter(app).html( params )
     response_data  = response.get("data") 
+
+
+    # check permission access user    
+    role_have_access = response_data["permission_role_list"]
+
+    dashboard_return = role_precheck({"role_with_access":role_have_access})
+    if dashboard_return:
+        return dashboard_return
 
     if "SUCCESS" in response.get("status"):
         html        = response_data["html"]
@@ -1745,7 +1884,7 @@ def view_users_active_html():
         return redirect_return
     # end if
 
-    dashboard_return = role_precheck({})
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
     if dashboard_return:
         return dashboard_return
 
@@ -2199,9 +2338,11 @@ def proc_register_class_add():
     #tandai
     files                 = request.files
     params                = sanitize.clean_html_dic(request.form.to_dict())
+
+    classId               = sanitize.clean_html_dic(request.form.to_dict(flat=False)) # get form data with list values    
+    params['classId']     = classId.get('classId', [])
     params["fk_user_id" ] = session.get("fk_user_id")
-    params["files"      ] = files
-    app.logger.debug(files)
+
     browser_resp = browser_security.browser_security(app).check_route({
         "fk_user_id"  : params["fk_user_id"],
         "route_name"  : "PROC_register_class_ADD"
@@ -2357,6 +2498,79 @@ def proc_activation_class_add():
         }
         return redirect(url_for("view_error_page_html" , data=err_message ))
 # end def
+
+##########################################################
+# MANAGER CLASS - Public Class
+##########################################################
+@app.route("/public_class")
+def view_public_class_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["order_by"       ] = request.args.get('order_by'     )
+    params["keyword"        ] = request.args.get('keyword'      )
+    params["page"           ] = request.args.get('page'         )
+    params["entry"          ] = request.args.get('entry'        )
+    params["sort_by"        ] = request.args.get('sort_by'      )
+
+    params["start_date"     ] = request.args.get('start_date'   )
+    params["end_date"       ] = request.args.get('end_date'     )
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_public_class.view_public_class(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/pengelolaan_konten/proses"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/buy_public_class/<class_id>")
+def buy_public_class_(class_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+
+
+    # end if
+
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"   ] = session.get("fk_user_id")
+    params["class_id"   ] = class_id
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    # landing_url = tutor_approval_proc.tutor_approval_proc(app).approval_tutor( params )
+    landing_url = public_class_proc.public_class_proc(app).buy_public_class( params )
+    return redirect( landing_url )
+
+
 
 ##########################################################
 # MANAGER TEST - Register Test
@@ -2694,3 +2908,253 @@ def proc_level_class_add():
         }
         return redirect(url_for("view_error_page_html", data=err_message))
 # end def
+
+##########################################################
+# MANAGER USER - tutor approval
+##########################################################
+@app.route("/tutor_approval")
+def view_tutor_approval_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
+
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["user_uuid"      ] = session.get("user_uuid"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["order_by"       ] = request.args.get('order_by'     )
+    params["keyword"        ] = request.args.get('keyword'      )
+    params["page"           ] = request.args.get('page'         )
+    params["entry"          ] = request.args.get('entry'        )
+    params["sort_by"        ] = request.args.get('sort_by'      )
+
+    params["start_date"     ] = request.args.get('start_date'   )
+    params["end_date"       ] = request.args.get('end_date'     )
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_meeting_PROSES"
+    })
+
+    response = view_tutor_approval.view_tutor_approval(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/tutor_approval"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/setMeeting", methods=["POST"])
+def set_meeting_approval():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
+
+    # end if
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id")
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    landing_url = tutor_approval_proc.tutor_approval_proc(app).set_meeting( params )
+    return redirect( landing_url )
+
+@app.route("/approve_tutor/<uuid>")
+def approval_tutor(uuid):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
+
+    # end if
+
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"   ] = session.get("fk_user_id")
+    params["user_uuid"   ] = uuid
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    landing_url = tutor_approval_proc.tutor_approval_proc(app).approval_tutor( params )
+    return redirect( landing_url )
+
+##########################################################
+# MANAGER PAYMENT - Payment Confirmation
+##########################################################
+@app.route("/payment_confirmation")
+def view_payment_confirmation_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                           = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["order_by"       ] = request.args.get('order_by'     )
+    params["keyword"        ] = request.args.get('keyword'      )
+    params["page"           ] = request.args.get('page'         )
+    params["entry"          ] = request.args.get('entry'        )
+    params["sort_by"        ] = request.args.get('sort_by'      )
+
+    params["start_date"     ] = request.args.get('start_date'   )
+    params["end_date"       ] = request.args.get('end_date'     )
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_payment_confirmation.view_payment_confirmation(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/payment_confirmation"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/approve_topup/<topup_request_id>")
+def approval_topup(topup_request_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
+
+    # end if
+
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"   ] = session.get("fk_user_id")
+    params["topup_request_id"  ] = topup_request_id
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    landing_url = payment_confirmation_proc.payment_confirmation_proc(app).topup( params )
+    return redirect( landing_url )
+
+
+
+##########################################################
+# PAYMENT - Topup
+##########################################################
+@app.route("/topup")
+def view_topup_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["order_by"       ] = request.args.get('order_by'     )
+    params["keyword"        ] = request.args.get('keyword'      )
+    params["page"           ] = request.args.get('page'         )
+    params["entry"          ] = request.args.get('entry'        )
+    params["sort_by"        ] = request.args.get('sort_by'      )
+
+    params["start_date"     ] = request.args.get('start_date'   )
+    params["end_date"       ] = request.args.get('end_date'     )
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_topup.view_topup(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/pengelolaan_konten/proses"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/topup/submit", methods=["POST"])
+def topup():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["email"]           = session.get("email")
+    params["fk_user_id"     ] = session.get("fk_user_id")
+    params["username"       ] = session.get("username")
+    params["role_position"  ] = session.get("role_position")
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    landing_url = topup_proc.topup_proc(app).topup_submit( params )
+
+    flash("Your payment of "+params['amount']+" has been successfully processed. Please wait for confirmation.", "success")   
+    return redirect( landing_url )
+   
+    # end if
+

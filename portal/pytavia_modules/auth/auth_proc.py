@@ -404,6 +404,7 @@ class auth_proc:
             {"$push"                : {"ver_rec": ver_rec_entry}}
         )
 
+        #for send email
         html                        = emailproc.send_verification_email(params)
 
         return result_url

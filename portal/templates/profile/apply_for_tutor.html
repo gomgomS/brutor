@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Favico -->
+	<link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+	<link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+	<title>Brutor ADMIN - Laporan Online</title>
+	<!-- vendor css -->
+	<link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+	<link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+	<link href="../../static/lib/datatables.net-dt/css/jquery.dataTables.min.css" rel="stylesheet">
+	<!-- DashForge CSS -->
+	<link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+	<link rel="stylesheet" href="../../static/css/custom.css">
+
+	<style>
+		/*
+ * Off Canvas wider at sm breakpoint ------------------THIS NEW DELETE THIS COMMENT AFTER YOU BACK
+ * --------------------------------------------------
+ */
+		.card {
+			overflow: hidden;
+		}
+
+		button.clicked {
+			border: 3px solid black;
+			border-radius: 3;
+		}
+
+		.btn-primary-outline {
+			background-color: transparent;
+			border-color: transparent;
+		}
+
+		.card-block .rotate {
+			z-index: 8;
+			float: right;
+			height: 100%;
+		}
+
+		.card-block .rotate i {
+			color: rgba(20, 20, 20, 0.15);
+			position: absolute;
+			left: 0;
+			left: auto;
+			right: -10px;
+			bottom: 0;
+			display: block;
+			-webkit-transform: rotate(-44deg);
+			-moz-transform: rotate(-44deg);
+			-o-transform: rotate(-44deg);
+			-ms-transform: rotate(-44deg);
+			transform: rotate(-44deg);
+		}
+
+		.hidden {
+			display: none;
+		}
+	</style>
+
+	</style>
+	<!-- some additional css here -->
+</head>
+
+<body>
+	<aside class="aside aside-fixed">
+		<div class="aside-header">
+			<a href="#" class="aside-logo img-logo"><img src="../../static/assets/img/brutor-logo-white.png" class="w-75"></a>
+			<a href="" class="aside-menu-link">
+				<i data-feather="menu"></i>
+				<i data-feather="x"></i>
+			</a>
+		</div>
+		<div class="aside-body">
+			<ul class="nav nav-aside">
+				<!-- <li class="nav-label mg-t-25">Home</li> -->
+				{% for menu_item in menu_list_html %}
+                    {%if menu_item.value == '' %}
+                        <li class="nav-item nav-item-active ">
+                            <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+			</ul>
+		</div>
+	</aside>
+
+	<div class="content pd-0">
+		<div class="content-header ">
+			 <!-- Display flashed messages -->
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					<div class="flashes">
+						{% for category, message in messages %}
+							<div class="alert alert-{{ category }}">{{ message }}</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+			{% endwith %}
+			<h4 class="mg-b-0 text-primary">Profile</h4>
+			<div class="">
+				<div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
+                            class="rounded-circle" alt=""></div>
+                    <div class="p-3 d-flex flex-column">
+						<div class="dropdown">
+                        <span class="font-weight-bold">{{ username | safe }}
+						</span>
+						<a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a> 
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+							<a class="dropdown-item" href="/auth/logout">Sign out</a>
+							<a class="dropdown-item" href="/auth/logout">Tobe tutor</a>
+						</div>
+					</div>
+						<!-- Dropdown for logout -->
+							
+							
+                        <!-- <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
+                                    data-feather="log-out"></i><span>Logout</span></a> -->
+                    </div>                                            
+                    <!-- <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h> -->
+                </div>
+			</div>
+		</div>	
+</body>
+
+</div>
+<!-- Atomic Watch this is just to reload the page if you make any changes to the html -->
+<!-- <script src="//localhost:35729/livereload.js"></script> -->
+
+
+<script src="../../static/lib/jquery/jquery.min.js"></script>
+<script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../../static/lib/feather-icons/feather.min.js"></script>
+<script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script src="../../static/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="../../static/assets/js/dashforge.js"></script>
+<script src="../../static/assets/js/dashforge.aside.js"></script>
+<script src="../../static/js/sytem_param/port_distance_config.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+</html>

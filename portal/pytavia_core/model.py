@@ -313,10 +313,19 @@ db = {
         "name"                      : "",
         "phone"                     : "",
         "email"                     : "",
+        #email verificatoin
         "ver_email"                 : "FALSE",
         'ver_rec'                   : [],
-        "saldo"                     : "",
+        # money information
+        "balance"                   : 0,
         "rec_transaction"           : [],
+        # apply tutor information
+        "cv_user"                   : "",
+        "cv_user_html"              : "",
+        "cv_user_preview"           : "",
+        "cv_link"                   : "",
+        "status_applying"           : [],
+        "summery_status_applying"   : "",
         "last_login"                : "",
         "str_last_login"            : "",       
         "login_status"              : "",      # TRUE | FALSE
@@ -339,15 +348,17 @@ db = {
         "desc_class_preview"        : "",
         "status_class"              : "",       # OPEN_SHARING(another can open this class),PRIVATE(creator only), COMMINGSOON(still development), MAINTENENCE (improvement)
         "prerequisite_class_id"     : [],       # fill with pkey for certain class should pass
+        "buyer_user_id"             : "",       # buyer id class
         "pass_requirement"          : "",       # desc for pass the class
         "pass_requirement_html"     : "",       #
         "pass_requirement_preview"  : "",       #
-        "price_class"               : ""
+        "price_class"               : 0
     },
 
     # CLASS ACTIVATION
     "db_activation_class"         : {         
         "activation_class_id"       : "",
+        "fk_user_id"                : "",
         "active_class_name"         : "",       #
         "class_id"                  : "",
         "activate_timestamp"        : "",
@@ -365,7 +376,8 @@ db = {
 
     # TEST
     "db_test"                       : {      
-        "test_id"                   : "",              
+        "test_id"                   : "",      
+        "fk_user_id"                : "",        
         "activation_class_id"       : "",    
         "name_test"                 : "",       
         "desc_test"                 : "",    
@@ -382,7 +394,24 @@ db = {
 
      # MEETING
     "db_meeting"                    : {      
-        "meeting_id"                : "",              
+        "meeting_id"                : "",      
+        "fk_user_id"                : "",        
+        "activation_class_id"       : "",    
+        "name_meeting"              : "",       
+        "desc_meeting"              : "",    
+        "desc_meeting_html"         : "",       # 
+        "desc_meeting_preview"      : "",       #                 
+        "start_timestamp"           : 0,
+        "end_timestamp"             : 0,
+        "str_start_datetime"        : "", 
+        "str_end_datetime"          : "",    
+        "source"                    : "",       # can be link, or source file             
+    }, 
+
+    # MEETING
+    "db_meeting"                    : {      
+        "meeting_id"                : "",      
+        "fk_user_id"                : "",        
         "activation_class_id"       : "",    
         "name_meeting"              : "",       
         "desc_meeting"              : "",    
@@ -402,84 +431,34 @@ db = {
         "desc_html"                 : "",
     },
 
-    # PENGELOLAAN KONTEN
-    "db_konten"                     : {
-        "konten_id"                 : "",
-        "fk_user_id"                : "",
-        "fk_perusahaan_id"          : "", # Perusahaan
-        "perusahaan_name"           : "",
-        "posisi_name"               : "",
-        "jenis_tampilan_name"       : "", 
-        "fk_posisi_value"           : "", # CONFIG - POSISI DI APLIKASI
-        "fk_jenis_tampilan_value"   : "", # CONFIG - JENIS TAMPILAN
-        "urutan"                    : 0,
-        "judul_konten"              : "",
-        "deskripsi"                 : "",
-        "deskripsi_html"            : "",
-        "deskripsi_preview"         : "",
-        "url"                       : "", 
-        "start_timestamp"           : 0,
-        "end_timestamp"             : 0,
-        "str_start_datetime"        : "", 
-        "str_end_datetime"          : "", 
-        "image"                     : "",
-        "status_value"              : "" # PROSES - TAYANG - SELASAI
+    # TOPUP REQUEST
+    "db_topup_request"              : {
+        "topup_request_id"          : "",
+        "request_user_id"           : "",
+        "amount"                    : 0,
+        "request_status"            : "",
+        "request_date"              : "",
+        "payment_method"            : "",
+        "reference_id"              : "",
+        "created_at"                : "",
+        "update_by_admin_at"        : "",
+        "source"                    : "",
     },
 
-    "db_konten_img"                 : {
-        "fk_konten_id"              : "",
-        "image"                     : ""
-    },
-
-    "db_konten_status_history"      : {
-        "fk_user_id"                : "",
-        "fk_konten_id"              : "",
-        "status_value"              : "",
-        "update_from"               : ""
-    },
-
-    "db_update_konten_history"      : {
-        "fk_user_id"                : "",
-        "fk_konten_id"              : "",
-        "update_notes"              : "",
-        "rec_before"                : {
-            "fk_perusahaan_id"      : "", # Perusahaan
-            "fk_posisi_value"       : "", # CONFIG - POSISI DI APLIKASI
-            "fk_jenis_tampilan_value": "",# CONFIG - JENIS TAMPILAN
-            "perusahaan_name"       : "",
-            "posisi_name"           : "",
-            "jenis_tampilan_name"   : "",
-            "urutan"                : 0,
-            "judul_konten"          : "",
-            "deskripsi"             : "",
-            "deskripsi_html"        : "",
-            "url"                   : "", 
-            "start_timestamp"       : 0,
-            "end_timestamp"         : 0,
-            "str_start_datetime"    : "", 
-            "str_end_datetime"      : "",
-            "image"                 : ""
-        },
-        "rec_after"                 : {
-            "fk_perusahaan_id"      : "", # Perusahaan
-            "fk_posisi_value"          : "", # CONFIG - POSISI DI APLIKASI
-            "fk_jenis_tampilan_value"  : "", # CONFIG - JENIS TAMPILAN
-            "perusahaan_name"       : "",
-            "posisi_name"           : "",
-            "jenis_tampilan_name"   : "",
-            "urutan"                : 0,
-            "judul_konten"          : "",
-            "deskripsi"             : "",
-            "deskripsi_html"        : "",
-            "url"                   : "", 
-            "start_timestamp"       : 0,
-            "end_timestamp"         : 0,
-            "str_start_datetime"    : "", 
-            "str_end_datetime"      : "",
-            "image"                 : ""
-        } 
-    },
-
+    # TOPUP TRANSACTION
+    "db_topup_transaction"              : {
+        "topup_transaction_id"      : "",
+        "topup_request_id"          : "", # foreign key of reque
+        "request_user_id"           : "", # fk user request for topup
+        "fk_admin_id"               : "", # fk_user_id admin       
+        "amount"                    : 0,   
+        "transaction_status"        : "",
+        "transaction_date"          : "",
+        "payment_method"            : "",
+        "reference_id"              : "",
+        "topup_request_date"        : "",
+        "update_by_admin_at"        : ""        
+    }
 
 
 }

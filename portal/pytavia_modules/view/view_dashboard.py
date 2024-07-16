@@ -56,7 +56,7 @@ class view_dashboard:
         core_css                = view_core_css.view_core_css().html(params)
         core_dialog_message     = view_core_dialog_message.view_core_dialog_message().html(params)
 
-        ver_status         = self._data_user()                          
+        user_rec         = self._data_user()                          
 
         return render_template(
             "dashboard/index.html",
@@ -68,9 +68,8 @@ class view_dashboard:
             core_css            = core_css                , 
             core_dialog_message = core_dialog_message     ,
             username            = params["username"      ],
-            role_position       = params["role_position" ],
-
-            ver_status  = ver_status
+            role_position       = params["role_position" ],            
+            user_rec            = user_rec
 
            # users_total         = users_total,
             

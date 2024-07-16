@@ -56,6 +56,22 @@ class view_starter:
         response =  current_menu
         return response
 
+    def _find_permission_role(self,params):     
+        permission_role_list = []
+
+        permission_role = self.mgdDB.db_menu_permission.find({
+            "menu_value" : params['menu_value']
+        },{"_id":0,"menu_value":1,"role_position_value":1})      
+        
+        for permission_role_item in permission_role:
+            permission_role_list.append(permission_role_item['role_position_value'])
+
+        response = {
+            "permission_role_list"   : permission_role_list
+        }
+                  
+        return response
+
 
     def html(self, params):
         response = helper.response_msg(
@@ -77,7 +93,11 @@ class view_starter:
             starter_button_list             = starter_button_resp["starter_button_list"     ] 
 
             # FIND CURRENT MENU NOW
-            current_menu                     = self._find_current_menu( params )                     
+            current_menu                     = self._find_current_menu( params ) 
+
+            # FIND PERMISSION ACCESS MENU 
+            permission_role                  = self._find_permission_role( params ) 
+            permission_role_list             = permission_role["permission_role_list"     ] 
 
             html = render_template(
                 "starter/starter.html",
@@ -95,7 +115,8 @@ class view_starter:
             )
 
             response.put( "data", {
-                    "html" : html
+                    "html" : html,
+                    "permission_role_list": permission_role_list
                 }
             )
 

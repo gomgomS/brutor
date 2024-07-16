@@ -72,8 +72,6 @@ class view_general_config:
 
             config_resp             = self._find_config( params )
             config_list             = config_resp["config_list"     ] 
-            print(config_list)
-            print("-------------test-----")
             config_title            = config_resp["config_title"    ] 
 
 

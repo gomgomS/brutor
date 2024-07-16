@@ -35,8 +35,7 @@ class register_class_proc:
         response = helper.response_msg(
             "ADD_REGISTER_CLASS_SUCCESS", "ADD REGISTER CLASS SUCCESS", {} , "0000"
         )
-        try:     
-          
+        try:                 
             # desc_class_html
             desc_class_html = su.unescape(params["desc_class"])
 
@@ -61,17 +60,18 @@ class register_class_proc:
 
             class_rec  = database.new(self.mgdDB, "db_class")
             class_rec.put("class_id",                   class_rec.get()["pkey"             ])
-            class_rec.put("creator_id",                 params["fk_user_id" ]           ) #pkey from db_user
+            class_rec.put("creator_id",                 params["fk_user_id" ]               ) #pkey from db_user
             class_rec.put("level_id",                   params["level_id"                   ])
             class_rec.put("name_class",                 params["name_class"                 ])
             class_rec.put("desc_class",			        params["desc_class"                  ])
             class_rec.put("desc_class_html",		    desc_class_html                       )
             class_rec.put("desc_class_preview",         desc_class_preview                   )
             class_rec.put("status_class",               params["status_class"               ])    
-            class_rec.put("prerequisite_class_id",        [1,3,4])    
+            class_rec.put("prerequisite_class_id",      params["classId"                  ])    
             class_rec.put("pass_requirement",		    params["pass_requirement"            ])
             class_rec.put("pass_requirement_html",	    pass_requirement_html                 )
-            class_rec.put("pass_requirement_preview",   pass_requirement_preview             )                    
+            class_rec.put("pass_requirement_preview",   pass_requirement_preview             )   
+            class_rec.put("buyer_user_id",              "")                     
             class_rec.put("price_class",                params["price_class"               ])    
             class_rec.insert()                       
 

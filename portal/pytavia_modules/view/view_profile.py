@@ -36,12 +36,22 @@ class view_profile:
         self.webapp = app
     # end def
 
-    # FIND DATA USER ACTIVE ------------------THIS NEW DELETE THIS COMMENT AFTER YOU BACK
+    
     def _data_user(self):      
         user_uuid   = session["user_uuid"]
         query = { "user_uuid": user_uuid}
         user = self.mgdDB.db_user.find_one(query)     
-        # data_user = user['ver_email']          
+     
+        # Find the latest verification_date
+        if user['summery_status_applying'] != "":
+            latest_date = max(user['status_applying'], key=lambda x: datetime.datetime.strptime(x['apply_date'], '%Y-%m-%d %H:%M:%S'))['apply_date']
+        
+            # Filter the list to get entries with the latest verification_date
+            latest_apply = [entry for entry in user['status_applying'] if entry['apply_date'] == latest_date]     
+
+            user['latest_apply_rec'] = latest_apply[0]
+        else:
+            user['latest_apply_rec'] = ""
 
         return user
        

@@ -122,9 +122,7 @@ class view_activation_class:
         # END OF PAGINATION
 
         for activation_class_item in activation_class_view:
-            # print(class_item)
-            # print("back up-----------------xx")
-            activation_class_resp                = self._find_class( activation_class_item["class_id"] )            
+            activation_class_resp                = self._find_class( params[""] ,activation_class_item["class_id"] )            
             activation_class_item["name_class"]   = activation_class_resp["name_class"     ] 
             activation_class_list.append(activation_class_item)
 
@@ -243,6 +241,8 @@ class view_activation_class:
         class_rec = self.mgdDB.db_class.find_one({ 
             "class_id" : class_id
         })   
+
+        print(class_rec)
         
         response = {
             "name_class"   : class_rec["name_class"]

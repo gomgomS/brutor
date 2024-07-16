@@ -46,6 +46,23 @@ class view_register_class_add:
         return response
     # end def
 
+    def _find_class(self, params):
+        class_list = []
+       
+        class_view = self.mgdDB.db_class.find({
+            "fk_user_id"    :params["fk_user_id"]
+        })
+        
+
+        for class_item in class_view:
+            class_list.append(class_item)
+
+        response = {
+            "class_list"   : class_list
+        }
+        return response
+    # end def
+
     def _find_creator_name(self, params):
         user_rec = self.mgdDB.db_user.find_one({ 
             "fk_user_id" : params["fk_user_id"] 
@@ -78,9 +95,15 @@ class view_register_class_add:
             level_class_resp             = self._find_level_class( params )
             level_class_list             = level_class_resp["level_class_list"         ] 
 
-            # FIND level_class
+            # FIND creator class
             creator_name_resp             = self._find_creator_name( params )            
-            creator_name             = creator_name_resp["creator_name"         ] 
+            creator_name                  = creator_name_resp["creator_name"         ] 
+
+            # FIND class
+            class_resp             = self._find_class( params )
+            class_list             = class_resp["class_list"         ] 
+            print(class_list)
+            print("hokage")
             
             html = render_template(
                 "register_class/register_class_add.html",
@@ -94,9 +117,10 @@ class view_register_class_add:
                 username                = params["username"      ],
                 role_position           = params["role_position" ],
                 redirect                = params["redirect"      ],       
-                level_class_list     = level_class_list,
-                creator_name            =creator_name       
-            )
+                level_class_list        = level_class_list,
+                creator_name            = creator_name,       
+                class_list              = class_list,
+              )
 
             response.put( "data", {
                     "html" : html

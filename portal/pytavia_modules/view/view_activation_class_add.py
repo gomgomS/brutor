@@ -36,7 +36,27 @@ class view_activation_class_add:
 
     def _find_class(self, params):
         class_list = []
-        class_view = self.mgdDB.db_class.find()
+        class_view = self.mgdDB.db_class.find({            
+            "$or": [                
+                { 
+                    "$and": [
+                        { "status_class": "PAID" },  # Include documents with status "PAID"
+                        { "buyer_user_id": params['fk_user_id'] }  # Only if buyer_user_id matches fk_user_id
+                    ]
+                },
+                {
+                    "$and": [
+                        { "creator_id": params['fk_user_id'] },  # Include documents with creator_id matching fk_user_id
+                        {
+                            "$or": [
+                                { "buyer_user_id": { "$exists": False } },  # Only if buyer_user_id does not exist
+                                { "buyer_user_id": "" }  # Or if buyer_user_id is an empty string
+                            ]
+                        }
+                    ]
+                }
+            ]        
+        })
         for class_item in class_view:
             class_list.append(class_item)
 
