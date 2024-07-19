@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favico -->
+    <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <title>Brutor ADMIN - Pengelolaan Konten</title>
+    <!-- vendor css -->
+    <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="../../static/lib/select2/css/select2.min.css" rel="stylesheet">
+    <link href="../../static/lib/flatpicker/flatpickr.min.css" rel="stylesheet">
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+    <link rel="stylesheet" href="../../static/css/custom.css">
+
+    <style>
+        body {
+            background-color: #f7f9fc;
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-mini, .task-info {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .main-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link {
+            color: #06121a;
+        }
+        .nav-link.active {
+            background-color: #06121a;
+            color: #fff !important;
+        }
+        .nav-pills .nav-item+.nav-item {
+            margin-top: 10px;
+        }
+        h3 {
+            margin-bottom: 15px;
+            color: #06121a;
+        }
+        .footer {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+     
+    </style>
+    <!-- some additional css here -->
+</head>
+
+{% autoescape false %}
+<body>
+    <div class="loader">
+        <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
+    </div>
+    <aside class="aside aside-fixed">
+        <div class="aside-header">
+            <a href="#" class="aside-logo img-logo"><img src="../../static/assets/img/brutor-logo-white.png" class="w-75"></a>
+            <a href="" class="aside-menu-link">
+                <i data-feather="menu"></i>
+                <i data-feather="x"></i>
+            </a>
+        </div>
+        <div class="aside-body">
+            <ul class="nav nav-aside">
+                {% for menu_item in menu_list_html %}
+                    {%if menu_item.value == 'MANAGER_CLASS' %}
+                        <li class="nav-item nav-item-active ">
+                            <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+            </ul>
+        </div>
+    </aside>
+
+    <div class="content pd-0">
+        <div class="content-header">
+            <!-- <h5 class="mg-b-0 text-primary"><a href="/starter?menu_value=MANAGER_CLASS">Manager Class</a> <span style="font-weight: bolder;"><i class="fas fa-caret-right"></i> Register Class List</span></h5> -->
+            <div class="">
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
+                            class="rounded-circle" alt=""></div>
+                    <div class="p-3 d-flex flex-column">
+                        <span class="font-weight-bold">{{ username | safe }}</span>                        
+                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
+                                    data-feather="log-out"></i><span>Logout</span></a>
+                    </div>                                            
+                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+                </div>
+            </div>
+        </div>
+        
+        <div class="contents-body">
+            <div class="header text-center">
+                <h1>Class Name: {{ class_rec.name_class }}</h1>
+                <p>Instructor: John Doe</p>
+                <p>Class ID: {{ class_rec.class_id }}</p>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-sm-12 sidebar-mini mb-3">
+                        <h3>Class Meetings</h3>
+                        <ul class="nav flex-column nav-pills">
+                            {% for meeting in meeting_list %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if loop.first %}active{% endif %}" id="meeting-{{ loop.index }}-tab" data-toggle="pill" href="#meeting-{{ loop.index }}">{{ meeting.name_meeting }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6 col-sm-12 main-content mb-3">
+                        <div class="tab-content">
+                            {% for meeting in meeting_list %}
+                            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="meeting-{{ loop.index }}">
+                                <h3>{{ meeting.name_meeting }}</h3>
+                                <p><strong>Date:</strong> {{ meeting.str_start_datetime }}</p>
+                                <p><strong>Time:</strong> {{ meeting.str_start_datetime }} - {{ meeting.str_end_datetime }}</p>
+                                <p><strong>Description:</strong> {{ meeting.desc_meeting_html }}</p>
+                            </div>
+                            {% endfor %}
+                            {% for test in test_list %}
+                            <div class="tab-pane fade" id="task-{{ loop.index }}">
+                                <h3>{{ test.desc_test }}</h3>
+                                <p><strong>Date:</strong> {{ test.str_start_datetime }}</p>
+                                <p><strong>Time:</strong> {{ test.str_start_datetime }} - {{ test.str_end_datetime }}</p>
+                                <p><strong>Description:</strong> {{ test.desc_test }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 task-info">
+                        <h3>Class Tasks</h3>
+                        <ul class="nav flex-column nav-pills">
+                            {% for test in test_list %}
+                            <li class="nav-item">
+                                <a class="nav-link" id="task-{{ loop.index }}-tab" data-toggle="pill" href="#task-{{ loop.index }}">Task: {{ test.desc_test }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>                       
+                    </div>
+                </div>
+            </div>
+            <footer class="text-center mt-auto font-weight-bold">©Brutor a.k.a BRUTAR TUTOR</footer>
+        </div>
+        
+    </div>
+
+    <script src="../../static/lib/jquery/jquery.min.js"></script>
+    <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/lib/feather-icons/feather.min.js"></script>
+    <script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../../static/lib/flatpicker/flatpickr.js"></script>
+    <script src="../../static/assets/js/dashforge.js"></script>
+    <script src="../../static/assets/js/dashforge.aside.js"></script>
+    <script src="../../static/lib/select2/js/select2.min.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            loader.classList.add('hidden');
+        });
+      
+ 
+    </script>
+
+</body>
+{% endautoescape %}
+
+</html>

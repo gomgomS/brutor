@@ -147,6 +147,17 @@
                             <input name="source" type="text" id="source" class="form-control">
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="status_meeting" class="col-sm-2 col-form-label text-right">Status Meeting</label>
+                        <div class="col-sm-10">
+                            <select id="status_meeting" class="form-control" name="status_meeting" required>
+                                <option value="" type="hidden" selected disabled></option>                                
+                                <option value="DEVELOPMENT">Development (meeting under maintenence or Development)</option>
+                                <option value="SHARE" >Share (meeting its ready to share)</option>
+                                <option value="DONE">Done (meeting its done)</option>                                 
+                            </select>
+                        </div>
+                    </div>
                    
                 </fieldset>
 
@@ -213,7 +224,7 @@
                 })
             });
 
-            CKEDITOR.replace( 'desc_test', { customConfig : 'config_toolbar_mnc_cs.js' } );            
+            CKEDITOR.replace( 'desc_meeting', { customConfig : 'config_toolbar_mnc_cs.js' } );            
             
             const file = document.getElementById('filePic');
             const upContainer = document.querySelector('.upload-photo');    

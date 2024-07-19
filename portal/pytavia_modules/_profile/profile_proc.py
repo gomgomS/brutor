@@ -142,4 +142,19 @@ class profile_proc:
         
         return result_url
 
+    def change_portal_student(self, params):    
+        result_url = "/user/dashboard"        
+
+        update_doc = {
+            "$set": {"role"  : "STUDENT"}
+        }
+      
+        # Update the document in MongoDB
+        user_rec                    = self.mgdDB.db_user.update_one(
+            {"fk_user_id"         : params["fk_user_id"]},            
+            update_doc            
+        )
+        
+        return result_url
+
         

@@ -1,3 +1,8 @@
+.scaled-container {
+    transform: scale(0.8); /* Scale down to 80% */
+    transform-origin: 0 0; /* Scale from the top left corner */
+    width: 125%; /* Compensate for the scale down to keep the content centered */
+}
 .dark-mode {
   filter: invert(2) hue-rotate(180deg)
 }
@@ -333,11 +338,10 @@ table.dataTable:first-child {
 /* start here new design */
 
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: "Raleway", sans-serif;
   background: linear-gradient(90deg, rgba(254, 255, 255, 1) 0%, rgb(255, 255, 255) 100%);
 
 }
@@ -446,7 +450,7 @@ ul li.page-item .page-link{
 /* Aside Header */
 .aside-header {
   background-color: #06121a;
-  border-top-right-radius: 25px;
+  /* border-top-right-radius: 25px; */
   padding: 16px;
   transition: background-color 0.3s ease;
 }
@@ -458,8 +462,8 @@ svg.feather.feather-menu {
 
 /* Aside Body */
 .aside-body {
-  background-color: #0d1e28;
-  border-bottom-right-radius: 25px;
+  background-color: #1f2a38;
+  /* border-bottom-right-radius: 25px; */
   padding: 16px;
   transition: background-color 0.3s ease;
 }

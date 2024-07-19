@@ -70,6 +70,7 @@ class register_test_proc:
             test_rec.put("str_end_datetime",          params["end_datetime"          ])
             test_rec.put("type_test",                 params["type_test"             ])
             test_rec.put("name_test",                 params["name_test"             ])
+            test_rec.put("status_test",               params["status_test"             ])
             test_rec.insert()                       
 
         except :

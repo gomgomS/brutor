@@ -126,6 +126,7 @@ from manager_class      import register_class_proc
 
 from view               import view_activation_class
 from view               import view_activation_class_add
+from view               import view_activation_class_detail
 
 from manager_class      import activation_class_proc
 
@@ -195,6 +196,27 @@ from configuration      import level_class_proc
 
 ##########################################################
 
+############### - S T D E N T  [START]  P O R T A L - ######################
+
+##########################################################
+# ENROLL MY CLASS
+##########################################################
+from view               import view_enroll_myclass
+
+from enroll_myclass     import enroll_myclass_proc
+
+##########################################################
+# MY CLASS
+##########################################################
+from view               import view_myclass
+from view               import view_myclass_detail
+
+from myclass            import myclass_proc
+
+############### - S T D E N T   [END]   P O R T A L - ######################
+
+
+
 
 from flask              import request
 from flask              import render_template
@@ -203,7 +225,7 @@ from flask              import session
 from flask              import make_response
 from flask              import redirect
 from flask              import url_for
-from flask              import flash
+from flask              import flash, get_flashed_messages
 from flask              import abort
 from flask              import jsonify 
 
@@ -327,9 +349,15 @@ def signup_html():
 def auth_register():
     token      = session.pop('_csrf_token', None)
     params     = sanitize.clean_html_dic(request.form.to_dict())
-    response   = auth_proc.auth_proc(app).register( params )   
+    response   = auth_proc.auth_proc(app).register( params )
     
-    return redirect(url_for("login_html"))
+    if response["message_action"] != "REGISTER_SUCCESS":
+        flash(response["message_desc"], "danger")
+        return redirect(url_for("signup_html"))
+    else:
+        flash("register success!!", "success")
+        return redirect(url_for("login_html"))
+        
     # end if
 # end def
 
@@ -358,8 +386,9 @@ def auth_login():
     m_data     = response["message_data"   ]
 
     if m_title != "" or m_desc != "":
-        flash(m_title,"title")
-        flash(m_desc,"desc")
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
+        flash("Username and Password Not Match", "danger")
     #end if
     if m_action == "LOGIN_SUCCESS":
         session["user_uuid"     ] = m_data["user_uuid"     ]
@@ -496,6 +525,32 @@ def profile_change_portal_tutor():
     landing_url = profile_proc.profile_proc(app).change_portal_tutor( params )
 
     session["role"          ] = 'TUTOR'
+    return redirect( landing_url )
+   
+    # end if
+
+
+@app.route("/profile/change_portal/student")
+def profile_change_portal_student():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["email"]           = session.get("email")
+    params["fk_user_id"     ] = session.get("fk_user_id")
+    params["username"       ] = session.get("username")
+    params["role_position"  ] = session.get("role_position")
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    landing_url = profile_proc.profile_proc(app).change_portal_student( params )
+
+    session["role"          ] = 'STUDENT'
     return redirect( landing_url )
    
     # end if
@@ -2499,6 +2554,43 @@ def proc_activation_class_add():
         return redirect(url_for("view_error_page_html" , data=err_message ))
 # end def
 
+@app.route("/activation_class/detail/<activation_class_id>")
+def view_activation_class_detail_html(activation_class_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )    
+    params["activation_class_id"   ]= activation_class_id
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_activation_class_detail.view_activation_class_detail(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/pengelolaan_konten/proses"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
 ##########################################################
 # MANAGER CLASS - Public Class
 ##########################################################
@@ -2794,6 +2886,8 @@ def proc_register_meeting_add():
     params["fk_user_id" ] = session.get("fk_user_id")
     params["files"      ] = files
     app.logger.debug(files)
+    print(params)
+    print("disini ada pengecekan params")
     browser_resp = browser_security.browser_security(app).check_route({
         "fk_user_id"  : params["fk_user_id"],
         "route_name"  : "PROC_register_meeting_ADD"
@@ -3158,3 +3252,160 @@ def topup():
    
     # end if
 
+############### - S T D E N T         P O R T A L - ######################
+
+##########################################################
+# Enroll Myclass 
+##########################################################
+@app.route("/enrollMyClass")
+def view_enroll_myclass_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["order_by"       ] = request.args.get('order_by'     )
+    params["keyword"        ] = request.args.get('keyword'      )
+    params["page"           ] = request.args.get('page'         )
+    params["entry"          ] = request.args.get('entry'        )
+    params["sort_by"        ] = request.args.get('sort_by'      )
+
+    params["start_date"     ] = request.args.get('start_date'   )
+    params["end_date"       ] = request.args.get('end_date'     )
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_enroll_myclass.view_enroll_myclass(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/pengelolaan_konten/proses"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/buy_enroll_myclass/<activation_class_id>")
+def buy_enroll_class_(activation_class_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+
+
+    # end if
+    params                          = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"   ]         = session.get("fk_user_id")
+    params["activation_class_id"   ]= activation_class_id
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+
+    landing_url = enroll_myclass_proc.enroll_myclass_proc(app).buy_enroll_myclass( params )
+    return redirect( landing_url )
+
+##########################################################
+#  Myclass 
+##########################################################
+@app.route("/myClass")
+def view_myclass_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["order_by"       ] = request.args.get('order_by'     )
+    params["keyword"        ] = request.args.get('keyword'      )
+    params["page"           ] = request.args.get('page'         )
+    params["entry"          ] = request.args.get('entry'        )
+    params["sort_by"        ] = request.args.get('sort_by'      )
+
+    params["start_date"     ] = request.args.get('start_date'   )
+    params["end_date"       ] = request.args.get('end_date'     )
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_myclass.view_myclass(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/pengelolaan_konten/proses"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/myClass/detail/<enrollment_id>")
+def view_myclass_detail_html(enrollment_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["enrollment_id"   ]= enrollment_id
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_myclass_detail.view_myclass_detail(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/pengelolaan_konten/proses"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+        # end def

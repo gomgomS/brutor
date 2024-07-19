@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favico -->
+    <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
+    <title>Brutor ADMIN - Pengelolaan Konten</title>
+    <!-- vendor css -->
+    <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="../../static/lib/select2/css/select2.min.css" rel="stylesheet">
+    <link href="../../static/lib/flatpicker/flatpickr.min.css" rel="stylesheet">
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="../../static/assets/css/dashforge.css">
+    <link rel="stylesheet" href="../../static/css/custom.css">
+
+    <style>
+        body {
+            background-color: #06121a;
+            color: #f8f9fa;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .card {
+            background-color: #1f2a38;
+            border: none;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #273a4a;
+            border-bottom: 1px solid #3a4e5c;
+            color: #f8f9fa;
+        }
+        .card-body {
+            background-color: #1f2a38;
+            color: #f8f9fa;
+        }
+        .data-title {
+            font-weight: bold;
+        }
+        .split-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .split-item {
+            width: 48%;
+        }
+        .btn-primary {
+            background-color: #2e86de;
+            border: none;
+        }
+        .btn-secondary {
+            background-color: #5f5f5f;
+            border: none;
+        }
+        .form-section {
+            background-color: #1f2a38;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        form {
+            color: #1f2a38;
+        }
+      </style>
+    <!-- some additional css here -->
+</head>
+
+{% autoescape false %}
+<body>
+    <div class="loader">
+        <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
+    </div>
+    <aside class="aside aside-fixed">
+        <div class="aside-header">
+            <a href="#" class="aside-logo img-logo"><img src="../../static/assets/img/brutor-logo-white.png" class="w-75"></a>
+            <a href="" class="aside-menu-link">
+                <i data-feather="menu"></i>
+                <i data-feather="x"></i>
+            </a>
+        </div>
+        <div class="aside-body">
+            <ul class="nav nav-aside">
+                {% for menu_item in menu_list_html %}
+                    {%if menu_item.value == 'MANAGER_CLASS' %}
+                        <li class="nav-item nav-item-active ">
+                            <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{{menu_item.url}}" class="nav-link"><i data-feather="{{ menu_item.icon_class }}"></i>
+                                <span>{{menu_item.menu_name.title()}}</span></a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+            </ul>
+        </div>
+    </aside>
+
+    <div class="content pd-0">
+        <div class="content-header">
+            <h5 class="mg-b-0 text-primary"><a href="/starter?menu_value=MANAGER_CLASS">Manager Class</a> <span style="font-weight: bolder;"><i class="fas fa-caret-right"></i> Register Class List</span></h5>
+            <div class="">
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
+                            class="rounded-circle" alt=""></div>
+                    <div class="p-3 d-flex flex-column">
+                        <span class="font-weight-bold">{{ username | safe }}</span>                        
+                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
+                                    data-feather="log-out"></i><span>Logout</span></a>
+                    </div>                                            
+                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <h1 class="text-center mb-5">Class Data Display</h1>
+    
+            <!-- Activation Class Details -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-rocket"></i> Activation Class Details
+                </div>
+                <div class="card-body">
+                    <p><span class="data-title">Activation Class ID:</span> <span class="data-value">{{ activation_class_rec.activation_class_id }}</span></p>
+                    <p><span class="data-title">User ID:</span> <span class="data-value">{{ activation_class_rec.fk_user_id }}</span></p>
+                    <p><span class="data-title">Class Name:</span> <span class="data-value">{{ activation_class_rec.active_class_name }}</span></p>
+                    <p><span class="data-title">Activation Timestamp:</span> <span class="data-value">{{ activation_class_rec.str_activate_timestamp }}</span></p>
+                    <p><span class="data-title">Student Limit:</span> <span class="data-value">{{ activation_class_rec.student_limit }}</span></p>
+                    <p><span class="data-title">Price:</span> <span class="data-value">{{ activation_class_rec.price_class }}</span></p>
+                    <p><span class="data-title">Status:</span> <span class="data-value">{{ activation_class_rec.status_activation }}</span></p>
+                </div>
+            </div>
+    
+            <!-- Class Details -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chalkboard-teacher"></i> Class Details
+                </div>
+                <div class="card-body">
+                    <p><span class="data-title">Class ID:</span> <span class="data-value">{{ class_rec.class_id }}</span></p>
+                    <p><span class="data-title">Creator ID:</span> <span class="data-value">{{ class_rec.creator_id }}</span></p>
+                    <p><span class="data-title">Class Name:</span> <span class="data-value">{{ class_rec.name_class }}</span></p>
+                    <p><span class="data-title">Description:</span> <span class="data-value">{{ class_rec.desc_class }}</span></p>
+                    <p><span class="data-title">Status:</span> <span class="data-value">{{ class_rec.status_class }}</span></p>
+                    <p><span class="data-title">Price:</span> <span class="data-value">{{ class_rec.price_class }}</span></p>
+                </div>
+            </div>
+    
+            <!-- Split Container for Meetings and Tests -->
+            <div class="split-container">
+                <!-- Meetings Details -->
+                <div class="split-item">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-handshake"></i> Meeting Details
+                            <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addMeetingModal">Add Meeting</button>
+                        </div>
+                        <div class="card-body">
+                            {% for meeting in meeting_list %}
+                            <div id="{{ meeting.name_meeting }}">
+                                <p><span class="data-title">Meeting ID:</span> <span class="data-value">{{ meeting.meeting_id }}</span></p>
+                                <p><span class="data-title">Description:</span> <span class="data-value">{{ meeting.desc_meeting }}</span></p>
+                                <p><span class="data-title">Start Time:</span> <span class="data-value">{{ meeting.str_start_datetime }}</span></p>
+                                <p><span class="data-title">End Time:</span> <span class="data-value">{{ meeting.str_end_datetime }}</span></p>
+                                <p><span class="data-title">Source:</span> <span class="data-value"><a href="{{ meeting.source }}" target="_blank">Link</a></span></p>
+                                <button class="btn btn-secondary" data-toggle="modal" data-target="#editMeetingModal{{ loop.index }}">Edit</button>
+                                <hr>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Tests Details -->
+                <div class="split-item">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fas fa-file-alt"></i> Test Details
+                            <button class="btn btn-primary float-right" data-toggle="modal" data-target="#addTestModal">Add Test</button>
+                        </div>
+                        <div class="card-body">
+                            {% for test in test_list %}
+                            <div>
+                                <p><span class="data-title">Test ID:</span> <span class="data-value">{{ test.test_id }}</span></p>
+                                <p><span class="data-title">Description:</span> <span class="data-value">{{ test.desc_test }}</span></p>
+                                <p><span class="data-title">Score to Pass:</span> <span class="data-value">{{ test.score_to_pass }}</span></p>
+                                <p><span class="data-title">Start Time:</span> <span class="data-value">{{ test.str_start_datetime }}</span></p>
+                                <p><span class="data-title">End Time:</span> <span class="data-value">{{ test.str_end_datetime }}</span></p>
+                                <button class="btn btn-secondary" data-toggle="modal" data-target="#editTestModal{{ loop.index }}">Edit</button>
+                                <hr>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Modals for Edit and Add Operations -->
+            {% for meeting in meeting_list %}
+            <!-- Edit Meeting Modal -->
+            <div class="modal fade" id="editMeetingModal{{ loop.index }}" tabindex="-1" aria-labelledby="editMeetingModalLabel{{ loop.index }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editMeetingModalLabel{{ loop.index }}">Edit Meeting</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form method="POST" action="/edit_meeting">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="edit_meeting_id{{ loop.index }}">Meeting ID</label>
+                                    <input type="text" class="form-control" id="edit_meeting_id{{ loop.index }}" name="meeting_id" value="{{ meeting.meeting_id }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_meeting_desc{{ loop.index }}">Description</label>
+                                    <textarea class="form-control" id="edit_meeting_desc{{ loop.index }}" name="meeting_desc" required>{{ meeting.desc_meeting }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_meeting_start{{ loop.index }}">Start Time</label>
+                                    <input type="datetime-local" class="form-control" id="edit_meeting_start{{ loop.index }}" name="meeting_start" value="{{ meeting.str_start_datetime }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_meeting_end{{ loop.index }}">End Time</label>
+                                    <input type="datetime-local" class="form-control" id="edit_meeting_end{{ loop.index }}" name="meeting_end" value="{{ meeting.str_end_datetime }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_meeting_source{{ loop.index }}">Source</label>
+                                    <input type="url" class="form-control" id="edit_meeting_source{{ loop.index }}" name="meeting_source" value="{{ meeting.source }}" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+    
+            {% for test in test_list %}            
+            <!-- Edit Test Modal -->
+            <div class="modal fade" id="editTestModal{{ loop.index }}" tabindex="-1" aria-labelledby="editTestModalLabel{{ loop.index }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg"> <!-- Changed to modal-lg for larger size -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editTestModalLabel{{ loop.index }}">Edit Test</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form method="POST" action="/edit_test">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="redirect" value="/activation_class/detail/{{ activation_class_rec.activation_class_id }}">
+                            <input type="hidden" name="activation_class_id" value="{{ activation_class_rec.activation_class_id }}">
+                            <input type="hidden" name="test_id" value="{{ test.test_id }}">
+
+                            <fieldset class="form-fieldset pd-x-50 field-shadow">
+                                <div class="form-group row">
+                                    <label for="edit_test_periode_start{{ loop.index }}" class="col-sm-2 col-form-label text-right">Periode</label>
+                                    <div class="col-sm-3">
+                                        <div class="d-flex align-items-center">
+                                            <input id="edit_test_periode_start{{ loop.index }}" name="start_datetime" class="form-control" type="datetime-local" value="{{ test.str_start_datetime }}" required>
+                                            <i class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                        </div>
+                                    </div>
+                                    <span class="mg-t-10 col-sm-1 text-center">---</span>
+                                    <div class="col-sm-3">
+                                        <div class="d-flex align-items-center">
+                                            <input id="edit_test_periode_end{{ loop.index }}" name="end_datetime" class="form-control" type="datetime-local" value="{{ test.str_end_datetime }}" required>
+                                            <i class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="edit_test_name{{ loop.index }}" class="col-sm-2 col-form-label text-right">Name Test</label>
+                                    <div class="col-sm-10">
+                                        <input id="edit_test_name{{ loop.index }}" name="name_test" class="form-control" type="text" value="{{ test.name_test }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="edit_test_desc{{ loop.index }}" class="col-sm-2 col-form-label text-right">Description Test</label>
+                                    <div class="col-sm-10">
+                                        <textarea id="edit_test_desc{{ loop.index }}" name="desc_test" class="form-control" cols="5" rows="5" required>{{ test.desc_test }}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="edit_test_score{{ loop.index }}" class="col-sm-2 col-form-label text-right">Score to Pass</label>
+                                    <div class="col-sm-10">
+                                        <input id="edit_test_score{{ loop.index }}" name="score_to_pass" class="form-control" type="number" value="{{ test.score_to_pass }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="edit_test_type{{ loop.index }}" class="col-sm-2 col-form-label text-right">Type Test</label>
+                                    <div class="col-sm-10">
+                                        <input id="edit_test_type{{ loop.index }}" name="type_test" class="form-control" type="text" value="{{ test.type_test }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="edit_test_source{{ loop.index }}" class="col-sm-2 col-form-label text-right">Source</label>
+                                    <div class="col-sm-10">
+                                        <input id="edit_test_source{{ loop.index }}" name="source" class="form-control" type="text" value="{{ test.source }}" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="edit_test_status{{ loop.index }}" class="col-sm-2 col-form-label text-right">Status Test</label>
+                                    <div class="col-sm-10">
+                                        <select id="edit_test_status{{ loop.index }}" class="form-control" name="status_test" required>
+                                            <option value="" selected disabled>Select Status</option>
+                                            <option value="DEVELOPMENT" {% if test.status_test == 'DEVELOPMENT' %}selected{% endif %}>Development (test under maintenance or Development)</option>
+                                            <option value="SHARE" {% if test.status_test == 'SHARE' %}selected{% endif %}>Share (test is ready to share)</option>
+                                            <option value="DONE" {% if test.status_test == 'DONE' %}selected{% endif %}>Done (test is done)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div class="mg-y-30 text-center">
+                                <button type="submit" class="btn btn-primary pd-x-100 shadow-custom">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}            
+
+            <!-- Add Meeting Modal -->
+            <div class="modal fade" id="addMeetingModal" tabindex="-1" aria-labelledby="addMeetingModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg"> <!-- Changed to modal-lg for larger modal -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addMeetingModalLabel">Add Register Meeting</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="/register_meeting/add" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="redirect" value="/activation_class/detail/{{ activation_class_rec.activation_class_id }}">
+                            <input type="hidden" name="activation_class_id" value="{{ activation_class_rec.activation_class_id }}">
+                            
+                            <fieldset class="form-fieldset p-4 mb-4 field-shadow"> <!-- Added padding and margin -->
+                                                               
+                                <div class="form-group row">
+                                    <label for="dujul" class="col-sm-2 col-form-label text-right">Meeting Time</label>
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <div id="datepicker" class="d-flex align-items-center">
+                                                    <input id="datepicker" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
+                                                    <i data-toggle id="calendar2" class="fas fa-calendar-week text-primary ml-2"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2 text-center">
+                                                <span class="align-middle">---</span>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <div id="datepicker2" class="d-flex align-items-center">
+                                                    <input name="end_datetime" data-input id="datepicker2" type="text" class="form-control" placeholder="Select Date.." autocomplete="off" required>
+                                                    <i data-toggle id="calendar2" class="fas fa-calendar-week text-primary ml-2"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label for="name_meeting" class="col-sm-2 col-form-label text-right">Name Meeting</label>
+                                    <div class="col-sm-10">
+                                        <input name="name_meeting" type="text" id="name_meeting" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="desc_meeting" class="col-sm-2 col-form-label text-right">Description Meeting</label>
+                                    <div class="col-sm-10">
+                                        <textarea name="desc_meeting" class="form-control" id="desc_meeting" cols="5" rows="5"></textarea>
+                                    </div>
+                                </div>                                      
+                                <div class="form-group row">
+                                    <label for="source" class="col-sm-2 col-form-label text-right">Source</label>
+                                    <div class="col-sm-10">
+                                        <input name="source" type="text" id="source" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="status_meeting" class="col-sm-2 col-form-label text-right">Status Meeting</label>
+                                    <div class="col-sm-10">
+                                        <select id="status_meeting" class="form-control" name="status_meeting" required>
+                                            <option value="" type="hidden" selected disabled></option>                                
+                                            <option value="DEVELOPMENT">Development (meeting under maintenence or Development)</option>
+                                            <option value="SHARE">Share (meeting is ready to share)</option>
+                                            <option value="DONE">Done (meeting is done)</option>                                 
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+            
+                            <div class="text-center mb-4">
+                                <button class="btn btn-primary px-5 shadow-custom">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>                
+            <!-- Add Test Modal -->
+            <div class="modal fade" id="addTestModal" tabindex="-1" aria-labelledby="addTestModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg"> <!-- Changed to modal-lg for larger size -->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addTestModalLabel">Add Test</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="/register_test/add" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="redirect" value="/activation_class/detail/{{ activation_class_rec.activation_class_id }}">
+                            <input type="hidden" name="activation_class_id" value="{{ activation_class_rec.activation_class_id }}">
+
+                            <fieldset class="form-fieldset pd-x-50 field-shadow">
+                                <div class="form-group row">
+                                    <label for="dujul" class="col-sm-2 col-form-label text-right">Periode</label>
+                                    <div class="col-sm-3">
+                                        <div id="datepicker_" class="d-flex align-items-center">
+                                            <input id="datepicker_" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
+                                            <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                        </div>
+                                    </div>
+                                    <span class="mg-t-10 col-sm-1 text-center">---</span>
+                                    <div class="col-sm-3">
+                                        <div id="datepicker2_" class="d-flex align-items-center">
+                                            <input name="end_datetime" data-input id="datepicker2_" type="text" class="form-control" placeholder="Select Date.." autocomplete="off" required>
+                                            <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="name_test" class="col-sm-2 col-form-label text-right">Name Test</label>
+                                    <div class="col-sm-10">
+                                        <input name="name_test" type="text" id="name_test" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="desc_test" class="col-sm-2 col-form-label text-right">Description Test</label>
+                                    <div class="col-sm-10">
+                                        <textarea name="desc_test" class="form-control" id="desc_test" cols="5" rows="5"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="score_to_pass" class="col-sm-2 col-form-label text-right">Score to Pass</label>
+                                    <div class="col-sm-10">
+                                        <input name="score_to_pass" type="text" id="score_to_pass" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="type_test" class="col-sm-2 col-form-label text-right">Type Test</label>
+                                    <div class="col-sm-10">
+                                        <input name="type_test" type="text" id="type_test" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="source" class="col-sm-2 col-form-label text-right">Source</label>
+                                    <div class="col-sm-10">
+                                        <input name="source" type="text" id="source" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="status_test" class="col-sm-2 col-form-label text-right">Status Test</label>
+                                    <div class="col-sm-10">
+                                        <select id="status_test" class="form-control" name="status_test" required>
+                                            <option value="" type="hidden" selected disabled></option>                                
+                                            <option value="DEVELOPMENT">Development (test under maintenance or Development)</option>
+                                            <option value="SHARE" >Share (test is ready to share)</option>
+                                            <option value="DONE">Done (test is done)</option>                                 
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div class="mg-y-30 text-center">
+                                <button class="btn btn-primary pd-x-100 shadow-custom">SIMPAN</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+
+    <script src="../../static/lib/jquery/jquery.min.js"></script>
+    <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../static/lib/feather-icons/feather.min.js"></script>
+    <script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="../../static/lib/flatpicker/flatpickr.js"></script>
+    <script src="../../static/assets/js/dashforge.js"></script>
+    <script src="../../static/assets/js/dashforge.aside.js"></script>
+    <script src="../../static/lib/select2/js/select2.min.js"></script>
+    <script src="../../static/js/pytavia-js/custom/ckeditor/ckeditor.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.querySelector('.loader');
+            loader.classList.add('hidden');
+        });
+
+        function toggleForm(formId) {
+            var form = document.getElementById(formId);
+            if (form.style.display === 'none' || form.style.display === '') {
+            form.style.display = 'block';
+            } else {
+            form.style.display = 'none';
+            }
+        }
+
+        ['datepicker', 'datepicker2'].forEach(el => {
+                $(`#${el}`).flatpickr({
+                    enableTime: true,
+                    dateFormat: "d/m/Y H:i",
+                    wrap: true,
+                    allowInput: true
+                })
+            });
+        
+        ['datepicker_', 'datepicker2_'].forEach(el => {
+                $(`#${el}`).flatpickr({
+                    enableTime: true,
+                    dateFormat: "d/m/Y H:i",
+                    wrap: true,
+                    allowInput: true
+                })
+            });
+
+        CKEDITOR.replace( 'desc_meeting', { customConfig : 'config_toolbar_mnc_cs.js' } );            
+        CKEDITOR.replace( 'desc_test', { customConfig : 'config_toolbar_mnc_cs.js' } );            
+            
+ 
+    </script>
+
+</body>
+{% endautoescape %}
+
+</html>

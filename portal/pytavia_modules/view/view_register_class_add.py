@@ -50,7 +50,10 @@ class view_register_class_add:
         class_list = []
        
         class_view = self.mgdDB.db_class.find({
-            "fk_user_id"    :params["fk_user_id"]
+            "$or": [{
+                "creator_id"    :params["fk_user_id"],
+                "buyer_user_id" :params["fk_user_id"]
+            }]
         })
         
 

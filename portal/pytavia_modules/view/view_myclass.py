@@ -28,7 +28,7 @@ from view import view_core_css
 from view import view_core_dialog_message
 
 
-class view_activation_class:
+class view_myclass:
 
     mgdDB = database.get_db_conn(config.mainDB)
 
@@ -36,9 +36,17 @@ class view_activation_class:
         pass
     # end def
 
+    def _find_creator_class(self,fk_user_id):                                    
+        user = self.mgdDB.db_user.find_one({
+            "fk_user_id" : fk_user_id
+        })
+        
+        response =  user
+        return response
+
     
 
-    def _find_activation_class(self, params):
+    def _find_enroll_class(self, params):
         #PAGINATION
         page            = params["page"         ]
         keyword         = params["keyword"      ]
@@ -65,6 +73,15 @@ class view_activation_class:
             # "is_deleted"        : False, 
             # "status_value"      : "PROSES"
         }
+
+       # Construct the query
+        query = {
+            "$and": [
+                { "enrollment_status": "REGISTERED" },  
+                { "fk_user_id": params["fk_user_id"] }  
+            ]
+        }
+        
 
         
         start_timestamp = 0
@@ -102,15 +119,21 @@ class view_activation_class:
         # konten_view = self.mgdDB.db_class.find(query).sort(order).skip(block_skip).limit(entry)
         # block_count = utils.ceildiv(konten_view.count(), entry)
 
-        activation_class_list = []
-        activation_class_view = self.mgdDB.db_activation_class.find(query)
-        block_count = utils.ceildiv(activation_class_view.count(), entry)
+        
+        class_view = self.mgdDB.db_enrollment.find(query,
+            {
+                "_id":0,"fk_user_id":1,"activation_class_id":1,
+                "enrollment_date":1,"enrollment_status":1, "enrollment_id":1
+            }
+        )
+      
+        block_count = utils.ceildiv(class_view.count(), entry)
 
         
         # PROCESS THE BUTTONS
         pagination_params = {
             "url_params"    : url_params,
-            "url"           : "/activation_class",
+            "url"           : "/myclass",
             "page"          : page,
             "block_count"   : block_count
         }
@@ -119,16 +142,29 @@ class view_activation_class:
         next_button = pagination_resp["next_button"]
         
 
-        # END OF PAGINATION
+        # # END OF PAGINATION
+        # for test_item in test_view:                     
+        #     class_resp                          = self._find_activation_class( test_item["activation_class_id"] )            
+        #     test_item["active_class_name"]      = class_resp["active_class_name"     ] 
+        #     test_list.append(test_item)
+       
 
-        for activation_class_item in activation_class_view:
-            activation_class_resp                = self._find_class(activation_class_item["class_id"] )            
-            activation_class_item["name_class"]   = activation_class_resp["name_class"     ] 
-            activation_class_list.append(activation_class_item)
+        class_list = []
 
+        # Lists to hold items to be appended at the end
+        owner_classes = []
+        paid_classes = []
+
+        for class_item in class_view:          
+            class_resp                              = self._find_activation_class( class_item["activation_class_id"] )
+            class_item["activation_class_id"]       = class_resp["activation_class_id"     ]
+            class_item["str_activate_timestamp"]    = class_resp["str_activate_timestamp"     ]
+            class_item["active_class_name"]         = class_resp["active_class_name"     ]
+            class_list.append(class_item)        
+           
 
         response = {
-            "activation_class_list"   : activation_class_list,
+            "class_list"   : class_list,
             "block_count"   : block_count,
             "prev_button"   : prev_button,
             "next_button"   : next_button
@@ -184,15 +220,15 @@ class view_activation_class:
             entry_list              = entry_resp["entry_list"]
 
             # FIND class
-            activation_class_resp   = self._find_activation_class( params )
-            activation_class_list   = activation_class_resp["activation_class_list"     ]
-            block_count             = activation_class_resp["block_count"     ]
-            prev_button             = activation_class_resp["prev_button"     ]
-            next_button             = activation_class_resp["next_button"     ]
+            class_resp             = self._find_enroll_class( params )
+            class_list             = class_resp["class_list"     ]
+            block_count             = class_resp["block_count"     ]
+            prev_button             = class_resp["prev_button"     ]
+            next_button             = class_resp["next_button"     ]
 
             
             html = render_template(
-                "activation_class/activation_class_list.html",
+                "myclass/myclass_list.html",
                 menu_list_html          = menu_list_html,
                 core_display            = core_display,
                 core_header             = core_header, 
@@ -213,7 +249,7 @@ class view_activation_class:
                 next_button             = next_button,                
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
-                activation_class_list   = activation_class_list
+                class_list              = class_list
             )
 
 
@@ -237,16 +273,14 @@ class view_activation_class:
         return response
     # end def
 
-    def _find_class(self, class_id):
-        class_rec = self.mgdDB.db_class.find_one({ 
-            "class_id" : class_id
+    def _find_activation_class(self, activation_class_id):      
+        class_rec = self.mgdDB.db_activation_class.find_one({ 
+            "activation_class_id" : activation_class_id
         })   
-
-        print(class_rec)
-        
-        response = {
-            "name_class"   : class_rec["name_class"]
-        }                
+  
+        response = class_rec       
+        print(class_rec) 
+        print("oiii")
 
         return response
     

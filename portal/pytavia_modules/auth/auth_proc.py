@@ -337,16 +337,23 @@ class auth_proc:
                 "password"  : password
             })
 
-            user_rec  = self.mgdDB.db_user.find_one({
-                "username"  : username
+            user_rec = self.mgdDB.db_user.find_one({
+                "$or": [
+                    {
+                        "email": email
+                    },
+                    {
+                        "username": username
+                    }
+                ]
             })
 
             if user_rec != None:
                 response["message_action"] = "REGISTER_USER_FAILED"
                 response["message_code"  ] = "1"
-                response["message_desc"  ] = "username already taken"
+                response["message_desc"  ] = "username or email already taken"
                 return response
-            # end if                     
+           # end if                     
             
             mdl_register_user   = database.new(self.mgdDB, "db_user")            
             fk_user_id          = mdl_register_user.get()["pkey"]

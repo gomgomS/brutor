@@ -388,25 +388,10 @@ db = {
         "end_timestamp"             : 0,
         "str_start_datetime"        : "", 
         "str_end_datetime"          : "",
-        "type_test"                 : "",       # PDF, GOOGLE TEST, LIVE CODE 
+        "type_test"                 : "",       # PROJECT, LIVE CODE
+        "status_test"               : "",       # SHARE, UNDER_DEVELOPMENT, DONE
         "source"                    : "",       # can be link, or source file             
     },   
-
-     # MEETING
-    "db_meeting"                    : {      
-        "meeting_id"                : "",      
-        "fk_user_id"                : "",        
-        "activation_class_id"       : "",    
-        "name_meeting"              : "",       
-        "desc_meeting"              : "",    
-        "desc_meeting_html"         : "",       # 
-        "desc_meeting_preview"      : "",       #                 
-        "start_timestamp"           : 0,
-        "end_timestamp"             : 0,
-        "str_start_datetime"        : "", 
-        "str_end_datetime"          : "",    
-        "source"                    : "",       # can be link, or source file             
-    }, 
 
     # MEETING
     "db_meeting"                    : {      
@@ -420,7 +405,8 @@ db = {
         "start_timestamp"           : 0,
         "end_timestamp"             : 0,
         "str_start_datetime"        : "", 
-        "str_end_datetime"          : "",    
+        "str_end_datetime"          : "",   
+        "status_meeting"            : "",       # OPEN, UNDER_DEVELOPMENT, DONE
         "source"                    : "",       # can be link, or source file             
     },   
 
@@ -458,6 +444,16 @@ db = {
         "reference_id"              : "",
         "topup_request_date"        : "",
         "update_by_admin_at"        : ""        
+    },
+    
+    # ENROLMENT CLASS
+    "db_enrollment"           : {
+        "enrollment_id"             :"",
+        "fk_user_id"                :"",
+        "activation_class_id"       :"",
+        "enrollment_date"           :"",
+        "enrollment_status"         :"", # REGISTERED, FAILED, PASS
+        "certified_id"              :"", # if pass
     }
 
 

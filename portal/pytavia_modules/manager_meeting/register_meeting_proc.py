@@ -68,6 +68,7 @@ class register_meeting_proc:
             meeting_rec.put("str_start_datetime",         params["start_datetime"        ])
             meeting_rec.put("str_end_datetime",           params["end_datetime"          ])            
             meeting_rec.put("source",                     params["source"             ])
+            meeting_rec.put("status_meeting",             params["status_meeting"     ])
             meeting_rec.insert()                       
 
         except :

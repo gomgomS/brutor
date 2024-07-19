@@ -105,98 +105,96 @@
             <div class="mg-b-10">             
                 <div class="mg-t-10">
                     <div class="">
-                        <h1 class="">Public Class</h1>
-                      
-                    </div>                  
-                    
+                        <h1 class="">Enroll Class</h1>                    
+                    </div>                                      
                     <div class="Ovy(a)--sm">
                         <div class="card-deck row">
                             {% for class_item in class_list %}
-
                             <div class="col-xs-12 col-sm-6 col-md-4 mb-4">
                                 <!-- Card -->
                                 <div class="card card-custom shadow-sm h-100">
-                                    
                                     <!-- Card Header -->
-                                    {% if class_item.status_class == "OPEN" %}
+                                    {% if class_item.status_activation == "OPEN_REGISTRATION" %}
                                     <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
-                                        <h4 class="card-title mb-0">{{ class_item.name_class }}</h4>
-                                        <a href="#" class="btn btn-primary btn-sm btn-custom" data-toggle="modal" data-target="#buyModal{{ class_item.class_id }}">
-                                            <i class="fas fa-shopping-cart"></i> Buy
-                                        </a>
+                                        <h5 class="card-title mb-0">{{ class_item.active_class_name }}</h5>
+                                        <a href="#" class="btn btn-primary btn-sm btn-custom" data-toggle="modal" data-target="#buyModal{{ class_item.activation_class_id }}">
+                                            <i class="fas fa-shopping-cart"></i> Buy Enrollment
+                                        </a> 
                                     </div>
                                     {% else %}
                                     <div class="card-header bg-success card-header-custom d-flex justify-content-between align-items-center">
-                                        <h4 class="card-title mb-0">{{ class_item.name_class }}</h4>
-                                        <h3>{{class_item.status_class}}</h3>
+                                        <h5 class="card-title mb-0">{{ class_item.active_class_name }}</h5>
+                                        <h5>{{ class_item.status_activation }}</h5>
                                     </div>
-                                    {% endif %}                                    
+                                    {% endif %}
                                     <!-- Card content -->
                                     <div class="card-body">
                                         <!-- Creator and Status -->
-                                        <h5 class="card-subtitle mb-2 text-muted-custom">
-                                            <i class="fas fa-user"></i> Creator: {{ class_item.creator_name }}
-                                        </h5>
-                                        <h5 class="card-subtitle mb-2 text-muted-custom">
-                                            <i class="fas fa-info-circle"></i> Status: {{ class_item.status_class }}
-                                        </h5>
-                                        <h5 class="card-subtitle mb-2 text-muted-custom">
-                                            <i class="fas fa-dollar-sign"></i> Harga: {{ class_item.price_class }}
-                                        </h5>
+                                     
+                                        <p class="card-subtitle mb-2 text-muted-custom">
+                                            <i class="fas fa-info-circle"></i> Status: {{ class_item.status_activation }}
+                                        </p>
+                                        <p class="card-subtitle mb-2 text-muted-custom">
+                                            <i class="fas fa-dollar-sign"></i> Price: {{ class_item.price_class }}
+                                        </p>
                                         <!-- Text -->
-                                        <p class="card-text">{{ class_item.desc_class_preview }}</p>
+                                        <p class="card-text">Class starts at: {{ class_item.str_activate_timestamp }}</p>
                                     </div>
                                     <!-- Card Footer -->
                                     <div class="card-footer bg-transparent d-flex justify-content-between">
-                                        <a href="#" class="btn btn-info btn-sm btn-custom btn-info-custom" data-toggle="modal" data-target="#infoModal{{ class_item.class_id }}">
+                                        <a href="#" class="btn btn-info btn-sm btn-custom btn-info-custom" data-toggle="modal" data-target="#infoModal{{ class_item.activation_class_id }}">
                                             <i class="fas fa-info-circle"></i> Read more
                                         </a>
                                     </div>
                                 </div>
-                                <!-- Card -->                                                         
-                            </div>       
-                            <!-- Buy Modal -->
-                            <div class="modal fade" id="buyModal{{ class_item.class_id }}" tabindex="-1" role="dialog" aria-labelledby="buyModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="buyModalLabel">Confirmation</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to buy {{ class_item.price_class }} for clone this class?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                            <a href="buy_public_class/{{ class_item.class_id }}" class="btn btn-primary">Buy</a>
-                                        </div>
-                                    </div>
+                                <!-- Card -->
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                
+                    <!-- Modals for Buy and Info (example structure) -->
+                    {% for class_item in class_list %}
+                    <div class="modal fade" id="buyModal{{ class_item.activation_class_id }}" tabindex="-1" role="dialog" aria-labelledby="buyModalLabel{{ class_item.activation_class_id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="buyModalLabel{{ class_item.activation_class_id }}">Buy Class: {{ class_item.active_class_name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Modal body content -->
+                                    <p>Are you sure you want to buy this class for {{ class_item.price_class }}?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <a href="buy_enroll_myclass/{{ class_item.activation_class_id }}" class="btn btn-primary">Buy</a>
                                 </div>
                             </div>
-                        
-                            <!-- Info Modal -->
-                            <div class="modal fade" id="infoModal{{ class_item.class_id }}" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="infoModalLabel">Additional Information</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <!-- Add any additional information here -->
-                                            {{ class_item.desc_class_html }}
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="infoModal{{ class_item.activation_class_id }}" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel{{ class_item.activation_class_id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="infoModalLabel{{ class_item.activation_class_id }}">Class Info: {{ class_item.active_class_name }}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
-                            </div>                     
-                            {% endfor %}
+                                <div class="modal-body">
+                                    <!-- Modal body content -->
+                                    <p>{{ class_item.desc_class_preview }}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                         </div>                          
                     </div>                                        
                 </div>
