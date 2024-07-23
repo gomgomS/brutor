@@ -7,7 +7,7 @@
     <!-- Favico -->
     <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-    <title>Brutor ADMIN - Edit Kontent</title>
+    <title>Brutor ADMIN - Tambah Kontent</title>
     <!-- vendor css -->
     <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -21,9 +21,11 @@
 
 {% autoescape false %}
 <body>
+    <!-- LOADER -->
     <div class="loader">
         <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
     </div>
+    <!-- VIEW IMAGE -->
     <div class="modal" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="img-prev">
@@ -45,7 +47,7 @@
         <div class="aside-body">
             <ul class="nav nav-aside">
                 {% for menu_item in menu_list_html %}
-                    {%if menu_item.value == 'PENGELOLAAN_KONTEN' %}
+                    {%if menu_item.value == 'MANAGER_CLASS' %}
                         <li class="nav-item nav-item-active ">
                             <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
                                 <span>{{menu_item.menu_name.title()}}</span></a>
@@ -62,166 +64,151 @@
         </div>
     </aside>
 
+
     <div class="content pd-0">
         <div class="content-header">
-            <h5 class="mg-b-0 text-primary">
-                <a href="/starter?menu_value=PENGELOLAAN_KONTEN">Pengelolaan Konten</a> 
-                <i class="fas fa-caret-right"></i> 
-                <a href="{{ redirect }}">Daftar Konten</a>
-                <span style="font-weight: bolder;"><i class="fas fa-caret-right"></i> Edit Konten</span>
-            </h5>
-            <div class="">
-                <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
-                            class="rounded-circle" alt=""></div>
-                    <div class="p-3 d-flex flex-column">
-                        <span class="font-weight-bold">{{ username | safe }}</span>                        
-                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
-                                    data-feather="log-out"></i><span>Logout</span></a>
-                    </div>                                            
-                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb align-items-center">                    
+                    <li class="breadcrumb-item active" aria-current="page">Manager Class</li>
+                    <li class="breadcrumb-item active" aria-current="page">Register Class</li>
+                    <li class="breadcrumb-item active" aria-current="page">Register Class Edit</li>
+                </ol>
+            </nav>
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">			
+                    <div class="text-success font-weight-bold text-balance mr-3" id="balance"></div>
+                </div>
+                <div class="dropdown">
+                <span class="font-weight-bold text-dark">{{ username | safe }}</span>
+                <a class="dropdown-toggle ml-2" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-lg"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                    {% if user_rec.role == 'STUDENT' %}
+                    <div class="dropdown-item text-info">
+                    <i class="fas fa-user-graduate"></i> You're in Student Portal
+                    </div>
+                    {% elif user_rec.role == 'TUTOR' %}
+                    <div class="dropdown-item text-info">
+                    <i class="fas fa-chalkboard"></i> You're in Tutor Portal
+                    </div>
+                    {% elif user_rec.role == 'ADMIN' %}
+                    <div class="dropdown-item text-info">
+                    <i class="fas fa-chalkboard"></i> WELCOME BOSS
+                    </div>				
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/profile"><i class="fas fa-user"></i> Profile</a>
+                    {% if user_rec.register_teacher == 'FALSE' %}
+                    <a class="dropdown-item" href="/profile"><i class="fas fa-chalkboard-teacher"></i> Become a Tutor</a>
+                    {% endif %}
+                    {% if user_rec.role == 'STUDENT' and user_rec.register_teacher == 'TRUE' %}
+                    <a class="dropdown-item" href="/profile/change_portal/tutor"><i class="fas fa-chalkboard"></i> Tutor Portal</a>
+                    {% endif %}
+                    {% if user_rec.role == 'TUTOR' %}
+                    <a class="dropdown-item" href="/profile/change_portal/student"><i class="fas fa-user-graduate"></i> Student Portal</a>
+                    {% endif %}
+                    <a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Sign out</a>
+                </div>
                 </div>
             </div>
         </div>
 
-        <div class="contents-body">
 
-            <form action="/pengelolaan_konten/konten/edit" method="POST" enctype="multipart/form-data">
+        <div class="contents-body">            
+
+            <form action="/register_class/update" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="fk_konten_id" value="{{ konten_rec.pkey }}">
+                <input type="hidden" name="class_id" value="{{ register_class_rec.class_id }}">
                 <input type="hidden" name="redirect" value="{{ redirect }}">
-
 
                 <fieldset class="form-fieldset pd-x-50 field-shadow">
                     <legend>
-                        {% if type != "VIEW" %}
-                            <h1 class="font-weight-bold mg-b-0">Edit <span class="text-success">Konten</span></h1>
-                        {% else %}
-                            <h1 class="font-weight-bold mg-b-0">View <span class="text-success">Konten</span></h1>
-                        {% endif %}
-                        
+                        <h1 class="font-weight-bold mg-b-0">ADD REGISTER CLASS</h1>
                     </legend>
                     <div class="form-group row">
-                        <label for="perusahaan" class="col-sm-2 col-form-label text-right">Perusahaan</label>
+                        <label for="creator" class="col-sm-2 col-form-label text-right">Creator Class Name</label>
                         <div class="col-sm-10">
-                            <select id="perusahaan" class="form-control" name="fk_perusahaan_id" required>
-                                <option value="" type="hidden" selected disabled></option>
-                                {% for perusahaan_item in perusahaan_list %}
-                                    {% if konten_rec.fk_perusahaan_id == perusahaan_item.pkey %}
-                                        <option value="{{ perusahaan_item.pkey }}" selected>{{ perusahaan_item.nama_perusahaan }}</option>
+                            <input name="" type="text" id="creator" value="{{creator_name}}" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="level_class" class="col-sm-2 col-form-label text-right">Level Class</label>
+                        <div class="col-sm-10">
+                            <select id="level_class" class="form-control" name="level_id" required>
+                                <option value="" type="hidden" selected disabled>choose level of class</option>
+                                {% for level_class_item in level_class_list %}
+                                    {% if register_class_rec.level_id == level_class_item.pkey %}
+                                    <option value="{{ level_class_item.pkey }}" selected>{{ level_class_item.level_name }}</option>
                                     {% else %}
-                                        <option value="{{ perusahaan_item.pkey }}">{{ perusahaan_item.nama_perusahaan }}</option>
+                                    <option value="{{ level_class_item.pkey }}">{{ level_class_item.level_name }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="judulKonten" class="col-sm-2 col-form-label text-right">Judul Konten</label>
+                        <label for="name_class" class="col-sm-2 col-form-label text-right">Name Class</label>
                         <div class="col-sm-10">
-                            <input name="judul_konten" type="text" id="judulKonten" class="form-control" value="{{ konten_rec.judul_konten }}">
+                            <input value="{{register_class_rec.name_class}}" name="name_class" type="text" id="name_class" class="form-control">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="deskripsi" class="col-sm-2 col-form-label text-right">Deskripsi</label>
+                        <label for="desc_class" class="col-sm-2 col-form-label text-right">Description Class</label>
                         <div class="col-sm-10">
-                            <textarea name="deskripsi" class="form-control" id="deskripsi" cols="5"
-                                rows="10">{{ konten_rec.deskripsi_html | safe }}</textarea>
+                            <textarea  name="desc_class" class="form-control" id="desc_class" cols="5" rows="5">
+                                {{ register_class_rec.desc_class_html | safe }}
+                            </textarea>
                         </div>
                     </div>
+                    
                     <div class="form-group row">
-                        <label for="url" class="col-sm-2 col-form-label text-right">URL</label>
+                        <label for="status_class" class="col-sm-2 col-form-label text-right">Status Class</label>
                         <div class="col-sm-10">
-                            <input name="url" type="text" id="url" class="form-control" value="{{ konten_rec.url }}">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="posisiKonten" class="col-sm-2 col-form-label text-right">Posisi Konten</label>
-                        <div class="col-sm-10">
-                            <select id="posisiKonten" class="form-control" name="fk_posisi_value" required>
-                                <option value="" type="hidden" selected disabled></option>
-                                {% for posisi_banner_item in posisi_banner_list %}
-                                    {% if konten_rec.fk_posisi_value == posisi_banner_item.value %}
-                                        <option value="{{ posisi_banner_item.value }}" selected>{{ posisi_banner_item.name }}</option>
-                                    {% else %}
-                                        <option value="{{ posisi_banner_item.value }}">{{ posisi_banner_item.name }}</option>
-                                    {% endif %}
-                                {% endfor %}
+                            {% if register_class_rec.status_class == "PAID" %}
+                                <strong class="d-block">{{ register_class_rec.status_class }}</strong>
+                                <p class="mt-2 mb-0">Your status is <strong>{{ register_class_rec.status_class }}</strong> because you already bought from <strong>{{ creator_name }}</strong>.</p>
+                            {% else %}
+                            <select id="status_class" class="form-control" name="status_class" required>
+                                <option value="" type="hidden" selected disabled>CHOOSE STATUS CLASS</option>
+                                <option value="OPEN" {% if register_class_rec.status_class == 'OPEN' %}selected{% endif %}>OPEN</option>
+                                <option value="DEVELOPMENT" {% if register_class_rec.status_class == 'DEVELOPMENT' %}selected{% endif %}>DEVELOPMENT</option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="urutan" class="col-sm-2 col-form-label text-right">Urutan</label>
-                        <div class="col-sm-10">
-                            <input name="urutan" type="number" id="urutan" class="form-control" value="{{ konten_rec.urutan }}" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="jenisTampilan" class="col-sm-2 col-form-label text-right">Jenis Tampilan</label>
-                        <div class="col-sm-10">
-                            <select id="jenisTampilan" class="form-control" name="fk_jenis_tampilan_value">
-                                <option value="" type="hidden" selected disabled></option>
-                                {% for jenis_tampilan_item in jenis_tampilan_list %}
-                                    {% if jenis_tampilan_item.value == konten_rec.fk_jenis_tampilan_value %}
-                                        <option value="{{ jenis_tampilan_item.value }}" selected>{{ jenis_tampilan_item.name }}</option>
-                                    {% else %}
-                                        <option value="{{ jenis_tampilan_item.value }}">{{ jenis_tampilan_item.name }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-2 col-form-label">Gambar</label>
-                        <div class="col-sm-7">              
-                          <img style="width: 200px;height: 200px;" src="{{ image_rec.image }}" alt="" class="upload-photo img-thumbnail">
-                          <input type="file" id="filePic" class="d-none" name="image"> 
-                            {% if type != "VIEW" %}
-                                <label for="filePic" class="d-flex Cur(p) mg-l-25 mg-t-10">
-                                    <i class="rounded-left bg-dark text-white pd-10 fas fa-cloud-upload-alt cbs-1"></i>
-                                    <span class="bg-success pd-7 cbs-1 text-white rounded-right">Upload Photo</span>
-                                </label>
                             {% endif %}
-                          
                         </div>
-                    </div> 
-                    <div class="form-group row">
-                        <label for="dujul" class="col-sm-2 col-form-label text-right">Periode</label>
-                        <div class="col-sm-3">
-                            <div id="datepicker" class="d-flex align-items-center">
-                                <input id="datepicker" name="start_datetime" class="form-control" type="text"
-                                    placeholder="Select Date.." data-input autocomplete="off" value="{{ konten_rec.str_start_datetime }}" required>
-                                <i data-toggle id="calendar2"
-                                    class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
-                            </div>
-                        </div>
-                        <span class="mg-t-10 col-sm-1 text-center">---</span>
-                        <div class="col-sm-3">
-                            <div id="datepicker2" class="d-flex align-items-center">
-                                <input name="end_datetime" data-input id="datepicker2" type="text" class="form-control"
-                                    id="" placeholder="Select Date.." autocomplete="off" value="{{ konten_rec.str_end_datetime }}" required>
-                                <i data-toggle id="calendar2"
-                                    class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
-                            </div>
-                        </div>
-
-                        <input type="hidden" name="update_notes" value="">
-                        
-                        <!-- <div class="form-group row">
-                            <label for="dujul" class="col-sm-2 col-form-label text-right text-right">Update notes</label>
-                            <div class="col-sm-7">
-                                <textarea class="form-control" name="update_notes" id="" cols="5" rows="5"
-                                    placeholder="Update notes . . . ." required></textarea>
-                            </div>
-                        </div> -->
-
                     </div>
+                    
+                       
+                    <div class="form-group row">
+                        <label for="" class="col-sm-2 col-form-label text-right text-right">Prerequisite Class</label>
+                        <div class="col-sm-10">
+                            <select  id="basic-multiple" class="form-control" multiple="multiple" name="classId">                                
+                                {% for class_item in class_list %}
+                                <option value="{{ class_item.class_id }}" {% if class_item.class_id in register_class_rec.prerequisite_class_id %}selected{% endif %}>{{ class_item.name_class }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="pass_requirement" class="col-sm-2 col-form-label text-right">Pass Requirement</label>
+                        <div class="col-sm-10">
+                            <textarea name="pass_requirement" class="form-control" id="pass_requirement" cols="5" rows="5">
+                                {{ register_class_rec.pass_requirement_html | safe }}
+                            </textarea>
+                        </div>
+                    </div>
+                    {% if register_class_rec.status_class != "PAID" %}                                       
+                    <div class="form-group row">
+                        <label for="price_class" class="col-sm-2 col-form-label text-right">Price Class</label>
+                        <div class="col-sm-10">
+                            <input value="{{register_class_rec.price_class}}" name="price_class" type="number" id="price_class" class="form-control">
+                        </div>
+                    </div>  
+                    {% endif %}                    
                 </fieldset>
 
                 <div class="mg-y-30 text-center">
-                    {% if type != "VIEW" %}
-                        <button class="btn btn-primary pd-x-100 shadow-custom">UPDATE</button>
-                    {% endif %}
+                    <button class="btn btn-primary pd-x-100 shadow-custom">SIMPAN</button>
                 </div>
             </form>
             <footer class="text-center mg-t-auto font-weight-bold">©Brutor a,k,a BRUTAR TUTOR</footer>
@@ -232,11 +219,11 @@
     <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../static/lib/feather-icons/feather.min.js"></script>
     <script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="../../static/lib/select2/js/select2.min.js"></script>
     <script src="../../static/lib/flatpicker/flatpickr.js"></script>
     <script src="../../static/assets/js/dashforge.js"></script>
     <script src="../../static/assets/js/dashforge.aside.js"></script>
     <script src="../../static/js/pytavia-js/custom/ckeditor/ckeditor.js"></script>
+    <script src="../../static/lib/select2/js/select2.min.js"></script>
 
     <script>
         window.addEventListener('load', () => {
@@ -244,6 +231,9 @@
             loader.classList.add('hidden');
         });
 
+        $(document).ready(function() {
+            $('#basic-multiple').select2();
+        });
         
         $( document ).ready(function() {
 
@@ -282,31 +272,34 @@
                 })
             });
 
-            CKEDITOR.replace( 'deskripsi', { customConfig : 'config_toolbar_mnc_cs.js' } );
-
+            CKEDITOR.replace( 'desc_class', { customConfig : 'config_toolbar_mnc_cs.js' } );
+            CKEDITOR.replace( 'pass_requirement', { customConfig : 'config_toolbar_mnc_cs.js' } );
+            
             const file = document.getElementById('filePic');
             const upContainer = document.querySelector('.upload-photo');    
 
-            file.addEventListener('change', function(){
-            const file = this.files[0];            
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                upContainer.src = reader.result;             
-                };
-            };
-            })
-        
-            //view img
-            $(function() {
-            $('.upload-photo').on('click', function() {        
-                $('.imagepreview').attr('src', $(this).attr('src'));
-                $('#imagemodal').modal('show');   
-            });		
-            });
+            
 
+            
         });
+
+        // Function to format number as Rupiah
+		function formatRupiah(value) {
+			const formatter = new Intl.NumberFormat('id-ID', {
+				style: 'currency',
+				currency: 'IDR',
+				minimumFractionDigits: 2
+			});
+			return formatter.format(value);
+		}
+
+		// Assuming user_rec.balance is passed from server to client-side as a JavaScript variable
+		const userBalance = {{ user_rec.balance }};
+		
+		// Update the balance element with formatted value
+		document.getElementById('balance').textContent = formatRupiah(userBalance);
+
+        
 
     </script>
 </body>

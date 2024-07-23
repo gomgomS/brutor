@@ -77,24 +77,13 @@ class view_public_class:
        # Construct the query
         query = {
             "$or": [
-                { "status_class": "OPEN" },  # Include documents with status "OPEN"
+                # { "status_class": "OPEN" },  # Include documents with status "OPEN"
                 { 
                     "$and": [
-                        { "status_class": "PAID" },  # Include documents with status "PAID"
-                        { "buyer_user_id": params['fk_user_id'] }  # Only if buyer_user_id matches fk_user_id
+                        { "status_class": "OPEN" },  # Include documents with status "PAID"                        
+                        {"creator_id": {"$ne": params["fk_user_id"]}}
                     ]
-                },
-                {
-                    "$and": [
-                        { "creator_id": params['fk_user_id'] },  # Include documents with creator_id matching fk_user_id
-                        {
-                            "$or": [
-                                { "buyer_user_id": { "$exists": False } },  # Only if buyer_user_id does not exist
-                                { "buyer_user_id": "" }  # Or if buyer_user_id is an empty string
-                            ]
-                        }
-                    ]
-                }
+                },                                
             ]
         }
         
@@ -240,6 +229,9 @@ class view_public_class:
             prev_button             = class_resp["prev_button"     ]
             next_button             = class_resp["next_button"     ]
 
+            # FIND user
+            user_rec                = self._data_user(params)       
+
             
             html = render_template(
                 "public_class/public_class_list.html",
@@ -263,7 +255,9 @@ class view_public_class:
                 next_button             = next_button,                
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
-                class_list              = class_list
+                class_list              = class_list,
+                user_rec                = user_rec
+                
             )
 
 
@@ -286,6 +280,12 @@ class view_public_class:
 
         return response
     # end def
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
     
 # end class
 

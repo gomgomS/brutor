@@ -16,19 +16,7 @@
 	<link rel="stylesheet" href="../../static/assets/css/dashforge.css">
 	<link rel="stylesheet" href="../../static/css/custom.css">	
 	<style>	 
-    .content-header {
-      background-color: #f8f9fa;
-      padding: 10px 20px;
-      border-bottom: 1px solid #dee2e6;
-    }
-    .breadcrumb {
-      background-color: transparent;
-      margin-bottom: 0;
-      padding: 0;
-    }
-    .text-balance {
-      font-size: 1.25rem;
-    }
+    
 
   </style>
   </style>
@@ -94,6 +82,10 @@
 				<div class="dropdown-item text-info">
 				<i class="fas fa-chalkboard"></i> You're in Tutor Portal
 				</div>
+				{% elif user_rec.role == 'ADMIN' %}
+				<div class="dropdown-item text-info">
+				<i class="fas fa-chalkboard"></i> WELCOME BOSS
+				</div>				
 				{% endif %}
 				<div class="dropdown-divider"></div>
 				<a class="dropdown-item" href="/profile"><i class="fas fa-user"></i> Profile</a>
@@ -160,10 +152,18 @@
 		  <!-- email verification messages section -->
 		{% if user_rec["ver_email"] == "FALSE" %}		
 		<div class="card bg-danger text-white">
-			<div class="card-body">please verification your email first!! verification email already sent to <b>{{user_rec["email"]}}</b> or 
-				<span class="badge bg-light text-dark"><a href="/auth/send_verification_email">sent verification number</a></span></div>
+			<div class="flex-wrap">
+				<div class="card-body">please verification your email first!! verification email already sent to <b>{{user_rec["email"]}}</b> or 
+				<form action="/auth/send_verification_email" method="POST" enctype="multipart/form-data" class="mx-2">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+					<input type="hidden" name="redirect" value="/user/dashboard">
+					<button type="submit" class="btn btn-primary position-relative">
+						<i class="fas fa-envelope"></i> Send Verification Email
+					</button>
+				</form>
+			</div>
 			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#numberModal">
-				input number
+				input verify number here
 			</button>
 		  </div>
 		{% endif %}

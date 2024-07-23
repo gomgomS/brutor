@@ -55,6 +55,13 @@ class view_topup:
         return response
                           
     # end def
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)     
+        # ver_status = user['ver_email']          
+
+        return user
     
 
     def html(self, params):
@@ -73,6 +80,8 @@ class view_topup:
 
             # FOR CHECK THE LATEST TOPUP REQUEST
             latest_topup_request_resp             = self._find_latest_topup_request( params )
+
+            user_rec         = self._data_user(params)                          
                         
             html = render_template(
                 "payment/topup.html",
@@ -85,11 +94,13 @@ class view_topup:
                 core_dialog_message = core_dialog_message,
                 username            = params["username"      ],
                 role_position       = params["role_position" ],                        
-                latest_topup_request_resp        = latest_topup_request_resp
+                latest_topup_request_resp        = latest_topup_request_resp,                
+                user_rec                = user_rec
             )
 
             response.put( "data", {
-                    "html" : html
+                    "html" : html,
+                    "user_rec" : user_rec
                 }
             )
 
@@ -107,6 +118,14 @@ class view_topup:
 
         return response
     # end def
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
+
+    
     
 # end class
 

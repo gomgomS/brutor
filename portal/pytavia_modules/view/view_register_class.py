@@ -69,9 +69,21 @@ class view_register_class:
             order = pymongo.DESCENDING
         
 
-        query = { 
-            # "is_deleted"        : False, 
-            # "status_value"      : "PROSES"
+        query = {
+            "$or": [                
+                { 
+                    "$and": [
+                        { "creator_id": params['fk_user_id'] },  # Include documents with status "PAID"
+                        { "buyer_user_id": "" }  # Only if buyer_user_id matches fk_user_id
+                    ]
+                },  # Include documents with status "OPEN"
+                { 
+                    "$and": [
+                        { "status_class": "PAID" },  # Include documents with status "PAID"
+                        { "buyer_user_id": params['fk_user_id'] }  # Only if buyer_user_id matches fk_user_id
+                    ]
+                },                
+            ]
         }
 
         
@@ -111,7 +123,7 @@ class view_register_class:
         # block_count = utils.ceildiv(konten_view.count(), entry)
 
         class_list = []
-        class_view = self.mgdDB.db_class.find(query)
+        class_view = self.mgdDB.db_class.find(query).sort(sort_by, order).skip(block_skip).limit(entry)
         block_count = utils.ceildiv(class_view.count(), entry)
 
         
@@ -130,8 +142,14 @@ class view_register_class:
         # END OF PAGINATION
 
         for class_item in class_view:
+            #find crator class
             creator_class                       = self._find_creator_class(class_item['creator_id'])
             class_item['creator_name']          = creator_class['name']
+
+            # Convert price to Rupiah currency format
+            if 'price_class' in class_item and class_item['price_class'] != 'NOT_FOR_SALE':
+                class_item['price_class'] = self.format_currency(class_item['price_class'])
+
             class_list.append(class_item)
 
         response = {
@@ -197,6 +215,8 @@ class view_register_class:
             prev_button             = class_resp["prev_button"     ]
             next_button             = class_resp["next_button"     ]
 
+            # FIND user
+            user_rec                = self._data_user(params)       
             
             html = render_template(
                 "register_class/register_class_list.html",
@@ -220,7 +240,8 @@ class view_register_class:
                 next_button             = next_button,                
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
-                class_list              = class_list
+                class_list              = class_list,
+                user_rec                = user_rec
             )
 
 
@@ -242,6 +263,20 @@ class view_register_class:
         # end try
 
         return response
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
+
+    def format_currency(self,amount):
+        """Format the amount into Rupiah currency format."""
+        try:
+            amount = float(amount)  # Convert to float if it's a string
+            return f"Rp {amount:,.0f}".replace(',', '.')
+        except ValueError:
+            return "Rp 0"  # Default value if conversion fails
     # end def
     
 # end class

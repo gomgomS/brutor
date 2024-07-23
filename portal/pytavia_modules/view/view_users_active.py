@@ -162,6 +162,8 @@ class view_users_active:
             entry_resp      = utils._find_table_entries()
             entry_list      = entry_resp["entry_list"]
 
+            user_rec         = self._data_user(params)           
+
             # FIND PROGRAM
             users_resp  = self._find_users( params )
             user_list  = users_resp["user_list"   ]
@@ -191,7 +193,8 @@ class view_users_active:
                 prev_button             = prev_button,
                 next_button             = next_button,
                 sort_by_list            = sort_by_list,
-                user_list               = user_list
+                user_list               = user_list,
+                user_rec                = user_rec
                 
             )
 
@@ -214,6 +217,12 @@ class view_users_active:
 
         return response
     # end def
+    
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
     
 # end class
 

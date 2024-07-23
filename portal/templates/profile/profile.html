@@ -90,17 +90,7 @@
 	</aside>
 
 	<div class="content pd-0">
-		<div class="content-header ">
-			 <!-- Display flashed messages -->
-			{% with messages = get_flashed_messages(with_categories=true) %}
-				{% if messages %}
-					<div class="flashes">
-						{% for category, message in messages %}
-							<div class="alert alert-{{ category }}">{{ message }}</div>
-						{% endfor %}
-					</div>
-				{% endif %}
-			{% endwith %}
+		<div class="content-header ">			
 			<h4 class="mg-b-0 text-primary">Profile</h4>
 			<div class="">
 				<div class="d-flex align-items-center">
@@ -128,25 +118,48 @@
 		</div>
 
 		<!-- BODY -->	
-		
+		<div class="container mt-5">
+			<fieldset class="form-fieldset pd-x-50 field-shadow">
+				<div class="d-flex justify-content-around">
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
+						Edit Profile
+					</button>
+					{%if data_user.ver_email == 'FALSE'%}
+					<form action="/auth/send_verification_email" method="POST" enctype="multipart/form-data" class="mx-2">
+						<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+						<input type="hidden" name="redirect" value="/profile">
+						<button type="submit" class="btn btn-primary position-relative">
+							<i class="fas fa-envelope"></i> Send Verification Email
+						</button>
+					</form>
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#numberModal">
+						Input Verify Number
+					</button>
+					{% endif %}
+				</div>
+			</fieldset>
+		</div>
 		
 		<div class="contents-body">
-
-            <form >
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="redirect" value="{{ redirect }}">
-
+            <form>             
                 <fieldset class="form-fieldset pd-x-50 field-shadow">
                     <legend>
                         <h1 class="font-weight-bold mg-b-0">Profile</h1>
-                    </legend>
-					<div class="form-group row">														
-						<button type="button" class="col-sm-2 btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
-							edit Profile
-						</button>
-						<div class="col-sm-10">
-							<span class="badge bg-light text-dark">edit your cv and change your password here</span>							
-						</div>						
+                    </legend>					
+					 <!-- Flash messages section -->
+						<!-- Display Flash Messages -->
+						{% with messages = get_flashed_messages(with_categories=true) %}
+						{% if messages %}
+							<div class="flash-messages">
+								{% for category, message in messages %}
+									<div class="alert alert-{{ category }}">
+										{{ message }}
+									</div>
+								{% endfor %}
+							</div>
+						{% endif %}
+					{% endwith %}
+					<div class="form-group row">																																
 					</div>
 					<div class="form-group row">
                         <label for="creator" class="col-sm-2 col-form-label text-right">Full Name</label>
@@ -168,7 +181,7 @@
 							<input type="text" class="form-control is-invalid" id="validationServer03" value="{{data_user.email}}" aria-describedby="validationServer03Feedback" readonly>
 							<div id="validationServer03Feedback" class="invalid-feedback">
 								Your email has not been verified.
-							</div>                      
+							</div>  							                							
 						</div>
 						{% else %}
 						<label for="validationServer02" class="col-sm-2 col-form-label text-right">Email</label>
@@ -191,87 +204,99 @@
                
             </form>
 			<p></p>
-			
-			{% if data_user.summery_status_applying == "SET MEETING" %}
-			<fieldset class="form-fieldset pd-x-50 field-shadow">
-				<legend>
-					<h1 class="font-weight-bold mg-b-0">Apply for Tutor</h1>
-					<!-- Button to trigger modal -->						
-				</legend>
-				<div class="form-group row">
-					
-					
-					<button type="button" class="col-sm-2 btn btn-primary" data-toggle="modal" data-target="#cvModal">
-						View CV
-					</button>
-					<div class="col-sm-10">
-						<span class="badge bg-light text-dark">"Congratulations! Your CV has been approved. Please attend the interview on the following information.</span>                            
-						<h4>link meeting: <a href="{{data_user.latest_apply_rec.link_meeting}}" class="">{{data_user.latest_apply_rec.link_meeting}}</a></h4>,
-						<h4>date meeting: <span>{{data_user.latest_apply_rec.date_interview_str}}</span></h4>
-					</div>
-					
-				</div>							   
-			</fieldset>
-			{% elif data_user.summery_status_applying == "APPROVE"  %}
-			<fieldset class="form-fieldset pd-x-50 field-shadow">
-				<legend>
-					<h1 class="font-weight-bold mg-b-0">HOREEEE</h1>
-					<!-- Button to trigger modal -->						
-				</legend>
-				<div class="">										
-					<h1>Congratulations You're TUTOR NOW</h1> 
-					
-				</div>							   
-				<h2> <a href="/profile/change_portal/tutor" type="" class="">click here</a>  for change portal</h2>
-			</fieldset>
-			{% else %}
-			<form action="/profile/send_cv" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="redirect" value="{{ redirect }}">
-
-                <fieldset class="form-fieldset pd-x-50 field-shadow">
-                    <legend>
-                        <h1 class="font-weight-bold mg-b-0">Apply for Tutor</h1>
+			{% if data_user.ver_email == 'TRUE' %}
+				{% if data_user.summery_status_applying == "SET MEETING" %}
+				<fieldset class="form-fieldset pd-x-50 field-shadow">
+					<legend>
+						<h1 class="font-weight-bold mg-b-0" id="tutor_section">Apply for Tutor</h1>
 						<!-- Button to trigger modal -->						
-                    </legend>
+					</legend>
 					<div class="form-group row">
-						{% if data_user.summery_status_applying != "" %}
+						
 						
 						<button type="button" class="col-sm-2 btn btn-primary" data-toggle="modal" data-target="#cvModal">
 							View CV
 						</button>
-                        <div class="col-sm-10">
-							<h2><span class="badge bg-light text-dark">Your CV is under review, but you can still update your information below.</span></h2>							
-                        </div>
-						{% endif %}
-                    </div>
-					<div class="form-group row">
-                        <label for="phone" class="col-sm-2 col-form-label text-right">No Hp</label>
-                        <div class="col-sm-10">
-                            <input name="phone" type="text" id="phone" value="{{data_user.phone}}" class="form-control" required>
-                        </div>
-                    </div>
-					<div class="form-group row">
-                        <label for="cv_user" class="col-sm-2 col-form-label text-right">Copas your CV Here</label>
-                        <div class="col-sm-10">
-                            <textarea name="cv_user" value="{{data_user.cv_user}}" class="form-control" id="cv_user" cols="5" rows="5"></textarea>
-                        </div>
-                    </div>
-					<div class="form-group row">
-                        <label for="link_cv" class="col-sm-2 col-form-label text-right">or give me link CV</label>
-                        <div class="col-sm-10">
-                            <input name="cv_link" type="text" id="cv_link" value="{{data_user.cv_link}}" class="form-control" required>
-                        </div>
-                    </div>
+						<div class="col-sm-10">
+							<span class="badge bg-light text-dark">"Congratulations! Your CV has been approved. Please attend the interview on the following information.</span>                            
+							<h4>link meeting: <a href="{{data_user.latest_apply_rec.link_meeting}}" class="">{{data_user.latest_apply_rec.link_meeting}}</a></h4>,
+							<h4>date meeting: <span>{{data_user.latest_apply_rec.date_interview_str}}</span></h4>
+						</div>
+						
+					</div>							   
+				</fieldset>
+				{% elif data_user.summery_status_applying == "APPROVE"  %}
+				<fieldset class="form-fieldset pd-x-50 field-shadow">
+					<legend>
+						<h1 class="font-weight-bold mg-b-0">HOREEEE</h1>
+						<!-- Button to trigger modal -->						
+					</legend>
+					<div class="">										
+						<h1>Congratulations You're TUTOR NOW</h1> 
+						
+					</div>							   
+					<h2> <a href="/profile/change_portal/tutor" type="" class="">click here</a>  for change portal</h2>
+				</fieldset>
+				{% else %}
+				<form action="/profile/send_cv" method="POST" enctype="multipart/form-data">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+					<input type="hidden" name="redirect" value="{{ redirect }}">
 
-					<div class="mg-y-30 text-center">
-						<button class="btn btn-primary pd-x-100 shadow-custom">apply</button>
+					<fieldset class="form-fieldset pd-x-50 field-shadow">
+						<legend>
+							<h1 class="font-weight-bold mg-b-0">Apply for Tutor</h1>
+							<!-- Button to trigger modal -->						
+						</legend>
+						<div class="form-group row">
+							{% if data_user.summery_status_applying != "" %}
+							
+							<button type="button" class="col-sm-2 btn btn-primary" data-toggle="modal" data-target="#cvModal">
+								View CV
+							</button>
+							<div class="col-sm-10">
+								<h2><span class="badge bg-light text-dark">Your CV is under review, but you can still update your information below.</span></h2>							
+							</div>
+							{% endif %}
+						</div>
+						<div class="form-group row">
+							<label for="phone" class="col-sm-2 col-form-label text-right">No Hp</label>
+							<div class="col-sm-10">
+								<input name="phone" type="text" id="phone" value="{{data_user.phone}}" class="form-control" required>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="cv_user" class="col-sm-2 col-form-label text-right">Copas your CV Here</label>
+							<div class="col-sm-10">
+								<textarea name="cv_user" value="{{data_user.cv_user}}" class="form-control" id="cv_user" cols="5" rows="5"></textarea>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="link_cv" class="col-sm-2 col-form-label text-right">or give me link CV</label>
+							<div class="col-sm-10">
+								<input name="cv_link" type="text" id="cv_link" value="{{data_user.cv_link}}" class="form-control" required>
+							</div>
+						</div>
+
+						<div class="mg-y-30 text-center">
+							<button class="btn btn-primary pd-x-100 shadow-custom">apply</button>
+						</div>
+					
+					</fieldset>
+				
+				</form>
+				{% endif %}						
+				{% else %}
+					<div class="card">
+						<div class="mg-10">
+							<div class="icon">
+								<i class="fas fa-exclamation-circle"></i>
+							</div>
+							<h2>Sorry for Applying for Tutor</h2>
+							<p>You should verify your email and complete your data profile above.</p>					
+						</div>
 					</div>
-                   
-                </fieldset>
-               
-            </form>
-			{% endif %}						
+				{% endif %}
+
 			
 			<!-- Modal APPLY FOR TUTOR -->
 			
@@ -343,6 +368,35 @@
 					</div>
 				</div>
 			</div>	
+
+			<!-- The Modalinput verification number -->
+			<div class="modal fade" id="numberModal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+		
+						<!-- Modal Header -->
+						<div class="modal-header">
+							<h4 class="modal-title">Please enter a 4-digit number verification code we sent to {{data_user.email}}. </h4>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+		
+						<!-- Modal Body -->
+						<div class="modal-body">
+							<form id="numberForm" action="/auth/check_verification_email" method="POST">
+								<div class="form-group">
+									<label for="fourDigitNumber">4 Digit Number:</label>
+									<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+									<input type="text" name="unique_4_number" class="form-control" id="fourDigitNumber" maxlength="4" pattern="\d{4}" required>
+									<div class="invalid-feedback">
+										Please enter a 4-digit number.
+									</div>
+								</div>
+								<button type="submit" class="btn btn-primary">Submit</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
 			
         </div>
 
@@ -370,6 +424,10 @@
 	<script>
 		
 		CKEDITOR.replace( 'cv_user', { customConfig : 'config_toolbar_mnc_cs.js' } );
+
+		document.getElementById('id').scrollIntoView({
+			behavior: 'smooth'
+		});
 	</script>
 
 

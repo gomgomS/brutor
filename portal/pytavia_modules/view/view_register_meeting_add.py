@@ -65,6 +65,8 @@ class view_register_meeting_add:
             activation_class_resp     = self._find_activation_class( params )
             activation_class_list     = activation_class_resp["activation_class_list"     ]
 
+            # FIND user
+            user_rec                = self._data_user(params)       
             
             html = render_template(
                 "register_meeting/register_meeting_add.html",
@@ -78,7 +80,8 @@ class view_register_meeting_add:
                 username                = params["username"      ],
                 role_position           = params["role_position" ],
                 redirect                = params["redirect"      ],       
-                activation_class_list   = activation_class_list
+                activation_class_list   = activation_class_list,
+                user_rec                = user_rec
           
             )
 
@@ -100,6 +103,12 @@ class view_register_meeting_add:
 
         return response
     # end def
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
     
 # end class
 

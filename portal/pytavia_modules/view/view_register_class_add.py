@@ -50,10 +50,20 @@ class view_register_class_add:
         class_list = []
        
         class_view = self.mgdDB.db_class.find({
-            "$or": [{
-                "creator_id"    :params["fk_user_id"],
-                "buyer_user_id" :params["fk_user_id"]
-            }]
+            "$or": [                
+                { 
+                    "$and": [
+                        { "creator_id": params['fk_user_id'] },  # Include documents with status "PAID"
+                        { "buyer_user_id": "" }  # Only if buyer_user_id matches fk_user_id
+                    ]
+                },  # Include documents with status "OPEN"
+                { 
+                    "$and": [
+                        { "status_class": "PAID" },  # Include documents with status "PAID"
+                        { "buyer_user_id": params['fk_user_id'] }  # Only if buyer_user_id matches fk_user_id
+                    ]
+                },                
+            ]
         })
         
 
@@ -77,6 +87,15 @@ class view_register_class_add:
 
         return response
     # end def
+
+    def _data_user(self):      
+        user_uuid   = session["user_uuid"]
+        query = { "user_uuid": user_uuid}
+        user = self.mgdDB.db_user.find_one(query)     
+        # ver_status = user['ver_email']          
+
+        return user
+       
 
 
     
@@ -107,6 +126,8 @@ class view_register_class_add:
             class_list             = class_resp["class_list"         ] 
             print(class_list)
             print("hokage")
+
+            user_rec         = self._data_user()        
             
             html = render_template(
                 "register_class/register_class_add.html",
@@ -123,6 +144,7 @@ class view_register_class_add:
                 level_class_list        = level_class_list,
                 creator_name            = creator_name,       
                 class_list              = class_list,
+                user_rec                = user_rec
               )
 
             response.put( "data", {

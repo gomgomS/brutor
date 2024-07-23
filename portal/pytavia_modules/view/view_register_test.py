@@ -183,9 +183,11 @@ class view_register_test:
             entry_resp              = utils._find_table_entries()
             entry_list              = entry_resp["entry_list"]
 
+            # FIND user
+            user_rec                = self._data_user(params)       
+
             # FIND test
-            test_resp              = self._find_register_test( params )
-            print(test_resp)
+            test_resp              = self._find_register_test( params )            
             test_list              = test_resp["test_list"     ]
             block_count             = test_resp["block_count"     ]
             prev_button             = test_resp["prev_button"     ]
@@ -214,7 +216,8 @@ class view_register_test:
                 next_button             = next_button,                
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
-                test_list              = test_list
+                test_list              = test_list,
+                user_rec                = user_rec
             )
 
 
@@ -248,5 +251,11 @@ class view_register_test:
         }                
 
         return response
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
 # end class
 

@@ -53,38 +53,125 @@
     </aside>
 
     <div class="content pd-0">
-        <div class="content-header">
-            <h5 class="mg-b-0 text-primary"><a href="/starter?menu_value=MANAGER_USERS">Manager USERS</a> <span style="font-weight: bolder;"><i class="fas fa-caret-right"></i> Register Class List</span></h5>
-            <div class="">
-                <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
-                            class="rounded-circle" alt=""></div>
-                    <div class="p-3 d-flex flex-column">
-                        <span class="font-weight-bold">{{ username | safe }}</span>                        
-                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
-                                    data-feather="log-out"></i><span>Logout</span></a>
-                    </div>                                            
-                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+        <!-- Navbar Top -->
+		<div class="content-header">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb align-items-center">
+                <li class="breadcrumb-item active" aria-current="page">Manager user</li>
+                <li class="breadcrumb-item active" aria-current="page">Tutor approval</li>
+                </ol>
+            </nav>
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">			
+                    <div class="text-success font-weight-bold text-balance mr-3" id="balance"></div>
+                </div>
+                <div class="dropdown">
+                <span class="font-weight-bold text-dark">{{ username | safe }}</span>
+                <a class="dropdown-toggle ml-2" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-lg"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                    {% if user_rec.role == 'STUDENT' %}
+                    <div class="dropdown-item text-info">
+                    <i class="fas fa-user-graduate"></i> You're in Student Portal
+                    </div>
+                    {% elif user_rec.role == 'TUTOR' %}
+                    <div class="dropdown-item text-info">
+                    <i class="fas fa-chalkboard"></i> You're in Tutor Portal
+                    </div>
+                    {% elif user_rec.role == 'ADMIN' %}
+                    <div class="dropdown-item text-info">
+                    <i class="fas fa-chalkboard"></i> WELCOME BOSS
+                    </div>				
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/profile"><i class="fas fa-user"></i> Profile</a>
+                    {% if user_rec.register_teacher == 'FALSE' %}
+                    <a class="dropdown-item" href="/profile"><i class="fas fa-chalkboard-teacher"></i> Become a Tutor</a>
+                    {% endif %}
+                    {% if user_rec.role == 'STUDENT' and user_rec.register_teacher == 'TRUE' %}
+                    <a class="dropdown-item" href="/profile/change_portal/tutor"><i class="fas fa-chalkboard"></i> Tutor Portal</a>
+                    {% endif %}
+                    {% if user_rec.role == 'TUTOR' %}
+                    <a class="dropdown-item" href="/profile/change_portal/student"><i class="fas fa-user-graduate"></i> Student Portal</a>
+                    {% endif %}
+                    <a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Sign out</a>
+                </div>
                 </div>
             </div>
-        </div>        
+        </div>
 
         <div class="contents-body">
-            <div class="mg-b-100">             
-                <div class="mg-t-60">
+            <div class="">             
+                <div class="">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="font-weight-bold">Tutor Approval</h1>
-                    </div>                  
+                        <h3 class="">Tutor Approval</h3>
+                        <form action="/tutor_approval" method="GET" class="mg-t-30">
+                            <fieldset class="">
+                                <div class="d-flex flex-wrap">
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Entries/page:</label>
+                                        <br>
+                                        <select name="entry" id="" class="custom-select W(80px)">
+                                            {% for entry_item in entry_list%}
+                                                {% if entry|string == entry_item.misc %}
+                                                    <option value="{{ entry_item.misc }}" selected>{{ entry_item.misc }}</option>
+                                                {% else %}
+                                                    <option value="{{ entry_item.misc }}">{{ entry_item.misc }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Sort By:</label>
+                                        <select name="sort_by" id="" class="custom-select ">
+                                            {% for sort_by_item in sort_by_list%}
+                                                {% if sort_by == sort_by_item.value %}
+                                                    <option value="{{ sort_by_item.value }}" selected>{{ sort_by_item.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ sort_by_item.value }}">{{ sort_by_item.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Order By:</label>
+                                        <select name="order_by" id="" class="custom-select ">
+                                            {% if order_by == "asc" %}
+                                                <option value="asc" selected>Ascending</option>
+                                                <option value="desc">Descending</option>
+                                            {% else %}
+                                                <option value="asc">Ascending</option>
+                                                <option value="desc" selected>Descending</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+    
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Keyword</label>
+                                        <input id="keyword" name="keyword" value="{{ keyword }}" type="text" class="form-control ">
+                                    </div>
+    
+    
+                        
+                                    <div class="form-group d-flex mg-t-auto">
+                                        <button class="btn btn-info shadow-custom mg-r-8">Submit</button>
+                                        <a href="/users/active" id="reset" class="btn btn-danger shadow-custom" style="color: white;">Reset</a>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>                
+                    </div>  
                     
                     <div class="Ovy(a)--sm">
                         <div class="">
                             <table class="table table-striped">
                                 <thead class="thead-primary">
                                     <tr>
-                                        <th>Name User</th>
-                                        <th>Status Apply</th>
-                                        <th>Record Apply</th>                                        
-                                        <th>Action</th>
+                                        <th width="20%">Name User</th>
+                                        <th width="10%">Status Apply</th>
+                                        <th width="40%">Record Apply</th>                                        
+                                        <th width="10%">Action</th>
                                         
                                     </tr>
                                 </thead>
@@ -92,18 +179,54 @@
                                     {% for user_item in user_list %}
                                         <tr>
                                             <td>{{ user_item.name }}</td>
-                                            <td>{{ user_item.summery_status_applying }}</td>                                                                                      
-                                            <td>{{ user_item.status_applying }}</td>
+                                            <td>
+                                                {% if user_item.summery_status_applying == "APPROVE" %}
+                                                <span class="badge badge-success">Approved</span>
+                                                {% elif user_item.summery_status_applying == "REJECTED" %}
+                                                    <span class="badge badge-danger">Rejected</span>
+                                                {% elif user_item.summery_status_applying == "WAITING" %}
+                                                    <span class="badge badge-warning">Waiting</span>
+                                                {% else %}
+                                                    <span class="badge badge-info">SET MEETING</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% for application in user_item.status_applying %}
+                                                    {% if application.status == "WAITING" %}
+                                                        <span class="badge badge-warning">{{ application.status }}</span>
+                                                    {% elif application.status == "SET MEETING" %}
+                                                        <span class="badge badge-info">{{ application.status }}</span>
+                                                    {% elif application.status == "APPROVE" %}
+                                                        <span class="badge badge-success">{{ application.status }}</span>
+                                                    {% else %}
+                                                        <span class="badge badge-secondary">{{ application.status }}</span>
+                                                    {% endif %}
+                                                    {% if application.apply_date %}
+                                                        <small class="text-muted">({{ application.apply_date }})</small>
+                                                    {% endif %}
+                                                    {% if application.status == "SET MEETING" and application.link_meeting %}
+                                                        <small class="text-muted"> - <a href="{{ application.link_meeting }}" target="_blank">link: {{ application.link_meeting }}</a></small>
+                                                    {% endif %}
+                                                    <br>
+                                                {% endfor %}
+                                            </td>
+                                                                                                                                    
+                                            <td>
+                                                <!-- CV Button -->
+                                                <span class="badge badge-primary">
+                                                    <a href="#" class="text-white" data-toggle="modal" data-target="#myModal{{ loop.index }}">
+                                                        View CV
+                                                    </a>
+                                                </span>
                                             
-                                            
-                                            <td>       
-                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{ loop.index }}">
-                                                    View CV
-                                                </button>                                                                                   
-                                                <a href="approve_tutor/{{user_item.user_uuid}}" type="button" class="btn btn-primary">
-                                                   Approve
-                                                </a>  
-                                            </td>                                           
+                                                <!-- Approval Button -->
+                                                <span class="badge badge-success">
+                                                    <a href="approve_tutor/{{ user_item.user_uuid }}" class="text-white">
+                                                        Approve
+                                                    </a>
+                                                </span>
+                                            </td>
+                                                                                   
                                         </tr>
                                         
                                         <!-- Modal -->
@@ -111,7 +234,7 @@
                                             <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="myModalLabel">CV Preview - {{ user_item.name }}</h5>
+                                                        <h5 class="modal-title" id="myModalLabel">{{ loop.index }}CV Preview - {{ user_item.name }}</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                             <span aria-hidden="true">&times;</span>
                                                         </button>
@@ -123,10 +246,10 @@
                                                         <form action="/setMeeting" method="POST">
                                                             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                                                             <input type="hidden" name="user_uuid" value="{{ user_item.user_uuid }}">
-                                                            <label for="datepicker" class="">When?</label>
+                                                            <label for="datepicker{{ loop.index }}" class="">When?</label>
                                                             
-                                                                <div id="datepicker" class="d-flex align-items-center">
-                                                                    <input id="datepicker" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
+                                                                <div id="datepicker{{ loop.index }}" class="d-flex align-items-center">
+                                                                    <input id="datepicker{{ loop.index }}" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
                                                                     <i data-toggle id="calendar2"
                                                                         class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
                                                                 </div>
@@ -228,21 +351,25 @@
             //adding placeholder on the select search
             $('#pageSearch').one('select2:open', function (e) {
                 $('input.select2-search__field').prop('placeholder', 'page');
-            });
-
-        
-            ['datepicker', 'datepicker2'].forEach(el => {
-                $(`#${el}`).flatpickr({
-                    enableTime: true,
-                    dateFormat: "d/m/Y H:i",
-                    wrap: true,
-                    allowInput: true
-                })
-            });
+            });                              
 
         });
+        
+        // Function to format number as Rupiah
+		function formatRupiah(value) {
+			const formatter = new Intl.NumberFormat('id-ID', {
+				style: 'currency',
+				currency: 'IDR',
+				minimumFractionDigits: 2
+			});
+			return formatter.format(value);
+		}
 
-
+		// Assuming user_rec.balance is passed from server to client-side as a JavaScript variable
+		const userBalance = {{ user_rec.balance }};
+		
+		// Update the balance element with formatted value
+		document.getElementById('balance').textContent = formatRupiah(userBalance);
  
     </script>
 

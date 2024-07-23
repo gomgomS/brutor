@@ -32,8 +32,8 @@ class view_tutor_approval:
 
     mgdDB = database.get_db_conn(config.mainDB)
 
-    def __init__(self, params):
-        pass
+    def __init__(self, app):
+        self.webapp = app
     # end def
 
     
@@ -105,7 +105,7 @@ class view_tutor_approval:
         # block_count = utils.ceildiv(konten_view.count(), entry)
 
         user_list = []
-        user_view = self.mgdDB.db_user.find(query)
+        user_view = self.mgdDB.db_user.find(query).sort(sort_by, order).skip(block_skip).limit(entry)
         block_count = utils.ceildiv(user_view.count(), entry)
 
         
@@ -177,15 +177,33 @@ class view_tutor_approval:
                 params["start_date" ] = ""
             
             if params["end_date"] == None:
-                params["end_date" ] = ""        
+                params["end_date" ] = ""     
+
+            sort_by_list = [
+                { 
+                    "name" : "Date" ,
+                    "value" : "rec_timestamp" 
+                },
+                { 
+                    "name" : "Nama Lengkap" ,
+                    "value" : "name" 
+                },
+                { 
+                    "name" : "Status Apply" ,
+                    "value" : "summery_status_applying" 
+                }
+                
+            ]   
 
 
             entry_resp              = utils._find_table_entries()
             entry_list              = entry_resp["entry_list"]
 
             # FIND user
+            user_rec                = self._data_user(params)       
+
             user_resp              = self._find_tutor_approval( params )
-            print(user_resp)
+            
             user_list              = user_resp["user_list"     ]
             block_count             = user_resp["block_count"     ]
             prev_button             = user_resp["prev_button"     ]
@@ -214,7 +232,9 @@ class view_tutor_approval:
                 next_button             = next_button,                
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
-                user_list              = user_list
+                sort_by_list            = sort_by_list,
+                user_list               = user_list,
+                user_rec                = user_rec
             )
 
 
@@ -237,6 +257,12 @@ class view_tutor_approval:
 
         return response
     # end def
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
     
    
 # end class

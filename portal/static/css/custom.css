@@ -534,3 +534,18 @@ svg.feather.feather-menu {
   text-overflow: ellipsis;
   width: 150px;
 }
+
+/* nav bar top price etc */
+.content-header {
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+  border-bottom: 1px solid #dee2e6;
+}
+.breadcrumb {
+  background-color: transparent;
+  margin-bottom: 0;
+  padding: 0;
+}
+.text-balance {
+  font-size: 1.25rem;
+}

@@ -113,7 +113,8 @@ class view_activation_class_detail:
             meeting_recs                        = self._find_meeting( params ) 
             meeting_list                        = meeting_recs["meeting_list"     ] 
 
-        
+            # FIND user
+            user_rec                = self._data_user(params)       
 
             
             html = render_template(
@@ -130,7 +131,8 @@ class view_activation_class_detail:
                 activation_class_rec    = activation_class_rec,
                 class_rec               = class_rec,
                 test_list               = test_list,
-                meeting_list            = meeting_list
+                meeting_list            = meeting_list,
+                user_rec                = user_rec
             )
 
 
@@ -152,6 +154,12 @@ class view_activation_class_detail:
         # end try
 
         return response
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
     # end def
    
     

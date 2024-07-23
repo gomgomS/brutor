@@ -99,6 +99,9 @@ class view_starter:
             permission_role                  = self._find_permission_role( params ) 
             permission_role_list             = permission_role["permission_role_list"     ] 
 
+            # FIND user
+            user_rec                = self._data_user(params)       
+
             html = render_template(
                 "starter/starter.html",
                 menu_list_html      = menu_list_html,
@@ -111,7 +114,8 @@ class view_starter:
                 username            = params["username"      ],
                 role_position       = params["role_position" ],
                 starter_button_list= starter_button_list,              
-                current_menu        = current_menu
+                current_menu        = current_menu,
+                user_rec            = user_rec
             )
 
             response.put( "data", {
@@ -133,6 +137,12 @@ class view_starter:
 
         return response
     # end def
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
     
 # end class
 

@@ -121,6 +121,7 @@ from user               import brutor_user_proc
 
 from view               import view_register_class
 from view               import view_register_class_add
+from view               import view_register_class_edit
 
 from manager_class      import register_class_proc
 
@@ -285,7 +286,7 @@ def send_ver_email():
     html   = emailproc.send_verification_email(email)
     return redirect(url_for("landingpage"))
 
-@app.route("/auth/send_verification_email")
+@app.route("/auth/send_verification_email", methods=["POST"] )
 def auth_send_verification_email():
     redirect_return = login_precheck({})
     if redirect_return:
@@ -296,7 +297,6 @@ def auth_send_verification_email():
     params["fk_user_id"     ] = session.get("fk_user_id")
     params["username"       ] = session.get("username")
     params["role_position"  ] = session.get("role_position")
-
     logging_tm           = int(time.time() * 1000)
     browser_resp = browser_security.browser_security(app).check_route({
         "fk_user_id" : params["fk_user_id"],
@@ -304,7 +304,9 @@ def auth_send_verification_email():
     })
 
     landing_url = auth_proc.auth_proc(app).send_verification_email( params )
-    return redirect( landing_url )
+
+    flash("send verification success!!", "success")
+    return redirect(params["redirect"])    
    
     # end if
 
@@ -465,7 +467,7 @@ def profile_update_cv():
         return redirect_return
     # end if
     params               = sanitize.clean_html_dic(request.form.to_dict())
-    params["old_email"]           = session.get("email")
+    params["old_email"]       = session.get("email")
     params["old_username"   ] = session.get("username")
     params["fk_user_id"     ] = session.get("fk_user_id")
     params["role_position"  ] = session.get("role_position")
@@ -476,7 +478,9 @@ def profile_update_cv():
         "route_name" : ""
     })
 
-    landing_url = profile_proc.profile_proc(app).update_cv( params )
+    landing_url = profile_proc.profile_proc(app).update_cv( params )    
+    session["username"      ] = params["username"       ]    
+    session["email"         ] = params["email"          ]
     return redirect( landing_url )
    
     # end if
@@ -1942,11 +1946,7 @@ def view_users_active_html():
     dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
     if dashboard_return:
         return dashboard_return
-
     
-
-
-
     params = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"    )
     params["role"           ] = session.get("role" )
@@ -2384,6 +2384,44 @@ def view_register_class_add_html():
         return redirect(url_for("view_error_page_html" , data=err_message ))
 # end def
 
+@app.route("/register_class/register_class_edit_form")
+def view_konten_edit_form_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                           = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["redirect"       ] = request.args.get('redirect'     )
+    params["class_id"       ] = request.args.get('class_id' )
+    params["type"           ] = request.args.get('type'         )
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_EDIT_FORM"
+    })
+
+    response = view_register_class_edit.view_register_class_edit(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
 @app.route("/register_class/add", methods=["POST"])
 def proc_register_class_add():
     redirect_return = login_precheck({})
@@ -2405,6 +2443,53 @@ def proc_register_class_add():
 
 
     response   = register_class_proc.register_class_proc(app)._add(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    if m_title != "" or m_desc != "":
+        flash(m_title,"title")
+        flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+
+@app.route("/register_class/update", methods=["POST"])
+def proc_register_class_update():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+
+    classId               = sanitize.clean_html_dic(request.form.to_dict(flat=False)) # get form data with list values    
+    params['classId']     = classId.get('classId', [])    
+
+    params["fk_user_id" ] = session.get("fk_user_id")
+    
+
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_KONTEN_UPDATE"
+    })
+
+    response   = register_class_proc.register_class_proc(app)._update(params)
 
     m_action   = response.get("status"  )
     m_title    = response.get("status"  )
@@ -2659,8 +2744,11 @@ def buy_public_class_(class_id):
     })
 
     # landing_url = tutor_approval_proc.tutor_approval_proc(app).approval_tutor( params )
-    landing_url = public_class_proc.public_class_proc(app).buy_public_class( params )
-    return redirect( landing_url )
+    response = public_class_proc.public_class_proc(app).buy_public_class( params )
+
+    flash(response['msg'], response["notif_type"])   
+
+    return redirect( response['result_url'] )
 
 
 
@@ -3210,6 +3298,13 @@ def view_topup_html():
 
     response = view_topup.view_topup(app).html( params )
     response_data  = response.get("data") 
+
+    print("response_data oi")
+    print(response_data["user_rec"]["ver_email"])
+
+    if response_data["user_rec"]["ver_email"] == "FALSE":
+        flash("please verify your email before topup!!", "danger")
+        return redirect(url_for("profile_html"))
 
     if "SUCCESS" in response.get("status"):
         html        = response_data["html"]

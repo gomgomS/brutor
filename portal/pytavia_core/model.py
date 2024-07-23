@@ -340,6 +340,7 @@ db = {
     # CLASS REGISTER
     "db_class"                      : {                
         "class_id"                  : "",
+        "original_class_id"         : "",       # clone class from
         "creator_id"                : "",
         "level_id"                  : "",
         "name_class"                : "",

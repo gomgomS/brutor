@@ -120,29 +120,37 @@ class brutor_user_proc:
             "UPDATE_USER_STATUS_SUCCESS", "UPDATE USER STATUS SUCCESS", {} , "0000"
         )
         try:
-            if params["status"] == "ACTIVE":
-                # CHECK IF EXISTING USERNAME
-                username_rec = self.mgdDB.db_user.find_one(
-                    {
-                        "username"  : params["username"],
-                        "status"    : "ACTIVE"
-                    }
-                )
+            # if params["status"] == "ACTIVE":
+            #     # CHECK IF EXISTING USERNAME
+            #     username_rec = self.mgdDB.db_user.find_one(
+            #         {
+            #             "username"  : params["username"],
+            #             "status"    : "ACTIVE"
+            #         }
+            #     )
 
-                if username_rec != None:
-                    response.put( "status"      , "ADD_USER_FAILED" )
-                    response.put( "desc"        , "Username sudah ada pada user aktif" )
-                    response.put( "status_code" , "1001" )
-                    response.put( "data"        , { "error_message" : "Username sudah ada pada user aktif" })
-                    return response
 
-            self.mgdDB.db_user.update_one(
-                { "pkey" : params["fk_edit_user_id"] },
-                { "$set" : {
-                        "status" : params["status"]
-                    }
-                }
+                # if username_rec != None:
+                #     response.put( "status"      , "ADD_USER_FAILED" )
+                #     response.put( "desc"        , "Username sudah ada pada user aktif" )
+                #     response.put( "status_code" , "1001" )
+                #     response.put( "data"        , { "error_message" : "Username sudah ada pada user aktif" })
+                #     return response
+
+            # self.mgdDB.db_user.update_one(
+            #     { "pkey" : params["fk_edit_user_id"] },
+            #     { "$set" : {
+            #             "status" : params["status"]
+            #         }
+            #     }
+            # )
+
+            self.mgdDB.db_user.delete_one(
+                { "pkey" : params["fk_edit_user_id"] }
             )
+
+
+            
 
         except :
             trace_back_msg = traceback.format_exc() 

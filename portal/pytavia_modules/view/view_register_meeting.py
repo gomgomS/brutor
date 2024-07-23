@@ -183,6 +183,10 @@ class view_register_meeting:
             entry_resp              = utils._find_table_entries()
             entry_list              = entry_resp["entry_list"]
 
+            # FIND user
+            user_rec                = self._data_user(params)       
+
+
             # FIND meeting
             meeting_resp              = self._find_register_meeting( params )
             print(meeting_resp)
@@ -214,7 +218,8 @@ class view_register_meeting:
                 next_button             = next_button,                
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
-                meeting_list              = meeting_list
+                meeting_list              = meeting_list,
+                user_rec                = user_rec
             )
 
 
@@ -248,4 +253,10 @@ class view_register_meeting:
         }                
 
         return response
+    
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
 # end class

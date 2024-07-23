@@ -49,8 +49,7 @@ def send_notification(params) :
         topic_name      = params["topic_name"   ]   # STRING 
         event_item      = params["event_item"   ]   # STRING
         
-        # ONLY FOR MRTJ-APPS, generalized additional params
-        # OPTIONAL
+       
         judul           = ""
         short_deskripsi = ""
         url             = ""

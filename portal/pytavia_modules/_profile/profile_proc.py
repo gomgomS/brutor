@@ -92,8 +92,7 @@ class profile_proc:
 
         
     def update_cv(self, params):    
-        result_url = "/profile"
-       
+        result_url = "/profile"       
 
         query   = {
             "name"             : params["name"],

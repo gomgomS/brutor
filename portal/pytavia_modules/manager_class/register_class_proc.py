@@ -86,7 +86,70 @@ class register_class_proc:
         # end try
         return response
     # end def
-    
+    def _update(self, params):
+        response = helper.response_msg(
+            "ADD_REGISTER_CLASS_SUCCESS", "ADD REGISTER CLASS SUCCESS", {} , "0000"
+        )
+        try:                 
+            # Fetch the existing class record
+            print(params)
+            print("cek params above")
+            # Process desc_class_html
+            desc_class_html = su.unescape(params["desc_class"])
+
+            clean = re.compile('<.*?>')
+            params["desc_class"] = re.sub(clean, '', desc_class_html)
+
+            list_desc_class = params["desc_class"].split(' ')
+            list_desc_class = list_desc_class[0:10]
+            list_desc_class.append("...")
+            desc_class_preview = " ".join(list_desc_class)
+
+            # Process pass_requirement_html
+            pass_requirement_html = su.unescape(params["pass_requirement"])
+
+            params["pass_requirement"] = re.sub(clean, '', pass_requirement_html)
+
+            list_pass_requirement = params["pass_requirement"].split(' ')
+            list_pass_requirement = list_pass_requirement[0:10]
+            list_pass_requirement.append("...")
+            pass_requirement_preview = " ".join(list_pass_requirement)
+
+            # Prepare the update object
+            update_obj = {
+                "creator_id"               : params["fk_user_id"],
+                "level_id"                 : params["level_id"],
+                "name_class"               : params["name_class"],
+                "desc_class"               : params["desc_class"],
+                "desc_class_html"          : desc_class_html,
+                "desc_class_preview"       : desc_class_preview,
+                "status_class"             : params["status_class"],
+                "prerequisite_class_id"    : params["classId"],
+                "pass_requirement"         : params["pass_requirement"],
+                "pass_requirement_html"    : pass_requirement_html,
+                "pass_requirement_preview" : pass_requirement_preview,
+                "buyer_user_id"            : "",
+                "price_class"              : params["price_class"]
+            }           
+
+            # Update the class record
+            self.mgdDB.db_class.update_one(
+                {"class_id" : params["class_id"]},
+                {"$set" : update_obj}
+            )
+              
+        except :
+            trace_back_msg = traceback.format_exc() 
+            self.webapp.logger.debug(traceback.format_exc())
+
+            response.put( "status"      , "ADD_REGISTER_CLASS_FAILED" )
+            response.put( "desc"        , "ADD REGISTER CLASS FAILED" )
+            response.put( "status_code" , "9999" )
+            response.put( "data"        , { "error_message" : trace_back_msg })
+        # end try
+        return response
+    # end def
+
     def _edit(self, params):
         response = helper.response_msg(
             "UPDATE_KONTEN_SUCCESS", "UPDATE KONTEN SUCCESS", {} , "0000"
