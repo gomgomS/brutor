@@ -154,16 +154,35 @@
             </div>
         </div>
         <div class="container">
-            <h1 class="text-center mb-5">Class Data Display</h1>
+            <!-- Flash messages section -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+            <!-- <h1 class="text-center mb-5">Class Data Display</h1> -->
     
             <!-- Activation Class Details -->
             <div class="card">
                 <div class="card-header">
                     <i class="fas fa-rocket"></i> Activation Class Details
+                    <!-- Button to Open the Modal Edit Activation Class -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editActivationClassModal">
+                        Edit Activation Class
+                    </button>
                 </div>
                 <div class="card-body">
-                    <p><span class="data-title">Activation Class ID:</span> <span class="data-value">{{ activation_class_rec.activation_class_id }}</span></p>
-                    <p><span class="data-title">User ID:</span> <span class="data-value">{{ activation_class_rec.fk_user_id }}</span></p>
+                    <!-- <p><span class="data-title">Activation Class ID:</span> <span class="data-value">{{ activation_class_rec.activation_class_id }}</span></p>
+                    <p><span class="data-title">User ID:</span> <span class="data-value">{{ activation_class_rec.fk_user_id }}</span></p> -->
                     <p><span class="data-title">Class Name:</span> <span class="data-value">{{ activation_class_rec.active_class_name }}</span></p>
                     <p><span class="data-title">Activation Timestamp:</span> <span class="data-value">{{ activation_class_rec.str_activate_timestamp }}</span></p>
                     <p><span class="data-title">Student Limit:</span> <span class="data-value">{{ activation_class_rec.student_limit }}</span></p>
@@ -171,6 +190,72 @@
                     <p><span class="data-title">Status:</span> <span class="data-value">{{ activation_class_rec.status_activation }}</span></p>
                 </div>
             </div>
+
+            <!-- The Modal Edit Activation Class-->
+            <div class="modal fade" id="editActivationClassModal" tabindex="-1" role="dialog" aria-labelledby="editActivationClassModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editActivationClassModalLabel">Edit Activation Class</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="/activation_class/update" method="POST">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="activation_class_id" value="{{ activation_class_rec.activation_class_id }}">
+                            <input type="hidden" name="redirect" value="/activation_class/detail/{{ activation_class_rec.activation_class_id}}">
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="className">Class Name</label>
+                                    <input type="text" class="form-control" id="className" name="active_class_name" value="{{ activation_class_rec.active_class_name }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="activationTimestamp">Activation Timestamp</label>
+                                    <div class="input-group">
+                                        <div id="datepickerActive" class="d-flex align-items-center">
+                                            <input id="datepickerActive" name="activate_timestamp" class="form-control" type="text" placeholder="Select Date.."  value="{{ activation_class_rec.str_activate_timestamp }}"  data-input autocomplete="off" required>
+                                            <i data-toggle id="calendar2" 
+                                                class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>                                                                                        
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="studentLimit">Student Limit</label>
+                                    <input type="number" class="form-control" id="studentLimit" name="student_limit" value="{{ activation_class_rec.student_limit }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="priceClass">Price</label>
+                                    <input type="text" class="form-control" id="priceClass" name="price_class" value="{{ activation_class_rec.price_class }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="statusActivation">Status</label>
+                                    <select class="form-control" id="statusActivation" name="status_activation">
+                                        <option value="" selected disabled></option>
+                                        <option value="DEVELOPMENT" {% if activation_class_rec.status_activation == 'DEVELOPMENT' %}selected{% endif %}>Development (class under maintenance)</option>
+                                        <option value="OPEN_REGISTRATION" {% if activation_class_rec.status_activation == 'OPEN_REGISTRATION' %}selected{% endif %}>Open Registration (class is open for registration)</option>
+                                        <option value="RUNNING" {% if activation_class_rec.status_activation == 'RUNNING' %}selected{% endif %}>Running (class already started)</option>
+                                        <option value="FINISHED" {% if activation_class_rec.status_activation == 'FINISHED' %}selected{% endif %}>Finished (class already finished)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="can_just_test_to_pass">Only Test?</label>
+                                    <select id="can_just_test_to_pass" class="form-control" name="can_just_test_to_pass" required>
+                                        <option value="" type="hidden" selected disabled></option>
+                                        <option value="TRUE" {% if activation_class_rec.can_just_test_to_pass == 'TRUE' %}selected{% endif %}>YES</option>
+                                        <option value="FALSE" {% if activation_class_rec.can_just_test_to_pass == 'FALSE' %}selected{% endif %}>NO</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
     
             <!-- Class Details -->
             <div class="card">
@@ -178,10 +263,10 @@
                     <i class="fas fa-chalkboard-teacher"></i> Class Details
                 </div>
                 <div class="card-body">
-                    <p><span class="data-title">Class ID:</span> <span class="data-value">{{ class_rec.class_id }}</span></p>
-                    <p><span class="data-title">Creator ID:</span> <span class="data-value">{{ class_rec.creator_id }}</span></p>
+                    <!-- <p><span class="data-title">Class ID:</span> <span class="data-value">{{ class_rec.class_id }}</span></p>
+                    <p><span class="data-title">Creator ID:</span> <span class="data-value">{{ class_rec.creator_id }}</span></p> -->
                     <p><span class="data-title">Class Name:</span> <span class="data-value">{{ class_rec.name_class }}</span></p>
-                    <p><span class="data-title">Description:</span> <span class="data-value">{{ class_rec.desc_class }}</span></p>
+                    <p><span class="data-title">Description:</span> <span class="data-value">{{ class_rec.desc_class_html }}</span></p>
                     <p><span class="data-title">Status:</span> <span class="data-value">{{ class_rec.status_class }}</span></p>
                     <p><span class="data-title">Price:</span> <span class="data-value">{{ class_rec.price_class }}</span></p>
                 </div>
@@ -199,6 +284,7 @@
                         <div class="card-body">
                             {% for meeting in meeting_list %}
                             <div id="{{ meeting.name_meeting }}">
+                                <p><span class="data-title">Meeting Name:</span> <span class="data-value">{{ meeting.name_meeting }}</span></p>
                                 <p><span class="data-title">Meeting ID:</span> <span class="data-value">{{ meeting.meeting_id }}</span></p>
                                 <p><span class="data-title">Description:</span> <span class="data-value">{{ meeting.desc_meeting }}</span></p>
                                 <p><span class="data-title">Start Time:</span> <span class="data-value">{{ meeting.str_start_datetime }}</span></p>
@@ -222,6 +308,7 @@
                         <div class="card-body">
                             {% for test in test_list %}
                             <div>
+                                <p><span class="data-title">Test Name:</span> <span class="data-value">{{ test.name_test }}</span></p>
                                 <p><span class="data-title">Test ID:</span> <span class="data-value">{{ test.test_id }}</span></p>
                                 <p><span class="data-title">Description:</span> <span class="data-value">{{ test.desc_test }}</span></p>
                                 <p><span class="data-title">Score to Pass:</span> <span class="data-value">{{ test.score_to_pass }}</span></p>
@@ -251,8 +338,8 @@
                         <form method="POST" action="/edit_meeting">
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="edit_meeting_id{{ loop.index }}">Meeting ID</label>
-                                    <input type="text" class="form-control" id="edit_meeting_id{{ loop.index }}" name="meeting_id" value="{{ meeting.meeting_id }}" readonly>
+                                    <label for="edit_meeting_id{{ loop.index }}">Meeting Name</label>
+                                    <input type="text" class="form-control" id="edit_meeting_id{{ loop.index }}" name="meeting_id" value="{{ meeting.name_meeting }}">
                                 </div>
                                 <div class="form-group">
                                     <label for="edit_meeting_desc{{ loop.index }}">Description</label>
@@ -567,16 +654,9 @@
             }
         }
 
-        ['datepicker', 'datepicker2'].forEach(el => {
-                $(`#${el}`).flatpickr({
-                    enableTime: true,
-                    dateFormat: "d/m/Y H:i",
-                    wrap: true,
-                    allowInput: true
-                })
-            });
         
-        ['datepicker_', 'datepicker2_'].forEach(el => {
+        $(document).ready(function() {            
+            ['datepickerActive'].forEach(el => {
                 $(`#${el}`).flatpickr({
                     enableTime: true,
                     dateFormat: "d/m/Y H:i",
@@ -584,6 +664,7 @@
                     allowInput: true
                 })
             });
+        });
 
         CKEDITOR.replace( 'desc_meeting', { customConfig : 'config_toolbar_mnc_cs.js' } );            
         CKEDITOR.replace( 'desc_test', { customConfig : 'config_toolbar_mnc_cs.js' } );            

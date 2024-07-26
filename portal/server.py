@@ -142,6 +142,7 @@ from manager_class      import public_class_proc
 
 from view               import view_register_test
 from view               import view_register_test_add
+from view               import view_register_test_edit
 
 from manager_test       import register_test_proc
 
@@ -152,6 +153,7 @@ from manager_test       import register_test_proc
 
 from view               import view_register_meeting
 from view               import view_register_meeting_add
+from view               import view_register_meeting_edit
 
 from manager_meeting       import register_meeting_proc
 
@@ -2385,7 +2387,7 @@ def view_register_class_add_html():
 # end def
 
 @app.route("/register_class/register_class_edit_form")
-def view_konten_edit_form_html():
+def view_register_class_edit_form_html():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
@@ -2449,9 +2451,9 @@ def proc_register_class_add():
     m_desc     = response.get("desc"    )
     m_data     = response.get("data"    )
 
-    if m_title != "" or m_desc != "":
-        flash(m_title,"title")
-        flash(m_desc,"desc")
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
     #end if
 
     if "SUCCESS" in m_action:
@@ -2496,9 +2498,9 @@ def proc_register_class_update():
     m_desc     = response.get("desc"    )
     m_data     = response.get("data"    )
 
-    if m_title != "" or m_desc != "":
-        flash(m_title,"title")
-        flash(m_desc,"desc")
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
     #end if
 
     if "SUCCESS" in m_action:
@@ -2513,6 +2515,50 @@ def proc_register_class_update():
         return redirect(url_for("view_error_page_html" , data=err_message ))
 # end def
 
+@app.route("/register_class/delete")
+def proc_register_class_delete():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+
+    params["fk_user_id" ] = session.get("fk_user_id")
+    params["redirect"       ] = request.args.get('redirect'     )
+    params["class_id"       ] = request.args.get('class_id'     )
+    params["type"           ] = request.args.get('type'         )
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_KONTEN_UPDATE"
+    })
+
+    response   = register_class_proc.register_class_proc(app)._delete(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+    #     flash(m_title,"title")
+    #     flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        flash("delete success!!", "success")        
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
 ##########################################################
 # MANAGER CLASS - Activation Class
 ##########################################################
@@ -2628,6 +2674,93 @@ def proc_activation_class_add():
     #end if
 
     if "SUCCESS" in m_action:
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/activation_class/update", methods=["POST"])
+def proc_activation_class_update():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())    
+
+    params["fk_user_id" ] = session.get("fk_user_id")
+
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_KONTEN_UPDATE"
+    })
+
+    response   = activation_class_proc.activation_class_proc(app)._update(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/activation_class/delete")
+def proc_activation_class_delete():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+
+    params["fk_user_id" ] = session.get("fk_user_id")
+    params["redirect"       ] = request.args.get('redirect'     )
+    params["activation_class_id"       ] = request.args.get('activation_class_id'     )
+    params["type"           ] = request.args.get('type'         )
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_KONTEN_UPDATE"
+    })
+
+    response   = activation_class_proc.activation_class_proc(app)._delete(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+    #     flash(m_title,"title")
+    #     flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        flash("delete success!!", "success")        
         return redirect(params["redirect"])
     else:
         err_message = {
@@ -2861,12 +2994,138 @@ def proc_register_test_add():
     m_desc     = response.get("desc"    )
     m_data     = response.get("data"    )
 
-    if m_title != "" or m_desc != "":
-        flash(m_title,"title")
-        flash(m_desc,"desc")
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
     #end if
 
     if "SUCCESS" in m_action:
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/register_test/register_test_edit_form")
+def view_register_test_edit_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["redirect"       ] = request.args.get('redirect'     )
+    params["test_id"       ] = request.args.get('test_id' )
+    params["type"           ] = request.args.get('type'         )
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_EDIT_FORM"
+    })
+
+    response = view_register_test_edit.view_register_test_edit(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/register_test/update", methods=["POST"])
+def proc_register_test_update():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict()) 
+
+    params["fk_user_id" ] = session.get("fk_user_id")
+    
+
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_KONTEN_UPDATE"
+    })
+
+    response   = register_test_proc.register_test_proc(app)._update(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/register_test/delete")
+def proc_register_test_delete():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+
+    params["fk_user_id" ] = session.get("fk_user_id")
+    params["redirect"       ] = request.args.get('redirect'     )
+    params["test_id"       ] = request.args.get('test_id'     )
+    params["type"           ] = request.args.get('type'         )
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_KONTEN_UPDATE"
+    })
+
+    response   = register_test_proc.register_test_proc(app)._delete(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+    #     flash(m_title,"title")
+    #     flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        flash("delete success!!", "success")        
         return redirect(params["redirect"])
     else:
         err_message = {
@@ -2989,9 +3248,9 @@ def proc_register_meeting_add():
     m_desc     = response.get("desc"    )
     m_data     = response.get("data"    )
 
-    if m_title != "" or m_desc != "":
-        flash(m_title,"title")
-        flash(m_desc,"desc")
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
     #end if
 
     if "SUCCESS" in m_action:
@@ -3006,6 +3265,129 @@ def proc_register_meeting_add():
         return redirect(url_for("view_error_page_html" , data=err_message ))
 # end def
 
+@app.route("/register_meeting/register_meeting_edit_form")
+def view_register_meeting_edit_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["redirect"       ] = request.args.get('redirect'     )
+    params["meeting_id"       ] = request.args.get('meeting_id' )
+    params["type"           ] = request.args.get('type'         )
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_EDIT_FORM"
+    })
+
+    response = view_register_meeting_edit.view_register_meeting_edit(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/register_meeting/update", methods=["POST"])
+def proc_register_meeting_update():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+
+    params["fk_user_id" ] = session.get("fk_user_id")    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_KONTEN_UPDATE"
+    })
+
+    response   = register_meeting_proc.register_meeting_proc(app)._update(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/register_meeting/delete")
+def proc_register_meeting_delete():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+
+    params["fk_user_id" ] = session.get("fk_user_id")
+    params["redirect"       ] = request.args.get('redirect'     )
+    params["meeting_id"       ] = request.args.get('meeting_id'     )
+    params["type"           ] = request.args.get('type'         )
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_KONTEN_UPDATE"
+    })
+
+    response   = register_meeting_proc.register_meeting_proc(app)._delete(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+    #     flash(m_title,"title")
+    #     flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        flash("delete success!!", "success")        
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
 ##########################################################
 # LEVEL CLASS LIST
 ##########################################################

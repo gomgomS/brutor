@@ -219,6 +219,9 @@ class view_myclass:
             entry_resp              = utils._find_table_entries()
             entry_list              = entry_resp["entry_list"]
 
+            # FIND user
+            user_rec                = self._data_user(params)       
+
             # FIND class
             class_resp             = self._find_enroll_class( params )
             class_list             = class_resp["class_list"     ]
@@ -249,7 +252,8 @@ class view_myclass:
                 next_button             = next_button,                
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
-                class_list              = class_list
+                class_list              = class_list,
+                user_rec                = user_rec
             )
 
 
@@ -279,10 +283,14 @@ class view_myclass:
         })   
   
         response = class_rec       
-        print(class_rec) 
-        print("oiii")
 
         return response
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
     
 # end class
 

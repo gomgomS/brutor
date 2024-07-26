@@ -7,7 +7,7 @@
     <!-- Favico -->
     <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-    <title>Brutor ADMIN - Edit Kontent</title>
+    <title>Brutor ADMIN - Tambah Kontent</title>
     <!-- vendor css -->
     <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -21,9 +21,11 @@
 
 {% autoescape false %}
 <body>
+    <!-- LOADER -->
     <div class="loader">
         <img src="../../static/assets/img/Pulse-1s-200px.gif" alt="loader">
     </div>
+    <!-- VIEW IMAGE -->
     <div class="modal" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="img-prev">
@@ -45,7 +47,7 @@
         <div class="aside-body">
             <ul class="nav nav-aside">
                 {% for menu_item in menu_list_html %}
-                    {%if menu_item.value == 'PENGELOLAAN_KONTEN' %}
+                    {%if menu_item.value == 'MANAGER_TEST' %}
                         <li class="nav-item nav-item-active ">
                             <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
                                 <span>{{menu_item.menu_name.title()}}</span></a>
@@ -62,168 +64,139 @@
         </div>
     </aside>
 
+
     <div class="content pd-0">
-        <div class="content-header">
-            <h5 class="mg-b-0 text-primary">
-                <a href="/starter?menu_value=PENGELOLAAN_KONTEN">Pengelolaan Konten</a> 
-                <i class="fas fa-caret-right"></i> 
-                <a href="{{ redirect }}">Daftar Konten</a>
-                <span style="font-weight: bolder;"><i class="fas fa-caret-right"></i> Edit Konten</span>
-            </h5>
-            <div class="">
-                <div class="d-flex align-items-center">
-                    <div class="avatar avatar-sm avatar-online"><img src="../../static/assets/img/placehold.jpg"
-                            class="rounded-circle" alt=""></div>
-                    <div class="p-3 d-flex flex-column">
-                        <span class="font-weight-bold">{{ username | safe }}</span>                        
-                        <a class="" href="/auth/logout" data-toggle="tooltip" title="Sign out"><i
-                                    data-feather="log-out"></i><span>Logout</span></a>
-                    </div>                                            
-                    <h3 class="p-3 mt-2 font-weight-bold"><a href="/user/config"><i class="fas fa-cog"></i></a></h>
+        <!-- Navbar Top -->
+		<div class="content-header">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb align-items-center">
+                <li class="breadcrumb-item active" aria-current="page">Manager Meeting</li>
+                <li class="breadcrumb-item active" aria-current="page">Register Meeting</li>
+                <li class="breadcrumb-item active" aria-current="page">Register Meeting edit</li>
+                </ol>
+            </nav>
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">			
+                    <div class="text-success font-weight-bold text-balance mr-3" id="balance"></div>
+                </div>
+                <div class="dropdown">
+                <span class="font-weight-bold text-dark">{{ username | safe }}</span>
+                <a class="dropdown-toggle ml-2" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user-circle fa-lg"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                    {% if user_rec.role == 'STUDENT' %}
+                    <div class="dropdown-item text-info">
+                    <i class="fas fa-user-graduate"></i> You're in Student Portal
+                    </div>
+                    {% elif user_rec.role == 'TUTOR' %}
+                    <div class="dropdown-item text-info">
+                    <i class="fas fa-chalkboard"></i> You're in Tutor Portal
+                    </div>
+                    {% elif user_rec.role == 'ADMIN' %}
+                    <div class="dropdown-item text-info">
+                    <i class="fas fa-chalkboard"></i> WELCOME BOSS
+                    </div>				
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/profile"><i class="fas fa-user"></i> Profile</a>
+                    {% if user_rec.register_teacher == 'FALSE' %}
+                    <a class="dropdown-item" href="/profile"><i class="fas fa-chalkboard-teacher"></i> Become a Tutor</a>
+                    {% endif %}
+                    {% if user_rec.role == 'STUDENT' and user_rec.register_teacher == 'TRUE' %}
+                    <a class="dropdown-item" href="/profile/change_portal/tutor"><i class="fas fa-chalkboard"></i> Tutor Portal</a>
+                    {% endif %}
+                    {% if user_rec.role == 'TUTOR' %}
+                    <a class="dropdown-item" href="/profile/change_portal/student"><i class="fas fa-user-graduate"></i> Student Portal</a>
+                    {% endif %}
+                    <a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt"></i> Sign out</a>
+                </div>
                 </div>
             </div>
-        </div>
-
+        </div>                
         <div class="contents-body">
 
-            <form action="/pengelolaan_konten/konten/edit" method="POST" enctype="multipart/form-data">
+            <form action="/register_meeting/update" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="fk_konten_id" value="{{ konten_rec.pkey }}">
+                <input type="hidden" name="meeting_id" value="{{ register_meeting_rec.meeting_id }}">
                 <input type="hidden" name="redirect" value="{{ redirect }}">
-
-
+            
                 <fieldset class="form-fieldset pd-x-50 field-shadow">
                     <legend>
-                        {% if type != "VIEW" %}
-                            <h1 class="font-weight-bold mg-b-0">Edit <span class="text-success">Konten</span></h1>
-                        {% else %}
-                            <h1 class="font-weight-bold mg-b-0">View <span class="text-success">Konten</span></h1>
-                        {% endif %}
-                        
+                        <h1 class="font-weight-bold mg-b-0">EDIT REGISTER MEETING</h1>
                     </legend>
+                    
                     <div class="form-group row">
-                        <label for="perusahaan" class="col-sm-2 col-form-label text-right">Perusahaan</label>
+                        <label for="class" class="col-sm-2 col-form-label text-right">Active Class</label>
                         <div class="col-sm-10">
-                            <select id="perusahaan" class="form-control" name="fk_perusahaan_id" required>
+                            <select id="class" class="form-control" name="activation_class_id" required>
                                 <option value="" type="hidden" selected disabled></option>
-                                {% for perusahaan_item in perusahaan_list %}
-                                    {% if konten_rec.fk_perusahaan_id == perusahaan_item.pkey %}
-                                        <option value="{{ perusahaan_item.pkey }}" selected>{{ perusahaan_item.nama_perusahaan }}</option>
-                                    {% else %}
-                                        <option value="{{ perusahaan_item.pkey }}">{{ perusahaan_item.nama_perusahaan }}</option>
-                                    {% endif %}
+                                {% for active_class_item in activation_class_list %}
+                                <option value="{{ active_class_item.activation_class_id }}" {% if register_meeting_rec.activation_class_id == active_class_item.activation_class_id %}selected{% endif %}>
+                                    {{ active_class_item.active_class_name }}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
                     </div>
+                    
                     <div class="form-group row">
-                        <label for="judulKonten" class="col-sm-2 col-form-label text-right">Judul Konten</label>
-                        <div class="col-sm-10">
-                            <input name="judul_konten" type="text" id="judulKonten" class="form-control" value="{{ konten_rec.judul_konten }}">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="deskripsi" class="col-sm-2 col-form-label text-right">Deskripsi</label>
-                        <div class="col-sm-10">
-                            <textarea name="deskripsi" class="form-control" id="deskripsi" cols="5"
-                                rows="10">{{ konten_rec.deskripsi_html | safe }}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="url" class="col-sm-2 col-form-label text-right">URL</label>
-                        <div class="col-sm-10">
-                            <input name="url" type="text" id="url" class="form-control" value="{{ konten_rec.url }}">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="posisiKonten" class="col-sm-2 col-form-label text-right">Posisi Konten</label>
-                        <div class="col-sm-10">
-                            <select id="posisiKonten" class="form-control" name="fk_posisi_value" required>
-                                <option value="" type="hidden" selected disabled></option>
-                                {% for posisi_banner_item in posisi_banner_list %}
-                                    {% if konten_rec.fk_posisi_value == posisi_banner_item.value %}
-                                        <option value="{{ posisi_banner_item.value }}" selected>{{ posisi_banner_item.name }}</option>
-                                    {% else %}
-                                        <option value="{{ posisi_banner_item.value }}">{{ posisi_banner_item.name }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="urutan" class="col-sm-2 col-form-label text-right">Urutan</label>
-                        <div class="col-sm-10">
-                            <input name="urutan" type="number" id="urutan" class="form-control" value="{{ konten_rec.urutan }}" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="jenisTampilan" class="col-sm-2 col-form-label text-right">Jenis Tampilan</label>
-                        <div class="col-sm-10">
-                            <select id="jenisTampilan" class="form-control" name="fk_jenis_tampilan_value">
-                                <option value="" type="hidden" selected disabled></option>
-                                {% for jenis_tampilan_item in jenis_tampilan_list %}
-                                    {% if jenis_tampilan_item.value == konten_rec.fk_jenis_tampilan_value %}
-                                        <option value="{{ jenis_tampilan_item.value }}" selected>{{ jenis_tampilan_item.name }}</option>
-                                    {% else %}
-                                        <option value="{{ jenis_tampilan_item.value }}">{{ jenis_tampilan_item.name }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-2 col-form-label">Gambar</label>
-                        <div class="col-sm-7">              
-                          <img style="width: 200px;height: 200px;" src="{{ image_rec.image }}" alt="" class="upload-photo img-thumbnail">
-                          <input type="file" id="filePic" class="d-none" name="image"> 
-                            {% if type != "VIEW" %}
-                                <label for="filePic" class="d-flex Cur(p) mg-l-25 mg-t-10">
-                                    <i class="rounded-left bg-dark text-white pd-10 fas fa-cloud-upload-alt cbs-1"></i>
-                                    <span class="bg-success pd-7 cbs-1 text-white rounded-right">Upload Photo</span>
-                                </label>
-                            {% endif %}
-                          
-                        </div>
-                    </div> 
-                    <div class="form-group row">
-                        <label for="dujul" class="col-sm-2 col-form-label text-right">Periode</label>
+                        <label for="dujul" class="col-sm-2 col-form-label text-right">Meeting Time</label>
                         <div class="col-sm-3">
                             <div id="datepicker" class="d-flex align-items-center">
-                                <input id="datepicker" name="start_datetime" class="form-control" type="text"
-                                    placeholder="Select Date.." data-input autocomplete="off" value="{{ konten_rec.str_start_datetime }}" required>
-                                <i data-toggle id="calendar2"
-                                    class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                <input id="datepicker" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" value="{{ register_meeting_rec.str_start_datetime }}" required>
+                                <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
                             </div>
                         </div>
                         <span class="mg-t-10 col-sm-1 text-center">---</span>
                         <div class="col-sm-3">
                             <div id="datepicker2" class="d-flex align-items-center">
-                                <input name="end_datetime" data-input id="datepicker2" type="text" class="form-control"
-                                    id="" placeholder="Select Date.." autocomplete="off" value="{{ konten_rec.str_end_datetime }}" required>
-                                <i data-toggle id="calendar2"
-                                    class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                <input name="end_datetime" data-input id="datepicker2" type="text" class="form-control" placeholder="Select Date.." autocomplete="off" value="{{ register_meeting_rec.str_end_datetime }}" required>
+                                <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
                             </div>
                         </div>
-
-                        <input type="hidden" name="update_notes" value="">
-                        
-                        <!-- <div class="form-group row">
-                            <label for="dujul" class="col-sm-2 col-form-label text-right text-right">Update notes</label>
-                            <div class="col-sm-7">
-                                <textarea class="form-control" name="update_notes" id="" cols="5" rows="5"
-                                    placeholder="Update notes . . . ." required></textarea>
-                            </div>
-                        </div> -->
-
                     </div>
+                    
+                    <div class="form-group row">
+                        <label for="name_meeting" class="col-sm-2 col-form-label text-right">Name Meeting</label>
+                        <div class="col-sm-10">
+                            <input name="name_meeting" type="text" id="name_meeting" class="form-control" value="{{ register_meeting_rec.name_meeting }}">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label for="desc_meeting" class="col-sm-2 col-form-label text-right">Description Meeting</label>
+                        <div class="col-sm-10">
+                            <textarea name="desc_meeting" class="form-control" id="desc_meeting" cols="5" rows="5">{{ register_meeting_rec.desc_meeting_html }}</textarea>
+                        </div>
+                    </div>                                      
+                    
+                    <div class="form-group row">
+                        <label for="source" class="col-sm-2 col-form-label text-right">Source</label>
+                        <div class="col-sm-10">
+                            <input name="source" type="text" id="source" class="form-control" value="{{ register_meeting_rec.source }}">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label for="status_meeting" class="col-sm-2 col-form-label text-right">Status Meeting</label>
+                        <div class="col-sm-10">
+                            <select id="status_meeting" class="form-control" name="status_meeting" required>
+                                <option value="" type="hidden" selected disabled></option>                                
+                                <option value="DEVELOPMENT" {% if register_meeting_rec.status_meeting == 'DEVELOPMENT' %}selected{% endif %}>Development (meeting under maintenance or Development)</option>
+                                <option value="SHARE" {% if register_meeting_rec.status_meeting == 'SHARE' %}selected{% endif %}>Share (meeting is ready to share)</option>
+                                <option value="DONE" {% if register_meeting_rec.status_meeting == 'DONE' %}selected{% endif %}>Done (meeting is done)</option>                                 
+                            </select>
+                        </div>
+                    </div>
+                    
                 </fieldset>
-
+            
                 <div class="mg-y-30 text-center">
-                    {% if type != "VIEW" %}
-                        <button class="btn btn-primary pd-x-100 shadow-custom">UPDATE</button>
-                    {% endif %}
+                    <button class="btn btn-primary pd-x-100 shadow-custom">SIMPAN</button>
                 </div>
             </form>
+            
             <footer class="text-center mg-t-auto font-weight-bold">©Brutor a,k,a BRUTAR TUTOR</footer>
         </div>
     </div>
@@ -244,6 +217,7 @@
             loader.classList.add('hidden');
         });
 
+    
         
         $( document ).ready(function() {
 
@@ -282,8 +256,8 @@
                 })
             });
 
-            CKEDITOR.replace( 'deskripsi', { customConfig : 'config_toolbar_mnc_cs.js' } );
-
+            CKEDITOR.replace( 'desc_meeting', { customConfig : 'config_toolbar_mnc_cs.js' } );            
+            
             const file = document.getElementById('filePic');
             const upContainer = document.querySelector('.upload-photo');    
 
@@ -306,7 +280,27 @@
             });		
             });
 
+
+            
         });
+
+        // Function to format number as Rupiah
+		function formatRupiah(value) {
+			const formatter = new Intl.NumberFormat('id-ID', {
+				style: 'currency',
+				currency: 'IDR',
+				minimumFractionDigits: 2
+			});
+			return formatter.format(value);
+		}
+
+		// Assuming user_rec.balance is passed from server to client-side as a JavaScript variable
+		const userBalance = {{ user_rec.balance }};
+		
+		// Update the balance element with formatted value
+		document.getElementById('balance').textContent = formatRupiah(userBalance);
+
+        
 
     </script>
 </body>

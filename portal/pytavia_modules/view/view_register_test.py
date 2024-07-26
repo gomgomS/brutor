@@ -103,7 +103,7 @@ class view_register_test:
         # block_count = utils.ceildiv(konten_view.count(), entry)
 
         test_list = []
-        test_view = self.mgdDB.db_test.find(query)
+        test_view = self.mgdDB.db_test.find(query).sort(sort_by, order).skip(block_skip).limit(entry)
         block_count = utils.ceildiv(test_view.count(), entry)
 
         
@@ -177,7 +177,23 @@ class view_register_test:
                 params["start_date" ] = ""
             
             if params["end_date"] == None:
-                params["end_date" ] = ""        
+                params["end_date" ] = ""    
+
+            sort_by_list = [
+                { 
+                    "name" : "Name Test" ,
+                    "value" : "name_test" 
+                },
+                { 
+                    "name" : "Status Test" ,
+                    "value" : "status_test" 
+                },
+                 { 
+                    "name" : "Status Test" ,
+                    "value" : "type_test" 
+                }
+                
+            ]    
 
 
             entry_resp              = utils._find_table_entries()
@@ -216,8 +232,9 @@ class view_register_test:
                 next_button             = next_button,                
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
-                test_list              = test_list,
-                user_rec                = user_rec
+                test_list               = test_list,
+                user_rec                = user_rec,
+                sort_by_list            = sort_by_list
             )
 
 
@@ -245,6 +262,10 @@ class view_register_test:
         class_rec = self.mgdDB.db_activation_class.find_one({ 
             "activation_class_id" : activation_class_id
         })   
+
+        if class_rec is None:
+            class_rec = {}
+            class_rec["active_class_name"] = "DELETED"    
   
         response = {
             "active_class_name"   : class_rec["active_class_name"]

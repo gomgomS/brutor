@@ -25,13 +25,21 @@ from view import view_core_script
 from view import view_core_css
 from view import view_core_dialog_message
 
-class view_register_test_add:
+class view_register_test_edit:
 
     mgdDB = database.get_db_conn(config.mainDB)
 
     def __init__(self, params):
         pass
     # end def
+
+    def _find_one_register_test(self, params):       
+        register_test_rec = self.mgdDB.db_test.find_one({"pkey" : params['test_id'], "is_deleted" : False })
+
+        response = {
+            "register_test_rec"    : register_test_rec,            
+        }
+        return response
 
     def _find_activation_class(self, params):
         activation_class_view = self.mgdDB.db_activation_class.find()   
@@ -59,6 +67,10 @@ class view_register_test_add:
             core_css               = view_core_css.view_core_css().html(params)
             core_dialog_message    = view_core_dialog_message.view_core_dialog_message().html(params)
 
+            # FIND ONE test
+            register_test_resp             = self._find_one_register_test( params )
+            register_test_rec              = register_test_resp["register_test_rec"  ] 
+
             # FIND level_class
             activation_class_resp             = self._find_activation_class( params )
             activation_class_list             = activation_class_resp["activation_class_list"     ] 
@@ -68,7 +80,7 @@ class view_register_test_add:
 
             
             html = render_template(
-                "register_test/register_test_add.html",
+                "register_test/register_test_edit.html",
                 menu_list_html          = menu_list_html,
                 core_display            = core_display,
                 core_header             = core_header, 
@@ -80,7 +92,8 @@ class view_register_test_add:
                 role_position           = params["role_position" ],
                 redirect                = params["redirect"      ],       
                 activation_class_list   = activation_class_list,
-                user_rec                = user_rec
+                user_rec                = user_rec,
+                register_test_rec      = register_test_rec,
           
             )
 
@@ -109,6 +122,3 @@ class view_register_test_add:
 
         return user
     # end def
-    
-# end class
-

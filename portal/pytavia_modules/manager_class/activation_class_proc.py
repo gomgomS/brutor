@@ -66,6 +66,52 @@ class activation_class_proc:
         # end try
         return response
     # end def
+
+    def _update(self, params):
+        response = helper.response_msg(
+            "ADD_ACTIVATION_CLASS_SUCCESS", "ADD ACTIVATION CLASS SUCCESS", {} , "0000"
+        )
+        try:
+            # Convert string datetime to timestamp
+            activate_datetime_obj = utils._get_datetime_from_str_date(params["activate_timestamp"], date_format='%d/%m/%Y %H:%M')
+            activate_timestamp = utils._convert_datetime_to_timestamp(activate_datetime_obj)
+            
+            # Prepare the update object
+            update_obj = {
+                "fk_user_id": params["fk_user_id"],  # pkey from db_user
+                "active_class_name": params["active_class_name"],
+                "activation_class_id": params["activation_class_id"],
+                "activate_timestamp": activate_timestamp,
+                "str_activate_timestamp": params["activate_timestamp"],
+                "student_limit": params["student_limit"],
+                "can_just_test_to_pass": params["can_just_test_to_pass"],
+                "price_class": params["price_class"],
+                "status_activation": params["status_activation"]
+            }
+            
+            # Update the class record
+            self.mgdDB.db_activation_class.update_one(
+                {"activation_class_id": params["activation_class_id"]},
+                {"$set": update_obj}
+            )
+
+            # Success response
+            response.put("status", "UPDATE_ACTIVATION_CLASS_SUCCESS")
+            response.put("desc", "UPDATE ACTIVATION CLASS SUCCESS")
+            response.put("status_code", "0000")
+            response.put("data", {})
+
+        except:
+            trace_back_msg = traceback.format_exc()
+            self.webapp.logger.debug(traceback.format_exc())
+
+            response.put("status", "UPDATE_ACTIVATION_CLASS_FAILED")
+            response.put("desc", "UPDATE ACTIVATION CLASS FAILED")
+            response.put("status_code", "9999")
+            response.put("data", {"error_message": trace_back_msg})
+        # end try
+        return response
+
     
     def _edit(self, params):
         response = helper.response_msg(
@@ -277,28 +323,24 @@ class activation_class_proc:
 
     def _delete(self, params):
         response = helper.response_msg(
-            "DELETE_KONTEN_SUCCESS", "DELETE KONTEN SUCCESS", {} , "0000"
+            "DELETE_ACTIVATION_CLASS_SUCCESS", "DELETE ACTIVATION CLASS SUCCESS", {} , "0000"
         )
-        try:
-            
-            self.mgdDB.db_konten.update_one(
-                { "pkey" : params["fk_konten_id"] },
-                { "$set" : {
-                        "is_deleted" : True
-                    }
-                }
+        try:                        
+            self.mgdDB.db_activation_class.delete_one(
+                { "pkey" : params["activation_class_id"] },                
             )
 
         except :
             trace_back_msg = traceback.format_exc() 
             self.webapp.logger.debug(traceback.format_exc())
 
-            response.put( "status"      , "DELETE_KONTEN_FAILED" )
-            response.put( "desc"        , "DELETE KONTEN FAILED" )
+            response.put( "status"      , "DELETE_ACTIVATION_CLASS_FAILED" )
+            response.put( "desc"        , "DELETE ACTIVATION CLASS FAILED" )
             response.put( "status_code" , "9999" )
             response.put( "data"        , { "error_message" : trace_back_msg })
         # end try
         return response
+    # end def
     # end def
 
 # end class

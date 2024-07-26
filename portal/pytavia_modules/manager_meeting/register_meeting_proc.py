@@ -290,27 +290,79 @@ class register_meeting_proc:
         # end try
         return response
     # end def
+    
+    def _update(self, params):
+        response = helper.response_msg(
+            "ADD_REGISTER_MEETING_SUCCESS", "ADD REGISTER MEETING SUCCESS", {}, "0000"
+        )
 
+        try:
+            # Convert str datetime to timestamp
+            start_datetime_obj = utils._get_datetime_from_str_date(params["start_datetime"], date_format='%d/%m/%Y %H:%M')
+            start_timestamp = utils._convert_datetime_to_timestamp(start_datetime_obj)
+
+            end_datetime_obj = utils._get_datetime_from_str_date(params["end_datetime"], date_format='%d/%m/%Y %H:%M')
+            end_timestamp = utils._convert_datetime_to_timestamp(end_datetime_obj)
+
+            # Process desc_meeting_html
+            desc_meeting_html = su.unescape(params["desc_meeting"])
+
+            clean = re.compile('<.*?>')
+            params["desc_meeting"] = re.sub(clean, '', desc_meeting_html)
+
+            list_desc_meeting = params["desc_meeting"].split(' ')
+            list_desc_meeting = list_desc_meeting[0:10]
+            list_desc_meeting.append("...")
+            desc_meeting_preview = " ".join(list_desc_meeting)
+
+            # Prepare the meeting record
+            update_obj = {                
+                "activation_class_id": params["activation_class_id"],
+                "fk_user_id": params["fk_user_id"],
+                "name_meeting": params["name_meeting"],
+                "desc_meeting": params["desc_meeting"],
+                "desc_meeting_html": desc_meeting_html,
+                "desc_meeting_preview": desc_meeting_preview,
+                "start_timestamp": start_timestamp,
+                "end_timestamp": end_timestamp,
+                "str_start_datetime": params["start_datetime"],
+                "str_end_datetime": params["end_datetime"],
+                "source": params["source"],
+                "status_meeting": params["status_meeting"]
+            }
+
+            self.mgdDB.db_meeting.update_one(
+                {"meeting_id": params["meeting_id"]},
+                {"$set": update_obj}
+            )
+
+        except Exception as e:
+            trace_back_msg = traceback.format_exc()
+            self.webapp.logger.debug(traceback.format_exc())
+
+            response.put("status", "ADD_REGISTER_MEETING_FAILED")
+            response.put("desc", "ADD REGISTER MEETING FAILED")
+            response.put("status_code", "9999")
+            response.put("data", {"error_message": trace_back_msg})
+
+        return response
+
+        
     def _delete(self, params):
         response = helper.response_msg(
-            "DELETE_KONTEN_SUCCESS", "DELETE KONTEN SUCCESS", {} , "0000"
+            "DELETE_MEETING_SUCCESS", "DELETE MEETING SUCCESS", {} , "0000"
         )
-        try:
-            
-            self.mgdDB.db_konten.update_one(
-                { "pkey" : params["fk_konten_id"] },
-                { "$set" : {
-                        "is_deleted" : True
-                    }
-                }
+        try:                        
+            self.mgdDB.db_meeting.delete_one(
+                { "pkey" : params["meeting_id"] },                
             )
 
         except :
             trace_back_msg = traceback.format_exc() 
             self.webapp.logger.debug(traceback.format_exc())
 
-            response.put( "status"      , "DELETE_KONTEN_FAILED" )
-            response.put( "desc"        , "DELETE KONTEN FAILED" )
+            response.put( "status"      , "DELETE_MEETING_FAILED" )
+            response.put( "desc"        , "DELETE MEETING FAILED" )
             response.put( "status_code" , "9999" )
             response.put( "data"        , { "error_message" : trace_back_msg })
         # end try

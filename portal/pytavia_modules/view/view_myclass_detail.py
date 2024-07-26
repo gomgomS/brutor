@@ -112,8 +112,7 @@ class view_myclass_detail:
 
             # FIND ACTIVE CLASS
             activation_class_rec                = self._find_activation_class( enrollment_rec )             
-            print(activation_class_rec)
-            print("haiiiiiz")
+
             # FIND CLASS
             class_rec                           = self._find_class( activation_class_rec["class_id"] ) 
 
@@ -124,6 +123,9 @@ class view_myclass_detail:
             # FIND MEEETING
             meeting_recs                        = self._find_meeting( enrollment_rec ) 
             meeting_list                        = meeting_recs["meeting_list"     ] 
+
+            # FIND user
+            user_rec                            = self._data_user(params)       
             
             html = render_template(
                 "myclass/myclass_detail.html",
@@ -139,7 +141,8 @@ class view_myclass_detail:
                 activation_class_rec    = activation_class_rec,
                 class_rec               = class_rec,
                 test_list               = test_list,
-                meeting_list            = meeting_list                                                        
+                meeting_list            = meeting_list,
+                user_rec                = user_rec                                                                      
             )
 
 
@@ -162,6 +165,12 @@ class view_myclass_detail:
 
         return response
     # end def
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
 
     
 # end class

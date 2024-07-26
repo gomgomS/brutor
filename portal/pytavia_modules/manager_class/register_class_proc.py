@@ -86,6 +86,7 @@ class register_class_proc:
         # end try
         return response
     # end def
+
     def _update(self, params):
         response = helper.response_msg(
             "ADD_REGISTER_CLASS_SUCCESS", "ADD REGISTER CLASS SUCCESS", {} , "0000"
@@ -360,24 +361,19 @@ class register_class_proc:
 
     def _delete(self, params):
         response = helper.response_msg(
-            "DELETE_KONTEN_SUCCESS", "DELETE KONTEN SUCCESS", {} , "0000"
+            "DELETE_CLASS_SUCCESS", "DELETE CLASS SUCCESS", {} , "0000"
         )
-        try:
-            
-            self.mgdDB.db_konten.update_one(
-                { "pkey" : params["fk_konten_id"] },
-                { "$set" : {
-                        "is_deleted" : True
-                    }
-                }
+        try:                        
+            self.mgdDB.db_class.delete_one(
+                { "pkey" : params["class_id"] },                
             )
 
         except :
             trace_back_msg = traceback.format_exc() 
             self.webapp.logger.debug(traceback.format_exc())
 
-            response.put( "status"      , "DELETE_KONTEN_FAILED" )
-            response.put( "desc"        , "DELETE KONTEN FAILED" )
+            response.put( "status"      , "DELETE_CLASS_FAILED" )
+            response.put( "desc"        , "DELETE CLASS FAILED" )
             response.put( "status_code" , "9999" )
             response.put( "data"        , { "error_message" : trace_back_msg })
         # end try

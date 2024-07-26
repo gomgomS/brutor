@@ -202,7 +202,19 @@ class view_register_class:
                 params["start_date" ] = ""
             
             if params["end_date"] == None:
-                params["end_date" ] = ""        
+                params["end_date" ] = ""     
+
+            sort_by_list = [
+                { 
+                    "name" : "Nama Class" ,
+                    "value" : "name_class" 
+                },
+                { 
+                    "name" : "Status Class" ,
+                    "value" : "status_class" 
+                }
+                
+            ]    
 
 
             entry_resp              = utils._find_table_entries()
@@ -241,7 +253,10 @@ class view_register_class:
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
                 class_list              = class_list,
-                user_rec                = user_rec
+                user_rec                = user_rec,
+                sort_by_list            = sort_by_list
+                
+
             )
 
 

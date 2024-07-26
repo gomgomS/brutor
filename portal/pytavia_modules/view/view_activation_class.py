@@ -103,7 +103,7 @@ class view_activation_class:
         # block_count = utils.ceildiv(konten_view.count(), entry)
 
         activation_class_list = []
-        activation_class_view = self.mgdDB.db_activation_class.find(query)
+        activation_class_view = self.mgdDB.db_activation_class.find(query).sort(sort_by, order).skip(block_skip).limit(entry)
         block_count = utils.ceildiv(activation_class_view.count(), entry)
 
         
@@ -124,6 +124,11 @@ class view_activation_class:
         for activation_class_item in activation_class_view:
             activation_class_resp                = self._find_class(activation_class_item["class_id"] )            
             activation_class_item["name_class"]   = activation_class_resp["name_class"     ] 
+
+            # Convert price to Rupiah currency format
+            if 'price_class' in activation_class_item:
+                activation_class_item['price_class'] = self.format_currency(activation_class_item['price_class'])
+
             activation_class_list.append(activation_class_item)
 
 
@@ -177,7 +182,19 @@ class view_activation_class:
                 params["start_date" ] = ""
             
             if params["end_date"] == None:
-                params["end_date" ] = ""        
+                params["end_date" ] = ""       
+
+            sort_by_list = [
+                { 
+                    "name" : "Name Activation Class" ,
+                    "value" : "active_class_name" 
+                },
+                { 
+                    "name" : "Status Activation" ,
+                    "value" : "status_activation" 
+                }
+                
+            ]   
 
 
             entry_resp              = utils._find_table_entries()
@@ -217,7 +234,8 @@ class view_activation_class:
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
                 activation_class_list   = activation_class_list,
-                user_rec                = user_rec
+                user_rec                = user_rec,
+                sort_by_list            = sort_by_list
             )
 
 
@@ -257,6 +275,14 @@ class view_activation_class:
         user = self.mgdDB.db_user.find_one(query)             
 
         return user
+
+    def format_currency(self,amount):
+        """Format the amount into Rupiah currency format."""
+        try:
+            amount = float(amount)  # Convert to float if it's a string
+            return f"Rp {amount:,.0f}".replace(',', '.')
+        except ValueError:
+            return "Rp 0"  # Default value if conversion fails
     
 # end class
 

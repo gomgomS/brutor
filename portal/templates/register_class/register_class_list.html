@@ -100,11 +100,26 @@
                 </div>
             </div>
         </div>        
+        <!-- Flash messages section -->
+		{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
         <div class="contents-body">
             <div class="">             
                 <div class="">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="">Register Class</h1>
+                        <h5 class="">Register Class</h5>
                         <form action="/register_class" method="GET" class="mg-t-30">
                             <fieldset class="">
                                 <div class="d-flex flex-wrap">
@@ -155,7 +170,7 @@
                         
                                     <div class="form-group d-flex mg-t-auto">
                                         <button class="btn btn-info shadow-custom mg-r-8">Submit</button>
-                                        <a href="/users/active" id="reset" class="btn btn-danger shadow-custom" style="color: white;">Reset</a>
+                                        <a href="/register_test" id="reset" class="btn btn-danger shadow-custom" style="color: white;">Reset</a>
                                     </div>
                                 </div>
                             </fieldset>
@@ -173,7 +188,7 @@
                                         <th>Creator Class</th>
                                         <th>Status Class</th>
                                         <th>Price Class</th>
-                                        <th></th>
+                                        <th width=""></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -200,9 +215,14 @@
                                                 {% endif %}
                                             </td>
                                             <td>
-                                                <a class="dropdown-item text-primary"
-                                                            href="/register_class/register_class_edit_form?class_id={{ class_item.class_id }}&redirect=/register_class&type=EDIT"><i
-                                                                class="far fa-edit"></i> Edit</a>                                              
+                                                <div class="d-flex">                                                    
+                                                        <a class="dropdown-item text-primary" href="/register_class/register_class_edit_form?class_id={{ class_item.class_id }}&redirect=/register_class&type=EDIT">
+                                                            <i class="far fa-edit"></i> Edit
+                                                        </a>                                                                                          
+                                                        <a class="dropdown-item text-primary" href="/register_class/delete?class_id={{ class_item.class_id }}&redirect=/register_class&type=DELETE">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </a>                                                
+                                                </div>                                                                                          
                                             </td>                                           
                                         </tr>
                                         

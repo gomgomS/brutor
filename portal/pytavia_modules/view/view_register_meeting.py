@@ -103,7 +103,7 @@ class view_register_meeting:
         # block_count = utils.ceildiv(konten_view.count(), entry)
 
         meeting_list = []
-        meeting_view = self.mgdDB.db_meeting.find(query)
+        meeting_view = self.mgdDB.db_meeting.find(query).sort(sort_by, order).skip(block_skip).limit(entry)
         block_count = utils.ceildiv(meeting_view.count(), entry)
 
         
@@ -177,7 +177,19 @@ class view_register_meeting:
                 params["start_date" ] = ""
             
             if params["end_date"] == None:
-                params["end_date" ] = ""        
+                params["end_date" ] = ""      
+
+            sort_by_list = [
+                { 
+                    "name" : "Name Meeting" ,
+                    "value" : "name_meeting" 
+                },
+                { 
+                    "name" : "Status Meeting" ,
+                    "value" : "status_meeting" 
+                }
+                
+            ]  
 
 
             entry_resp              = utils._find_table_entries()
@@ -219,7 +231,8 @@ class view_register_meeting:
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
                 meeting_list              = meeting_list,
-                user_rec                = user_rec
+                user_rec                = user_rec,
+                sort_by_list            = sort_by_list
             )
 
 
@@ -247,6 +260,10 @@ class view_register_meeting:
         class_rec = self.mgdDB.db_activation_class.find_one({ 
             "activation_class_id" : activation_class_id
         })   
+        
+        if class_rec is None:
+            class_rec = {}
+            class_rec["active_class_name"] = "DELETED"            
   
         response = {
             "active_class_name"   : class_rec["active_class_name"]

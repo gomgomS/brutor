@@ -70,6 +70,7 @@ class register_test_proc:
             test_rec.put("str_end_datetime",          params["end_datetime"          ])
             test_rec.put("type_test",                 params["type_test"             ])
             test_rec.put("name_test",                 params["name_test"             ])
+            test_rec.put("source",                    params["source"             ])
             test_rec.put("status_test",               params["status_test"             ])
             test_rec.insert()                       
 
@@ -293,26 +294,87 @@ class register_test_proc:
         return response
     # end def
 
+    def _update(self, params):
+        response = helper.response_msg(
+    "UPDATE_REGISTER_TEST_SUCCESS", "UPDATE REGISTER TEST SUCCESS", {}, "0000"
+)
+        try:
+            # Fetch the existing test record
+            existing_test = self.mgdDB.db_test.find_one({"test_id": params["test_id"]})
+            
+            if not existing_test:
+                raise ValueError("Test record not found")
+
+            # Convert str datetime to timestamp
+            start_datetime_obj = utils._get_datetime_from_str_date(params["start_datetime"], date_format='%d/%m/%Y %H:%M')
+            start_timestamp = utils._convert_datetime_to_timestamp(start_datetime_obj)
+
+            end_datetime_obj = utils._get_datetime_from_str_date(params["end_datetime"], date_format='%d/%m/%Y %H:%M')
+            end_timestamp = utils._convert_datetime_to_timestamp(end_datetime_obj)
+
+            # Process desc_test_html
+            desc_test_html = su.unescape(params["desc_test"])
+
+            clean = re.compile('<.*?>')
+            params["desc_test"] = re.sub(clean, '', desc_test_html)
+
+            list_desc_test = params["desc_test"].split(' ')
+            list_desc_test = list_desc_test[0:10]
+            list_desc_test.append("...")
+            desc_test_preview = " ".join(list_desc_test)
+
+            # Prepare the update object
+            update_obj = {
+                "activation_class_id": params["activation_class_id"],
+                "fk_user_id": params["fk_user_id"],
+                "name_test": params["name_test"],
+                "desc_test": params["desc_test"],
+                "desc_test_html": desc_test_html,
+                "desc_test_preview": desc_test_preview,
+                "score_to_pass": params["score_to_pass"],
+                "start_timestamp": start_timestamp,
+                "end_timestamp": end_timestamp,
+                "str_start_datetime": params["start_datetime"],
+                "str_end_datetime": params["end_datetime"],
+                "type_test": params["type_test"],
+                "status_test": params["status_test"],
+                "source": params["source"]
+            }
+
+            # Update the test record
+            self.mgdDB.db_test.update_one(
+                {"test_id": params["test_id"]},
+                {"$set": update_obj}
+            )
+
+        except Exception as e:
+            trace_back_msg = traceback.format_exc()
+            self.webapp.logger.debug(traceback.format_exc())
+
+            response.put("status", "UPDATE_REGISTER_TEST_FAILED")
+            response.put("desc", "UPDATE REGISTER TEST FAILED")
+            response.put("status_code", "9999")
+            response.put("data", {"error_message": trace_back_msg})
+
+        return response
+
+    # end def
+
     def _delete(self, params):
         response = helper.response_msg(
-            "DELETE_KONTEN_SUCCESS", "DELETE KONTEN SUCCESS", {} , "0000"
+            "DELETE_TEST_SUCCESS", "DELETE TEST SUCCESS", {} , "0000"
         )
-        try:
-            
-            self.mgdDB.db_konten.update_one(
-                { "pkey" : params["fk_konten_id"] },
-                { "$set" : {
-                        "is_deleted" : True
-                    }
-                }
+        try:                        
+            self.mgdDB.db_test.delete_one(
+                { "pkey" : params["test_id"] },                
             )
 
         except :
             trace_back_msg = traceback.format_exc() 
             self.webapp.logger.debug(traceback.format_exc())
 
-            response.put( "status"      , "DELETE_KONTEN_FAILED" )
-            response.put( "desc"        , "DELETE KONTEN FAILED" )
+            response.put( "status"      , "DELETE_TEST_FAILED" )
+            response.put( "desc"        , "DELETE TEST FAILED" )
             response.put( "status_code" , "9999" )
             response.put( "data"        , { "error_message" : trace_back_msg })
         # end try

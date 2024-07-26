@@ -105,7 +105,62 @@
             <div class="">             
                 <div class="">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="">Activation Class List</h1>
+                        <h4 class="">Activation Class List</h4>
+                        <form action="/activation_class" method="GET" class="mg-t-30">
+                            <fieldset class="">
+                                <div class="d-flex flex-wrap">
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Entries/page:</label>
+                                        <br>
+                                        <select name="entry" id="" class="custom-select W(80px)">
+                                            {% for entry_item in entry_list%}
+                                                {% if entry|string == entry_item.misc %}
+                                                    <option value="{{ entry_item.misc }}" selected>{{ entry_item.misc }}</option>
+                                                {% else %}
+                                                    <option value="{{ entry_item.misc }}">{{ entry_item.misc }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Sort By:</label>
+                                        <select name="sort_by" id="" class="custom-select ">
+                                            {% for sort_by_item in sort_by_list%}
+                                                {% if sort_by == sort_by_item.value %}
+                                                    <option value="{{ sort_by_item.value }}" selected>{{ sort_by_item.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ sort_by_item.value }}">{{ sort_by_item.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Order By:</label>
+                                        <select name="order_by" id="" class="custom-select ">
+                                            {% if order_by == "asc" %}
+                                                <option value="asc" selected>Ascending</option>
+                                                <option value="desc">Descending</option>
+                                            {% else %}
+                                                <option value="asc">Ascending</option>
+                                                <option value="desc" selected>Descending</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+    
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Keyword</label>
+                                        <input id="keyword" name="keyword" value="{{ keyword }}" type="text" class="form-control ">
+                                    </div>
+    
+    
+                        
+                                    <div class="form-group d-flex mg-t-auto">
+                                        <button class="btn btn-info shadow-custom mg-r-8">Submit</button>
+                                        <a href="/activation_class" id="reset" class="btn btn-danger shadow-custom" style="color: white;">Reset</a>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
                         <a href="/activation_class/activation_class_add_form?redirect=/activation_class" class="btn btn-sm pd-x-15 btn-primary btn-uppercase shadow-custom"><i
                                 class="fas fa-plus-square mg-r-5"></i> Tambah</a>
                     </div>                  
@@ -116,10 +171,10 @@
                                 <thead class="thead-primary">
                                     <tr>
                                         <th>Register Name</th>
-                                        <th>Activation Name </th>
+                                        <th>Activation Class Name </th>
                                         <th>Start/Active Date</th>
                                         <th>Student Limit</th>
-                                        <th>Can just Test to Pass?</th>
+                                        <th>only for test?</th>
                                         <th>Price</th>
                                         <th>Status Activation</th>
                                         <th></th>
@@ -130,15 +185,37 @@
                                         <tr>
                                             <td>{{ activation_class_item.name_class }}</td>
                                             <td>{{ activation_class_item.active_class_name }}</td>                                            
-                                            <td>{{ activation_class_item.str_activate_timestamp }}</td>                                                                                      
-                                            <td>{{ activation_class_item.student_limit }}</td>
-                                            <td>{{ activation_class_item.can_just_test_to_pass }}</td>
-                                            <td>{{ activation_class_item.price_class }}</td>
-                                            <td>{{ activation_class_item.status_activation }}</td>
                                             <td>
-                                                <a href="activation_class/detail/{{activation_class_item.activation_class_id}}" type="button" class="btn btn-primary">
-                                                    see
-                                                 </a>  
+                                                <span class="badge badge-info">{{ activation_class_item.str_activate_timestamp }}</span>
+                                            </td>
+                                            <td>{{ activation_class_item.student_limit }}</td>
+                                            <td>
+                                                {% if activation_class_item.can_just_test_to_pass %}
+                                                    <span class="badge badge-success">Yes</span>
+                                                {% else %}
+                                                    <span class="badge badge-danger">No</span>
+                                                {% endif %}
+                                            </td>                                            
+                                            <td>{{ activation_class_item.price_class }}</td>
+                                            <td>
+                                                {% if activation_class_item.status_activation == "DEVELOPMENT" %}
+                                                    <span class="badge badge-warning">Development</span>
+                                                {% elif activation_class_item.status_activation == "OPEN" %}
+                                                    <span class="badge badge-success">Open</span>
+                                                {% else %}
+                                                    <span class="badge badge-secondary">{{ activation_class_item.status_activation }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <a href="activation_class/detail/{{activation_class_item.activation_class_id}}" type="button" class="btn btn-primary">
+                                                        see
+                                                     </a>  
+                                                     <a class="dropdown-item text-primary" href="/activation_class/delete?activation_class_id={{ activation_class_item.activation_class_id }}&redirect=/activation_class&type=DELETE">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </a> 
+                                                </div>
+
                                             </td>                                           
                                         </tr>
                                         

@@ -47,7 +47,7 @@
         <div class="aside-body">
             <ul class="nav nav-aside">
                 {% for menu_item in menu_list_html %}
-                    {%if menu_item.value == 'MANAGER_TEST' %}
+                    {%if menu_item.value == 'MANAGER_MEETING' %}
                         <li class="nav-item nav-item-active ">
                             <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
                                 <span>{{menu_item.menu_name.title()}}</span></a>

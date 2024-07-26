@@ -100,12 +100,81 @@
                 </div>
             </div>
         </div>
-
+         <!-- Flash messages section -->
+		{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
         <div class="contents-body">
-            <div class="mg-b-100">             
-                <div class="mg-t-60">
+            <div class="">             
+                <div class="">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="font-weight-bold">Register Meeting List</h1>
+                        <h4 class="">Register Meeting List</h4>
+                        <form action="/register_meeting" method="GET" class="mg-t-30">
+                            <fieldset class="">
+                                <div class="d-flex flex-wrap">
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Entries/page:</label>
+                                        <br>
+                                        <select name="entry" id="" class="custom-select W(80px)">
+                                            {% for entry_item in entry_list%}
+                                                {% if entry|string == entry_item.misc %}
+                                                    <option value="{{ entry_item.misc }}" selected>{{ entry_item.misc }}</option>
+                                                {% else %}
+                                                    <option value="{{ entry_item.misc }}">{{ entry_item.misc }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Sort By:</label>
+                                        <select name="sort_by" id="" class="custom-select ">
+                                            {% for sort_by_item in sort_by_list%}
+                                                {% if sort_by == sort_by_item.value %}
+                                                    <option value="{{ sort_by_item.value }}" selected>{{ sort_by_item.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ sort_by_item.value }}">{{ sort_by_item.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Order By:</label>
+                                        <select name="order_by" id="" class="custom-select ">
+                                            {% if order_by == "asc" %}
+                                                <option value="asc" selected>Ascending</option>
+                                                <option value="desc">Descending</option>
+                                            {% else %}
+                                                <option value="asc">Ascending</option>
+                                                <option value="desc" selected>Descending</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+    
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Keyword</label>
+                                        <input id="keyword" name="keyword" value="{{ keyword }}" type="text" class="form-control ">
+                                    </div>
+    
+    
+                        
+                                    <div class="form-group d-flex mg-t-auto">
+                                        <button class="btn btn-info shadow-custom mg-r-8">Submit</button>
+                                        <a href="/register_meeting" id="reset" class="btn btn-danger shadow-custom" style="color: white;">Reset</a>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
                         <a href="/register_meeting/register_meeting_add_form?redirect=/register_meeting" class="btn btn-sm pd-x-15 btn-primary btn-uppercase shadow-custom"><i
                                 class="fas fa-plus-square mg-r-5"></i> Tambah</a>
                     </div>                  
@@ -117,17 +186,36 @@
                                     <tr>
                                         <th>Name Active Class</th>
                                         <th>Name Meeting</th>                                        
-                                        <th>deadline Meeting</th>                                       
+                                        <th>Start Meeting</th>                                       
+                                        <th>Status Meeting</th>                                       
                                         <th>Link Source</th>                                        
+                                        <th></th>                                        
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for meeting_item in meeting_list %}
                                         <tr>
-                                            <td>{{ meeting_item.active_class_name }}</td>
+                                            <td>
+                                                {% if meeting_item.active_class_name == 'DELETED' %}
+                                                    <span class="badge badge-danger">Deleted</span>
+                                                {% else %}
+                                                    {{ meeting_item.active_class_name }}
+                                                {% endif %}                                                
+                                            </td>
                                             <td>{{ meeting_item.name_meeting }}</td>                                                                                                                               
-                                            <td>{{ meeting_item.str_end_datetime }}</td>                                          
+                                            <td><span class="badge badge-primary">{{ meeting_item.str_start_datetime }}</span></td>
+                                            <td><span class="badge badge-primary">{{ meeting_item.status_meeting }}</span></td>                                         
                                             <td>{{ meeting_item.source }}</td>                                            
+                                            <td>
+                                                <div class="d-flex">
+                                                    <a class="dropdown-item text-primary"
+                                                    href="/register_meeting/register_meeting_edit_form?meeting_id={{ meeting_item.meeting_id }}&redirect=/register_meeting&type=EDIT"><i
+                                                        class="far fa-edit"></i> Edit</a>  
+                                                        <a class="dropdown-item text-primary" href="/register_meeting/delete?meeting_id={{ meeting_item.meeting_id }}&redirect=/register_meeting&type=DELETE">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </a>
+                                                </div>
+                                            </td>
                                         </tr>
                                         
                                         <!-- MODAL -->
