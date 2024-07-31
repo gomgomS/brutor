@@ -183,11 +183,54 @@
                 <div class="card-body">
                     <!-- <p><span class="data-title">Activation Class ID:</span> <span class="data-value">{{ activation_class_rec.activation_class_id }}</span></p>
                     <p><span class="data-title">User ID:</span> <span class="data-value">{{ activation_class_rec.fk_user_id }}</span></p> -->
-                    <p><span class="data-title">Class Name:</span> <span class="data-value">{{ activation_class_rec.active_class_name }}</span></p>
-                    <p><span class="data-title">Activation Timestamp:</span> <span class="data-value">{{ activation_class_rec.str_activate_timestamp }}</span></p>
-                    <p><span class="data-title">Student Limit:</span> <span class="data-value">{{ activation_class_rec.student_limit }}</span></p>
-                    <p><span class="data-title">Price:</span> <span class="data-value">{{ activation_class_rec.price_class }}</span></p>
-                    <p><span class="data-title">Status:</span> <span class="data-value">{{ activation_class_rec.status_activation }}</span></p>
+                    <p>
+                    <span class="data-title">Class Name:</span> 
+                    <span class="data-value">
+                        <span class="badge badge-secondary p-1" style="font-size: 0.9rem;">{{ activation_class_rec.active_class_name }}</span>
+                    </span>
+                    </p>
+                    <p>
+                    <span class="data-title">Activation Timestamp:</span> 
+                    <span class="data-value">
+                        <span class="badge badge-secondary p-2" style="font-size: 0.9rem;">{{ activation_class_rec.str_activate_timestamp }}</span>
+                    </span>
+                    </p>
+                    <p>
+                    <span class="data-title">Student Limit:</span> 
+                    <span class="data-value">
+                        <span class="badge badge-secondary p-2" style="font-size: 0.9rem;">{{ activation_class_rec.student_limit }}</span>
+                    </span>
+                    </p>
+                    <p>
+                    <span class="data-title">Price:</span> 
+                    <span class="data-value">
+                        <span class="badge badge-secondary p-2" style="font-size: 0.9rem;">{{ activation_class_rec.price_class }}</span>
+                    </span>
+                    </p>
+                    <p>
+                    <span class="data-title">Status:</span> 
+                    <span class="data-value">
+                        {% if activation_class_rec.status_activation == 'DEVELOPMENT' %}
+                        <span class="badge badge-primary p-2" style="font-size: 0.9rem;">Development (class under maintenance)</span>
+                        {% elif activation_class_rec.status_activation == 'OPEN_REGISTRATION' %}
+                        <span class="badge badge-success p-2" style="font-size: 0.9rem;">Open Registration (class is open for registration)</span>
+                        {% elif activation_class_rec.status_activation == 'RUNNING' %}
+                        <span class="badge badge-warning p-2" style="font-size: 0.9rem;">Running (class already started)</span>
+                        {% elif activation_class_rec.status_activation == 'FINISHED' %}
+                        <span class="badge badge-secondary p-2" style="font-size: 0.9rem;">Finished (class completed)</span>
+                        {% endif %}
+                    </span>
+                    </p>
+                    <p>
+                    <span class="data-title">Only for Test:</span> 
+                    <span class="data-value">
+                        {% if activation_class_rec.can_just_test_to_pass == 'TRUE' %}
+                        <span class="badge badge-info p-2" style="font-size: 0.9rem;">YES</span>
+                        {% else %}
+                        <span class="badge badge-danger p-2" style="font-size: 0.9rem;">NO</span>
+                        {% endif %}
+                    </span>
+                    </p>                                              
                 </div>
             </div>
 
@@ -289,7 +332,19 @@
                                 <p><span class="data-title">Description:</span> <span class="data-value">{{ meeting.desc_meeting }}</span></p>
                                 <p><span class="data-title">Start Time:</span> <span class="data-value">{{ meeting.str_start_datetime }}</span></p>
                                 <p><span class="data-title">End Time:</span> <span class="data-value">{{ meeting.str_end_datetime }}</span></p>
-                                <p><span class="data-title">Source:</span> <span class="data-value"><a href="{{ meeting.source }}" target="_blank">Link</a></span></p>
+                                <p><span class="data-title">Source:</span> 
+                                    <span class="data-value">
+                                        <a href="{{ meeting.source }}" target="_blank" class="badge badge-primary">{{ meeting.source }}</a>
+                                    </span>
+                                </p>
+                                <p><span class="data-title">Meeting Status:</span> 
+                                    <span class="data-value">
+                                        <span class="badge 
+                                            {% if meeting.status_meeting == 'DEVELOPMENT' %}badge-warning{% elif meeting.status_meeting == 'SHARE' %}badge-info{% elif meeting.status_meeting == 'DONE' %}badge-success{% endif %}">
+                                            {{ meeting.status_meeting }}
+                                        </span>
+                                    </span>
+                                </p>                                
                                 <button class="btn btn-secondary" data-toggle="modal" data-target="#editMeetingModal{{ loop.index }}">Edit</button>
                                 <hr>
                             </div>
@@ -314,6 +369,19 @@
                                 <p><span class="data-title">Score to Pass:</span> <span class="data-value">{{ test.score_to_pass }}</span></p>
                                 <p><span class="data-title">Start Time:</span> <span class="data-value">{{ test.str_start_datetime }}</span></p>
                                 <p><span class="data-title">End Time:</span> <span class="data-value">{{ test.str_end_datetime }}</span></p>
+                                <p><span class="data-title">Source:</span> 
+                                    <span class="data-value">
+                                        <a href="{{ test.source }}" target="_blank" class="badge badge-primary">{{ test.source }}</a>
+                                    </span>
+                                </p>
+                                <p><span class="data-title">Test Status:</span> 
+                                    <span class="data-value">
+                                        <span class="badge 
+                                            {% if test.status_test == 'DEVELOPMENT' %}badge-warning{% elif test.status_test == 'SHARE' %}badge-info{% elif test.status_test == 'DONE' %}badge-success{% endif %}">
+                                            {{ test.status_test }}
+                                        </span>
+                                    </span>
+                                </p> 
                                 <button class="btn btn-secondary" data-toggle="modal" data-target="#editTestModal{{ loop.index }}">Edit</button>
                                 <hr>
                             </div>
@@ -323,11 +391,10 @@
                 </div>
             </div>
     
-            <!-- Modals for Edit and Add Operations -->
             {% for meeting in meeting_list %}
             <!-- Edit Meeting Modal -->
             <div class="modal fade" id="editMeetingModal{{ loop.index }}" tabindex="-1" aria-labelledby="editMeetingModalLabel{{ loop.index }}" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="editMeetingModalLabel{{ loop.index }}">Edit Meeting</h5>
@@ -335,27 +402,53 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form method="POST" action="/edit_meeting">
+                        <form method="POST" action="/register_meeting/update">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="redirect" value="/activation_class/detail/{{ activation_class_rec.activation_class_id }}">
+                            <input type="hidden" name="activation_class_id" value="{{ activation_class_rec.activation_class_id }}">
+                            <input type="hidden" name="meeting_id" value="{{ meeting.meeting_id }}">
+            
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="edit_meeting_id{{ loop.index }}">Meeting Name</label>
-                                    <input type="text" class="form-control" id="edit_meeting_id{{ loop.index }}" name="meeting_id" value="{{ meeting.name_meeting }}">
+                                    <label for="" class="">Meeting Time</label>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-3">
+                                        <div id="datepicker_meeting_edit{{ loop.index }}" class="d-flex align-items-center">
+                                            <input id="datepicker_meeting_edit{{ loop.index }}" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" value="{{ meeting.str_start_datetime }}" required>
+                                            <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                        </div>
+                                    </div>
+                                    <span class="mg-t-10 col-sm-1 text-center">---</span>
+                                    <div class="col-sm-3">
+                                        <div id="datepicker2_meeting_edit{{ loop.index }}" class="d-flex align-items-center">
+                                            <input name="end_datetime" data-input id="datepicker2_meeting_edit{{ loop.index }}" type="text" class="form-control" placeholder="Select Date.." autocomplete="off" value="{{ meeting.str_end_datetime }}" required>
+                                            <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="edit_meeting_name{{ loop.index }}">Meeting Name</label>
+                                    <input type="text" class="form-control" id="edit_meeting_name{{ loop.index }}" name="name_meeting" value="{{ meeting.name_meeting }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="edit_meeting_desc{{ loop.index }}">Description</label>
-                                    <textarea class="form-control" id="edit_meeting_desc{{ loop.index }}" name="meeting_desc" required>{{ meeting.desc_meeting }}</textarea>
+                                    <textarea class="form-control" id="edit_meeting_desc{{ loop.index }}" name="desc_meeting" required>{{ meeting.desc_meeting }}</textarea>
                                 </div>
-                                <div class="form-group">
-                                    <label for="edit_meeting_start{{ loop.index }}">Start Time</label>
-                                    <input type="datetime-local" class="form-control" id="edit_meeting_start{{ loop.index }}" name="meeting_start" value="{{ meeting.str_start_datetime }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="edit_meeting_end{{ loop.index }}">End Time</label>
-                                    <input type="datetime-local" class="form-control" id="edit_meeting_end{{ loop.index }}" name="meeting_end" value="{{ meeting.str_end_datetime }}" required>
-                                </div>
+                                
                                 <div class="form-group">
                                     <label for="edit_meeting_source{{ loop.index }}">Source</label>
-                                    <input type="url" class="form-control" id="edit_meeting_source{{ loop.index }}" name="meeting_source" value="{{ meeting.source }}" required>
+                                    <input type="url" class="form-control" id="edit_meeting_source{{ loop.index }}" name="source" value="{{ meeting.source }}" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="edit_meeting_status{{ loop.index }}">Meeting Status</label>
+                                    <select id="status_meeting" class="form-control" name="status_meeting" required>
+                                        <option value="" type="hidden" selected disabled></option>                                
+                                        <option value="DEVELOPMENT" {% if meeting.status_meeting == 'DEVELOPMENT' %}selected{% endif %}>Development (meeting under maintenance or Development)</option>
+                                        <option value="SHARE" {% if meeting.status_meeting == 'SHARE' %}selected{% endif %}>Share (meeting is ready to share)</option>
+                                        <option value="DONE" {% if meeting.status_meeting == 'DONE' %}selected{% endif %}>Done (meeting is done)</option>                                 
+                                    </select>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -367,6 +460,7 @@
                 </div>
             </div>
             {% endfor %}
+
     
             {% for test in test_list %}            
             <!-- Edit Test Modal -->
@@ -379,30 +473,30 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form method="POST" action="/edit_test">
+                        <form method="POST" action="/register_test/update">
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="redirect" value="/activation_class/detail/{{ activation_class_rec.activation_class_id }}">
                             <input type="hidden" name="activation_class_id" value="{{ activation_class_rec.activation_class_id }}">
                             <input type="hidden" name="test_id" value="{{ test.test_id }}">
 
-                            <fieldset class="form-fieldset pd-x-50 field-shadow">
+                            <fieldset class="form-fieldset pd-x-50 field-shadow">                                
                                 <div class="form-group row">
-                                    <label for="edit_test_periode_start{{ loop.index }}" class="col-sm-2 col-form-label text-right">Periode</label>
+                                    <label for="dujul" class="col-sm-2 col-form-label text-right">Periode</label>
                                     <div class="col-sm-3">
-                                        <div class="d-flex align-items-center">
-                                            <input id="edit_test_periode_start{{ loop.index }}" name="start_datetime" class="form-control" type="datetime-local" value="{{ test.str_start_datetime }}" required>
-                                            <i class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                        <div id="datepicker_test_edit{{ loop.index }}" class="d-flex align-items-center">
+                                            <input id="datepicker_test_edit{{ loop.index }}" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" value="{{ test.str_start_datetime }}" required>
+                                            <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
                                         </div>
                                     </div>
                                     <span class="mg-t-10 col-sm-1 text-center">---</span>
                                     <div class="col-sm-3">
-                                        <div class="d-flex align-items-center">
-                                            <input id="edit_test_periode_end{{ loop.index }}" name="end_datetime" class="form-control" type="datetime-local" value="{{ test.str_end_datetime }}" required>
-                                            <i class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                        <div id="datepicker2_test_edit{{ loop.index }}" class="d-flex align-items-center">
+                                            <input name="end_datetime" data-input id="datepicker2_test_edit{{ loop.index }}" type="text" class="form-control" placeholder="Select Date.." autocomplete="off" value="{{ test.str_end_datetime }}" required>
+                                            <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
                                         </div>
                                     </div>
                                 </div>
-
+                                
                                 <div class="form-group row">
                                     <label for="edit_test_name{{ loop.index }}" class="col-sm-2 col-form-label text-right">Name Test</label>
                                     <div class="col-sm-10">
@@ -460,7 +554,7 @@
             </div>
             {% endfor %}            
 
-            <!-- Add Meeting Modal -->
+            <!-- Add meeting Modal -->
             <div class="modal fade" id="addMeetingModal" tabindex="-1" aria-labelledby="addMeetingModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg"> <!-- Changed to modal-lg for larger modal -->
                     <div class="modal-content">
@@ -482,8 +576,8 @@
                                     <div class="col-sm-10">
                                         <div class="row">
                                             <div class="col-sm-5">
-                                                <div id="datepicker" class="d-flex align-items-center">
-                                                    <input id="datepicker" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
+                                                <div id="datepicker_meeting_add" class="d-flex align-items-center">
+                                                    <input id="datepicker_meeting_add" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
                                                     <i data-toggle id="calendar2" class="fas fa-calendar-week text-primary ml-2"></i>
                                                 </div>
                                             </div>
@@ -491,8 +585,8 @@
                                                 <span class="align-middle">---</span>
                                             </div>
                                             <div class="col-sm-5">
-                                                <div id="datepicker2" class="d-flex align-items-center">
-                                                    <input name="end_datetime" data-input id="datepicker2" type="text" class="form-control" placeholder="Select Date.." autocomplete="off" required>
+                                                <div id="datepicker2_meeting_add" class="d-flex align-items-center">
+                                                    <input name="end_datetime" data-input id="datepicker2_meeting_add" type="text" class="form-control" placeholder="Select Date.." autocomplete="off" required>
                                                     <i data-toggle id="calendar2" class="fas fa-calendar-week text-primary ml-2"></i>
                                                 </div>
                                             </div>
@@ -557,15 +651,15 @@
                                 <div class="form-group row">
                                     <label for="dujul" class="col-sm-2 col-form-label text-right">Periode</label>
                                     <div class="col-sm-3">
-                                        <div id="datepicker_" class="d-flex align-items-center">
-                                            <input id="datepicker_" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
+                                        <div id="datepicker_test_add" class="d-flex align-items-center">
+                                            <input id="datepicker_test_add" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
                                             <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
                                         </div>
                                     </div>
                                     <span class="mg-t-10 col-sm-1 text-center">---</span>
                                     <div class="col-sm-3">
-                                        <div id="datepicker2_" class="d-flex align-items-center">
-                                            <input name="end_datetime" data-input id="datepicker2_" type="text" class="form-control" placeholder="Select Date.." autocomplete="off" required>
+                                        <div id="datepicker2_test_add" class="d-flex align-items-center">
+                                            <input name="end_datetime" data-input id="datepicker2_test_add" type="text" class="form-control" placeholder="Select Date.." autocomplete="off" required>
                                             <i data-toggle id="calendar2" class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
                                         </div>
                                     </div>
@@ -654,7 +748,7 @@
             }
         }
 
-        
+        // date picker for edit active class        
         $(document).ready(function() {            
             ['datepickerActive'].forEach(el => {
                 $(`#${el}`).flatpickr({
@@ -665,6 +759,49 @@
                 })
             });
         });
+
+        // date picker for add meeting 
+        ['datepicker_meeting_add', 'datepicker2_meeting_add'].forEach(el => {
+                $(`#${el}`).flatpickr({
+                    enableTime: true,
+                    dateFormat: "d/m/Y H:i",
+                    wrap: true,
+                    allowInput: true
+                })
+            });
+
+        // date picker for add test 
+        ['datepicker_test_add', 'datepicker2_test_add'].forEach(el => {
+                $(`#${el}`).flatpickr({
+                    enableTime: true,
+                    dateFormat: "d/m/Y H:i",
+                    wrap: true,
+                    allowInput: true
+                })
+            });
+
+        {% for meeting in meeting_list %}
+        ['datepicker_meeting_edit{{ loop.index }}', 'datepicker2_meeting_edit{{ loop.index }}'].forEach(el => {
+            $(`#${el}`).flatpickr({
+                enableTime: true,
+                dateFormat: "d/m/Y H:i",
+                wrap: true,
+                allowInput: true
+            });
+        });
+        {% endfor %}
+
+        {% for test in test_list %}
+        ['datepicker_test_edit{{ loop.index }}', 'datepicker2_test_edit{{ loop.index }}'].forEach(el => {
+            $(`#${el}`).flatpickr({
+                enableTime: true,
+                dateFormat: "d/m/Y H:i",
+                wrap: true,
+                allowInput: true
+            });
+        });
+        {% endfor %}
+
 
         CKEDITOR.replace( 'desc_meeting', { customConfig : 'config_toolbar_mnc_cs.js' } );            
         CKEDITOR.replace( 'desc_test', { customConfig : 'config_toolbar_mnc_cs.js' } );            
