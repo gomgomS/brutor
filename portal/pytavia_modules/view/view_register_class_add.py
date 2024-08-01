@@ -124,8 +124,6 @@ class view_register_class_add:
             # FIND class
             class_resp             = self._find_class( params )
             class_list             = class_resp["class_list"         ] 
-            print(class_list)
-            print("hokage")
 
             user_rec         = self._data_user()        
             

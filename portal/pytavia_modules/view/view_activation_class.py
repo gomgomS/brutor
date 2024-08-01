@@ -62,7 +62,7 @@ class view_activation_class:
         
 
         query = { 
-            # "is_deleted"        : False, 
+            "fk_user_id"        : params['fk_user_id'], 
             # "status_value"      : "PROSES"
         }
 

@@ -18,35 +18,34 @@
     <link rel="stylesheet" href="../../static/css/custom.css">
 
     <style>
-        .card-custom {
-            border: none;
-            border-radius: 15px;
-            transition: transform 0.2s;
+        .card-header {
+            padding: 1rem;
+            background-color: #f8f9fa; /* Light background for header */
+            border-bottom: 1px solid #e9ecef; /* Light border for separation */
         }
-        .card-custom:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+
+        .badge-success {
+            background-color: #28a745; /* Success color */
         }
-        .card-header-custom {
-            background-color: #f8f9fa;
-            border-bottom: none;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
+
+        .badge-info {
+            background-color: #17a2b8; /* Info color */
         }
+
         .btn-custom {
-            border-radius: 50px;
+            border-radius: 20px;
+            padding: 0.3rem 0.6rem;
         }
-        .text-muted-custom {
-            color: #6c757d;
+
+        .card-body {
+            padding: 1rem;
         }
-        .btn-info-custom {
-            background-color: #17a2b8;
-            border: none;
+
+        .card-footer {
+            padding: 0.75rem 1.25rem;
+            background-color: #f8f9fa;
         }
-        .btn-primary-custom {
-            background-color: #007bff;
-            border: none;
-        }
+
     </style>
     <!-- some additional css here -->
 </head>
@@ -131,12 +130,27 @@
                 </div>
             </div>
         </div>
+        <!-- Flash messages section -->
+		{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
         
         <div class="contents-body">
-            <div class="mg-b-10">             
-                <div class="mg-t-10">
+            <div class="">             
+                <div class="">
                     <div class="">
-                        <h1 class="">Enroll Class</h1>                    
+                        <h1 class="">Enroll myClass</h1>                    
                     </div>                                      
                     <div class="Ovy(a)--sm">
                         <div class="card-deck row">
@@ -145,31 +159,45 @@
                                 <!-- Card -->
                                 <div class="card card-custom shadow-sm h-100">
                                     <!-- Card Header -->
-                                    {% if class_item.status_activation == "OPEN_REGISTRATION" %}
                                     <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
-                                        <h5 class="card-title mb-0">{{ class_item.active_class_name }}</h5>
-                                        <a href="#" class="btn btn-primary btn-sm btn-custom" data-toggle="modal" data-target="#buyModal{{ class_item.activation_class_id }}">
+                                        <div class="card-title mb-0">{{ class_item.class_info.name_class }}</div>
+                                        {% if class_item.status_activation == "OPEN_REGISTRATION" %}
+                                        <a href="#" class="btn btn-primary btn-sm btn-custom ml-4" data-toggle="modal" data-target="#buyModal{{ class_item.activation_class_id }}">
                                             <i class="fas fa-shopping-cart"></i> Buy Enrollment
                                         </a> 
+                                        {% else %}
+                                        <span class="badge badge-success">{{ class_item.status_activation }}</span>
+                                        {% endif %}
                                     </div>
-                                    {% else %}
-                                    <div class="card-header bg-success card-header-custom d-flex justify-content-between align-items-center">
-                                        <h5 class="card-title mb-0">{{ class_item.active_class_name }}</h5>
-                                        <h5>{{ class_item.status_activation }}</h5>
-                                    </div>
-                                    {% endif %}
                                     <!-- Card content -->
                                     <div class="card-body">
-                                        <!-- Creator and Status -->
-                                     
-                                        <p class="card-subtitle mb-2 text-muted-custom">
-                                            <i class="fas fa-info-circle"></i> Status: {{ class_item.status_activation }}
-                                        </p>
-                                        <p class="card-subtitle mb-2 text-muted-custom">
-                                            <i class="fas fa-dollar-sign"></i> Price: {{ class_item.price_class }}
-                                        </p>
-                                        <!-- Text -->
-                                        <p class="card-text">Class starts at: {{ class_item.str_activate_timestamp }}</p>
+                                        <!-- Content Alignments -->
+                                        <div class="d-flex flex-column">
+                                            <p class="card-subtitle mb-2 text-muted-custom">
+                                                <span class="font-weight-bold">Tutor:</span> 
+                                                <span class="badge badge-primary">{{ class_item.creator_name }}</span>
+                                            </p>
+                                            <p class="card-subtitle mb-2 text-muted-custom">
+                                                <span class="font-weight-bold">Status:</span> 
+                                                {% if class_item.status_activation == "OPEN_REGISTRATION" %}
+                                                    <span class="badge badge-primary">Open for Registration</span>
+                                                {% elif class_item.status_activation == "SHARE" %}
+                                                    <span class="badge badge-warning">Share</span>
+                                                {% elif class_item.status_activation == "DONE" %}
+                                                    <span class="badge badge-success">Done</span>
+                                                {% else %}
+                                                    <span class="badge badge-secondary">Unknown</span>
+                                                {% endif %}
+                                            </p>
+                                            <p class="card-subtitle mb-2 text-muted-custom">
+                                                <span class="font-weight-bold">Price:</span> 
+                                                <span class="ml-1">{{ class_item.price_class }}</span>
+                                            </p>
+                                            <p class="card-text">
+                                                <span class="font-weight-bold">Class starts at:</span> 
+                                                <span>{{ class_item.str_activate_timestamp }}</span>
+                                            </p>
+                                        </div>
                                     </div>
                                     <!-- Card Footer -->
                                     <div class="card-footer bg-transparent d-flex justify-content-between">
@@ -181,7 +209,7 @@
                                 <!-- Card -->
                             </div>
                             {% endfor %}
-                        </div>
+                        </div>                                                                        
                     </div>
                 
                     <!-- Modals for Buy and Info (example structure) -->
@@ -210,14 +238,60 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="infoModalLabel{{ class_item.activation_class_id }}">Class Info: {{ class_item.active_class_name }}</h5>
+                                    <h5 class="modal-title" id="infoModalLabel{{ class_item.activation_class_id }}">Section Name: {{ class_item.active_class_name }}</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
                                     <!-- Modal body content -->
-                                    <p>{{ class_item.desc_class_preview }}</p>
+                                    <!-- Content Alignments -->
+
+                                     <!-- Prerequisite Classes -->
+                                     <div class="mb-3">
+                                        <span class=""> <strong> Prerequisite Classes: (you need get <span class="badge badge-success">PASS</span> status) </strong> </span>
+                                        <div>
+                                            {% for prerequisite_class_item in class_item.class_info.prerequisite_class %}
+                                                <span class="badge badge-primary">{{ prerequisite_class_item.name_class }}</span>
+                                                {% if prerequisite_class_item.enrollment_status == 'PASS' %}
+                                                    <span class="badge badge-success">{{ prerequisite_class_item.enrollment_status }}</span>
+                                                {% elif prerequisite_class_item.enrollment_status == 'REGISTERED' %}
+                                                    <span class="badge badge-info">{{ prerequisite_class_item.enrollment_status }}</span>
+                                                {% elif prerequisite_class_item.enrollment_status == 'UNREGISTERED' %}
+                                                    <span class="badge badge-danger">{{ prerequisite_class_item.enrollment_status }}</span>
+                                                {% else %}
+                                                    <span class="badge badge-info">{{ prerequisite_class_item.enrollment_status }}</span>
+                                                {% endif %}
+                                                |
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <hr>
+                                    
+                                    <!-- Class Limit -->
+                                    <div class="mb-3">
+                                        <span>Class Limit</span>
+                                        <span class="badge badge-info">{{ class_item.student_limit }}</span>
+                                        <span> orang</span>
+                                    </div>
+                                    
+                                    <hr>                                    
+                                    <!-- Class Description -->
+                                    <div class="mb-3">
+                                        <span> <strong> Class Description</strong></span>
+                                        <div>{{ class_item.class_info.desc_class_html | safe }}</div>
+                                    </div>
+                                    
+                                    
+
+                                    <!-- Class Description -->
+                                    <div class="mb-3">
+                                        <span> <strong>Syarat Kelulusan Class:</strong> </span>
+                                        <div>{{ class_item.class_info.pass_requirement_html | safe }}</div>
+                                    </div>
+                                    
+                                    <hr>                                                                       
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -225,9 +299,7 @@
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
-                        </div>                          
-                    </div>                                        
+                    {% endfor %}                                                                                                          
                 </div>
             </div>
             <footer class="text-center mg-t-auto font-weight-bold">©Brutor a,k,a BRUTAR TUTOR</footer>

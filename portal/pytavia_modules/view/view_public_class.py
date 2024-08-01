@@ -148,9 +148,6 @@ class view_public_class:
         #     test_item["active_class_name"]      = class_resp["active_class_name"     ] 
         #     test_list.append(test_item)
 
-        print(params)
-        print("di atas adalah params")
-
         class_list = []
 
         # Lists to hold items to be appended at the end

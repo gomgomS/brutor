@@ -142,8 +142,6 @@ class view_enroll_myclass:
         #     test_item["active_class_name"]      = class_resp["active_class_name"     ] 
         #     test_list.append(test_item)
 
-        print(params)
-        print("di atas adalah params")
 
         class_list = []
 
@@ -151,7 +149,19 @@ class view_enroll_myclass:
         owner_classes = []
         paid_classes = []
 
-        for class_item in class_view:          
+        for class_item in class_view:  
+            #find creator class
+            creator_class                       = self._find_creator_class(class_item['fk_user_id'])
+            class_item['creator_name']          = creator_class['name']     
+
+            #find inforamtion class and enrollment status   
+            class_info                          = self._find_class_and_enrollment_status(class_item['class_id'])
+            class_item['class_info']            = class_info
+
+            # Convert price to Rupiah currency format
+            if 'price_class' in class_item:
+                class_item['price_class'] = self.format_currency(class_item['price_class'])
+   
             class_list.append(class_item)
             
            
@@ -277,5 +287,60 @@ class view_enroll_myclass:
 
         return user
     
-# end class
+    def format_currency(self,amount):
+        """Format the amount into Rupiah currency format."""
+        try:
+            amount = float(amount)  # Convert to float if it's a string
+            return f"Rp {amount:,.0f}".replace(',', '.')
+        except ValueError:
+            return "Rp 0"  # Default value if conversion fails
+    # end def
+
+    def _find_creator_class(self,fk_user_id):                                    
+        user_rec = self.mgdDB.db_user.find_one({
+            "fk_user_id" : fk_user_id
+        })
+        
+        response =  user_rec
+        return response
+    # end def
+        
+        
+    def _find_class_and_enrollment_status(self, class_id):
+        # Find the class record
+        class_rec = self.mgdDB.db_class.find_one({
+            "class_id": class_id
+        })
+        
+        if not class_rec:
+            return None  # Return None if the class is not found
+        
+        # Find prerequisite classes
+        prerequisite_class_rec = self.mgdDB.db_class.find({
+            "class_id": { '$in': class_rec['prerequisite_class_id'] }
+        })
+        class_rec['prerequisite_class'] = list(prerequisite_class_rec)
+        
+        # Retrieve activation class data
+        activation_class_data = list(self.mgdDB.db_activation_class.find({}))
+        activation_class_map = {item['class_id']: item['activation_class_id'] for item in activation_class_data}
+
+        # Retrieve enrollment data
+        enrollment_data = list(self.mgdDB.db_enrollment.find({}))
+        enrollment_map = {item['activation_class_id']: item['enrollment_status'] for item in enrollment_data}
+
+        # Insert enrollment status into prerequisite classes
+        for prerequisite in class_rec['prerequisite_class']:
+            prerequisite['enrollment_status'] = 'UNREGISTERED'
+            prerequisite_class_id = prerequisite['class_id']
+            if prerequisite_class_id in activation_class_map:
+                activation_class_id = activation_class_map[prerequisite_class_id]
+                if activation_class_id in enrollment_map:
+                    prerequisite['enrollment_status'] = enrollment_map[activation_class_id]       
+
+        response = class_rec
+        return response
+    # enfif
+
+    # end class
 

@@ -272,6 +272,12 @@ def role_precheck(params):
         flash("You do not have the authority to access this page.", "danger")   
         return redirect(url_for("dashboard_html"))
 
+def data_ownership_precheck(params):
+    fk_user_id  = session.get("fk_user_id")
+  
+    if fk_user != params['role_with_access'] and session.get("role") != 'admin':     
+        flash("You do not have the authority to access this page.", "danger")   
+        return redirect(url_for("dashboard_html"))
 
 # 
 # Authentication
@@ -2312,6 +2318,11 @@ def view_register_class_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     params                           = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -2357,6 +2368,13 @@ def view_register_class_add_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
+
+
     params                           = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -2391,6 +2409,11 @@ def view_register_class_edit_form_html():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
     # end if
 
     params                           = sanitize.clean_html_dic(request.form.to_dict())
@@ -2430,6 +2453,12 @@ def proc_register_class_add():
     if redirect_return:
         return redirect_return
     # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     #tandai
     files                 = request.files
     params                = sanitize.clean_html_dic(request.form.to_dict())
@@ -2522,6 +2551,11 @@ def proc_register_class_delete():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     files                 = request.files
     params                = sanitize.clean_html_dic(request.form.to_dict())
 
@@ -2569,6 +2603,11 @@ def view_activation_class_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     params                           = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -2614,6 +2653,11 @@ def view_activation_class_add_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     params                           = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -2649,6 +2693,12 @@ def proc_activation_class_add():
     if redirect_return:
         return redirect_return
     # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     #tandai
     files                 = request.files
     params                = sanitize.clean_html_dic(request.form.to_dict())
@@ -2692,6 +2742,11 @@ def proc_activation_class_update():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     files                 = request.files
     params                = sanitize.clean_html_dic(request.form.to_dict())    
 
@@ -2732,6 +2787,11 @@ def proc_activation_class_delete():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
     # end if
 
     files                 = request.files
@@ -2779,6 +2839,11 @@ def view_activation_class_detail_html(activation_class_id):
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     params                    = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -2817,6 +2882,11 @@ def view_public_class_html():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
     # end if
 
     params                    = sanitize.clean_html_dic(request.form.to_dict())
@@ -2863,8 +2933,11 @@ def buy_public_class_(class_id):
     if redirect_return:
         return redirect_return
 
-
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
     # end if
+    #tandai
 
     params               = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"   ] = session.get("fk_user_id")
@@ -2893,6 +2966,11 @@ def view_register_test_html():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
     # end if
 
     params                    = sanitize.clean_html_dic(request.form.to_dict())
@@ -2940,6 +3018,11 @@ def view_register_test_add_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     params                           = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -2975,7 +3058,12 @@ def proc_register_test_add():
     if redirect_return:
         return redirect_return
     # end if
-    #tandai
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+    
     files                 = request.files
     params                = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id" ] = session.get("fk_user_id")
@@ -3018,6 +3106,11 @@ def view_register_test_edit_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     params                    = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -3054,6 +3147,11 @@ def proc_register_test_update():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
     # end if
 
     files                 = request.files
@@ -3097,6 +3195,11 @@ def proc_register_test_delete():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
     # end if
 
     files                 = request.files
@@ -3147,6 +3250,11 @@ def view_register_meeting_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     params                    = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -3192,6 +3300,11 @@ def view_register_meeting_add_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     params                    = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -3227,7 +3340,12 @@ def proc_register_meeting_add():
     if redirect_return:
         return redirect_return
     # end if
-    #tandai
+    
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+    
     files                 = request.files
     params                = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id" ] = session.get("fk_user_id")
@@ -3272,6 +3390,11 @@ def view_register_meeting_edit_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+
     params                    = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -3308,6 +3431,11 @@ def proc_register_meeting_update():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
     # end if
 
     files                 = request.files
@@ -3349,6 +3477,11 @@ def proc_register_meeting_delete():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
     # end if
 
     files                 = request.files
@@ -3398,6 +3531,11 @@ def view_level_class_html():
     redirect_return = login_precheck({})
     if redirect_return:
         return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
     # end if
 
     params = sanitize.clean_html_dic(request.form.to_dict())
@@ -3797,9 +3935,13 @@ def buy_enroll_class_(activation_class_id):
         "route_name" : ""
     })
 
+    #tandai
+    response = enroll_myclass_proc.enroll_myclass_proc(app).buy_enroll_myclass( params )
 
-    landing_url = enroll_myclass_proc.enroll_myclass_proc(app).buy_enroll_myclass( params )
-    return redirect( landing_url )
+    flash(response['msg'], response["notif_type"])   
+
+    return redirect( response['result_url'] )
+    
 
 ##########################################################
 #  Myclass 

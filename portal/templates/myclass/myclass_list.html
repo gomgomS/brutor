@@ -140,47 +140,42 @@
                     </div>                                          
                     <div class="Ovy(a)--sm">
                         <div class="card-deck row">
-                            {% for class_item in class_list %}
-                            <div class="col-xs-12 col-sm-6 col-md-4 mb-4">
-                                <!-- Card -->
-                                <div class="card card-custom shadow-sm h-100">
-                                    <!-- Card Header -->
-                                    {% if class_item.status_activation == "OPEN_REGISTRATION" %}
-                                    <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
-                                        <h5 class="card-title mb-0">{{ class_item.active_class_name }}</h5>
-                                        <a href="#" class="btn btn-primary btn-sm btn-custom" data-toggle="modal" data-target="#buyModal{{ class_item.activation_class_id }}">
-                                            <i class="fas fa-shopping-cart"></i> Buy Enrollment
-                                        </a> 
+                            <div class="card-deck row">
+                                {% for class_item in class_list %}
+                                <div class="col-xs-12 col-sm-6 col-md-4 mb-4">
+                                    <!-- Card -->
+                                    <div class="card card-custom shadow-sm h-100">
+                                        <!-- Card Header -->
+                                        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                                            <h5 class="card-title mb-0">{{ class_item.class_info.class_rec.name_class }}</h5>
+                                        </div>
+                                        <!-- Card Content -->
+                                        <div class="card-body">
+                                            <div class="mb-2">
+                                                <span class="font-weight-bold"><i class="fas fa-info-circle mr-2"></i>Status:</span>
+                                                <span>{{ class_item.enrollment_status }}</span>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="font-weight-bold"><i class="fas fa-calendar-alt mr-2"></i>Class starts at:</span>
+                                                <span>{{ class_item.class_info.activation_class_rec.str_activate_timestamp }}</span>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="font-weight-bold"><i class="fas fa-user mr-2"></i>Tutor:</span>
+                                                <span>{{ class_item.class_info.user_rec.name }}</span>
+                                            </div>
+                                        </div>
+                                        <!-- Card Footer -->
+                                        <div class="card-footer bg-transparent d-flex justify-content-between">
+                                            <a href="/myClass/detail/{{class_item.enrollment_id}}" class="btn btn-info btn-sm">
+                                                <i class="fas fa-info-circle"></i> Open
+                                            </a>
+                                        </div>
                                     </div>
-                                    {% else %}
-                                    <div class="card-header bg-success card-header-custom d-flex justify-content-between align-items-center">
-                                        <h5 class="card-title mb-0">{{ class_item.active_class_name }}</h5>
-                                        <h5>{{ class_item.status_activation }}</h5>
-                                    </div>
-                                    {% endif %}
-                                    <!-- Card content -->
-                                    <div class="card-body">
-                                        <!-- Creator and Status -->
-                                     
-                                        <p class="card-subtitle mb-2 text-muted-custom">
-                                            <i class="fas fa-info-circle"></i> Status: {{ class_item.status_activation }}
-                                        </p>
-                                        <p class="card-subtitle mb-2 text-muted-custom">
-                                            <i class="fas fa-dollar-sign"></i> Price: {{ class_item.price_class }}
-                                        </p>
-                                        <!-- Text -->
-                                        <p class="card-text">Class starts at: {{ class_item.str_activate_timestamp }}</p>
-                                    </div>
-                                    <!-- Card Footer -->
-                                    <div class="card-footer bg-transparent d-flex justify-content-between">
-                                        <a href="/myClass/detail/{{class_item.enrollment_id}}" class="btn btn-info btn-sm btn-custom btn-info-custom" >
-                                            <i class="fas fa-info-circle"></i> open
-                                        </a>
-                                    </div>
+                                    <!-- Card -->
                                 </div>
-                                <!-- Card -->
+                                {% endfor %}
                             </div>
-                            {% endfor %}
+                            
                         </div>
                     </div>
                 

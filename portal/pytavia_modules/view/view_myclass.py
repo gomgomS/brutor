@@ -77,7 +77,7 @@ class view_myclass:
        # Construct the query
         query = {
             "$and": [
-                { "enrollment_status": "REGISTERED" },  
+                { "enrollment_status": {'$in':["REGISTERED","PASS"]} },  
                 { "fk_user_id": params["fk_user_id"] }  
             ]
         }
@@ -155,11 +155,8 @@ class view_myclass:
         owner_classes = []
         paid_classes = []
 
-        for class_item in class_view:          
-            class_resp                              = self._find_activation_class( class_item["activation_class_id"] )
-            class_item["activation_class_id"]       = class_resp["activation_class_id"     ]
-            class_item["str_activate_timestamp"]    = class_resp["str_activate_timestamp"     ]
-            class_item["active_class_name"]         = class_resp["active_class_name"     ]
+        for class_item in class_view:  
+            class_item['class_info']         = self._find_activation_class( class_item["activation_class_id"] )            
             class_list.append(class_item)        
            
 
@@ -277,12 +274,24 @@ class view_myclass:
         return response
     # end def
 
-    def _find_activation_class(self, activation_class_id):      
-        class_rec = self.mgdDB.db_activation_class.find_one({ 
+    def _find_activation_class(self, activation_class_id):    
+        # data activation class  
+        activation_class_rec = self.mgdDB.db_activation_class.find_one({ 
             "activation_class_id" : activation_class_id
+        }) 
+
+        # data tutor class  
+        user_rec = self.mgdDB.db_user.find_one({ 
+            "fk_user_id" : activation_class_rec['fk_user_id']
+        })  
+
+        # data class
+        class_rec = self.mgdDB.db_class.find_one({ 
+            "class_id" : activation_class_rec['class_id']
         })   
   
-        response = class_rec       
+        
+        response = {'user_rec':user_rec, 'activation_class_rec':activation_class_rec, 'class_rec':class_rec}       
 
         return response
 
@@ -291,6 +300,16 @@ class view_myclass:
         user = self.mgdDB.db_user.find_one(query)             
 
         return user
+
+    def _find_class(self, class_id):
+        # Find the class record
+        class_rec = self.mgdDB.db_class.find_one({
+            "class_id": class_id
+        })                   
+
+        response = class_rec
+        return response
+    # enfif
     
 # end class
 

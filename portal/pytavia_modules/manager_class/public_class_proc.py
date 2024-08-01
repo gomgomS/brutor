@@ -51,8 +51,8 @@ class public_class_proc:
                 "result_url"   : result_url,
                 "notif_type"   : "warning",
                 "msg"   : "You have already purchased "+buy_class_rec["name_class"]+", you cannot buy it again. ",           
-            
             }  
+
         else:  
             # clone class   
             class_rec  = database.new(self.mgdDB, "db_class")

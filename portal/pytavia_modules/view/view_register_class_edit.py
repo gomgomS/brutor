@@ -34,9 +34,6 @@ class view_register_class_edit:
     # end def
 
     def _find_one_register_class(self, params):
-        print("looks abouve")
-        print(params)
-        
         register_class_rec = self.mgdDB.db_class.find_one({"pkey" : params['class_id'], "is_deleted" : False })
 
         response = {
@@ -145,8 +142,6 @@ class view_register_class_edit:
             # FIND class
             class_resp             = self._find_class( params )
             class_list             = class_resp["class_list"         ] 
-            print(register_class_rec)
-            print("hokage s2")
 
             user_rec         = self._data_user()     
             

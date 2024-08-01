@@ -48,9 +48,6 @@ class user_proc:
             name        = params["add_fullname"  ]
             password    = params["add_password"  ]
             role        = params["add_role"      ]
-
-            print(params)
-
             
             check_username = self.validate_username( params )
             if check_username == False :

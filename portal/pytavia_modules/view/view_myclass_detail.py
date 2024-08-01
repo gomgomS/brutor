@@ -37,8 +37,6 @@ class view_myclass_detail:
     # end def
 
     def _find_activation_class(self, params):      
-        print("params check inside")
-        print(params["activation_class_id"])
         activation_class_rec = self.mgdDB.db_activation_class.find_one({ 
             "activation_class_id" : params["activation_class_id"]
         })           
@@ -90,6 +88,14 @@ class view_myclass_detail:
         response = enrollment_rec 
         return response     
     
+    def _find_tutor(self, params):             
+        user_rec = self.mgdDB.db_user.find_one({ 
+            "fk_user_id" : params["fk_user_id"]
+        })   
+
+        response = user_rec 
+        return response 
+    
 
     def html(self, params):
         response = helper.response_msg(
@@ -112,6 +118,8 @@ class view_myclass_detail:
 
             # FIND ACTIVE CLASS
             activation_class_rec                = self._find_activation_class( enrollment_rec )             
+            # FIND TUTOR
+            tutor_rec                           = self._find_tutor( activation_class_rec )             
 
             # FIND CLASS
             class_rec                           = self._find_class( activation_class_rec["class_id"] ) 
@@ -142,7 +150,8 @@ class view_myclass_detail:
                 class_rec               = class_rec,
                 test_list               = test_list,
                 meeting_list            = meeting_list,
-                user_rec                = user_rec                                                                      
+                user_rec                = user_rec,
+                tutor_rec               = tutor_rec,
             )
 
 
