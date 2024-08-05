@@ -81,6 +81,157 @@ class view_activation_class_detail:
         
         return response 
 
+    def _meeting_report(self, params):
+        # Fetch meetings
+        meeting_recs = self.mgdDB.db_meeting.find({
+            "activation_class_id": params.get("activation_class_id")
+        })
+        meeting_list = list(meeting_recs)
+
+        # Fetch attendance records
+        attendance_recs = self.mgdDB.db_attendance.find({
+            "fk_meeting_id": {"$in": [meeting['meeting_id'] for meeting in meeting_list]}
+        })
+        attendance_list = list(attendance_recs)
+
+        # Fetch user records
+        user_recs = self.mgdDB.db_user.find({
+            "register_student": "TRUE"  # Example condition; adjust as needed
+        })
+        user_list = list(user_recs)
+        
+        # Fetch enrollment records
+        enrollment_recs = self.mgdDB.db_enrollment.find({
+            "activation_class_id": params.get("activation_class_id"),
+            "is_deleted": False
+        })
+        enrollment_list = list(enrollment_recs)
+        
+        # Create mapping of user_id to user name
+        user_map = {user['fk_user_id']: user['name'] for user in user_list}
+        
+        # Create mapping of user_id to enrollment status
+        enrollment_map = {enrollment['fk_user_id']: enrollment['enrollment_status'] for enrollment in enrollment_list}
+
+        # Initialize header
+        th_meeting_report = ['Name', 'Status']  # Added 'Status' column
+        for meeting_item in meeting_list:
+            th_meeting_report.append(meeting_item['name_meeting'])
+        th_meeting_report.append('Attendance %')  # Add attendance percentage column
+
+        # Prepare data for the report
+        report_data = []
+        for user in user_list:
+            user_id = user['fk_user_id']
+            # Check if the user is registered
+            if user_id not in enrollment_map:
+                continue
+            
+            user_name = user['name']
+            enrollment_status = enrollment_map.get(user_id, 'UNKNOWN')
+            user_row = [user_name, enrollment_status]
+
+            present_count = 0  # Counter for present meetings
+
+            for meeting_item in meeting_list:
+                meeting_id = meeting_item['meeting_id']
+                # Find attendance record for the current user and meeting
+                attendance_record = next((att for att in attendance_list if att['fk_user_id'] == user_id and att['fk_meeting_id'] == meeting_id), None)
+                if attendance_record:
+                    if attendance_record['status'] == 'PRESENT':
+                        present_count += 1
+                    user_row.append(attendance_record['status'])
+                else:
+                    user_row.append(' - ')  # Placeholder for no attendance record
+
+            # Calculate attendance percentage
+            total_meetings = len(meeting_list)
+            attendance_percentage = (present_count / total_meetings) * 100 if total_meetings > 0 else 0
+            user_row.append(f"{attendance_percentage:.2f}%")  # Format as percentage with two decimal places
+
+            report_data.append(user_row)
+
+        # Format response
+        response = {            
+            "header": th_meeting_report,
+            "data": report_data
+        }       
+        
+
+        return response
+
+
+    def _test_report(self, params):
+        # Fetch test records
+        test_recs = self.mgdDB.db_test.find({
+            "activation_class_id": params.get("activation_class_id")
+        })
+        test_list = list(test_recs)
+
+        # Fetch test result records
+        test_result_recs = self.mgdDB.db_test_result.find({
+            "fk_test_id": {"$in": [test['test_id'] for test in test_list]}
+        })
+        test_result_list = list(test_result_recs)
+
+        # Fetch user records
+        user_recs = self.mgdDB.db_user.find({})
+        user_list = list(user_recs)
+
+        # Fetch enrollment records
+        enrollment_recs = self.mgdDB.db_enrollment.find({
+            "activation_class_id": params.get("activation_class_id"),
+            "is_deleted": False
+        })
+        enrollment_list = list(enrollment_recs)
+
+        # Create mappings
+        user_map = {user['fk_user_id']: user['name'] for user in user_list}
+        enrollment_map = {enrollment['fk_user_id']: enrollment['enrollment_status'] for enrollment in enrollment_list}
+
+        # Initialize header
+        th_test_report = ['Name', 'Enrollment Status'] + [test['name_test'] for test in test_list] + ['Passed Percentage']
+
+        # Prepare data for the report
+        report_data = []
+        for user in user_list:
+            user_id = user['fk_user_id']
+            # Check if the user is registered
+            if user_id not in enrollment_map:
+                continue
+
+            user_name = user_map.get(user_id, 'Unknown')
+            enrollment_status = enrollment_map.get(user_id, 'UNKNOWN')
+            user_row = [user_name, enrollment_status]
+
+            pass_count = 0
+            for test_item in test_list:
+                test_id = test_item['test_id']
+                # Find test result record for the current user and test
+                test_result_record = next((result for result in test_result_list if result['fk_user_id'] == user_id and result['fk_test_id'] == test_id), None)
+                if test_result_record:
+                    status = test_result_record['status']
+                    score = test_result_record['score']
+                    if status == 'PASS':
+                        pass_count += 1
+                    user_row.append(f"{score} ({status})")
+                else:
+                    user_row.append('-')  # Placeholder for no test result record
+
+            # Calculate passed percentage
+            passed_percentage = (pass_count / len(test_list)) * 100 if test_list else 0
+            user_row.append(f"{passed_percentage:.2f}%")
+
+            report_data.append(user_row)
+
+        # Format response
+        response = {
+            "header": th_test_report,
+            "data": report_data
+        }
+
+        return response
+
     def html(self, params):
         response = helper.response_msg(
             "FIND_CLASS_PROSES_SUCCESS", "FIND KONTEN PROSES SUCCESS", {} , "0000"
@@ -114,7 +265,13 @@ class view_activation_class_detail:
             meeting_list                        = meeting_recs["meeting_list"     ] 
 
             # FIND user
-            user_rec                = self._data_user(params)       
+            user_rec                            = self._data_user(params) 
+
+            # Meeting Report
+            meeting_report_rec                  = self._meeting_report(params)      
+
+            # Test Report
+            test_report_rec                     = self._test_report(params)     
 
             
             html = render_template(
@@ -132,7 +289,9 @@ class view_activation_class_detail:
                 class_rec               = class_rec,
                 test_list               = test_list,
                 meeting_list            = meeting_list,
-                user_rec                = user_rec
+                user_rec                = user_rec,
+                meeting_report_rec      = meeting_report_rec,
+                test_report_rec         = test_report_rec
             )
 
 

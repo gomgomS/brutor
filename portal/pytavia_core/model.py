@@ -384,7 +384,7 @@ db = {
         "desc_test"                 : "",    
         "desc_test_html"            : "",       # 
         "desc_test_preview"         : "",       #         
-        "score_to_pass"             : "",   
+        "score_to_pass"             : 0,   
         "start_timestamp"           : 0,
         "end_timestamp"             : 0,
         "str_start_datetime"        : "", 
@@ -393,6 +393,18 @@ db = {
         "status_test"               : "",       # SHARE, UNDER_DEVELOPMENT, DONE
         "source"                    : "",       # can be link, or source file             
     },   
+
+    # TEST_RESULT
+    "db_test_result" : {      
+        "result_id"                : "",          # Unique identifier for each test result record
+        "fk_test_id"               : "",          # Foreign key referencing the test_id from the db_test table
+        "fk_user_id"               : "",          # Foreign key referencing the user_id from the user table
+        "score"                    : 0,           # The score the student obtained on the test        
+        "status"                   : "",          # Status of the result: PASSED, FAILED, INCOMPLETE
+        "feedback"                 : "",          # Optional feedback or comments on the result        
+        "updated_at"               : 0            # Timestamp for the last update to the record
+    },
+
 
     # MEETING
     "db_meeting"                    : {      
@@ -410,6 +422,15 @@ db = {
         "status_meeting"            : "",       # OPEN, UNDER_DEVELOPMENT, DONE
         "source"                    : "",       # can be link, or source file             
     },   
+
+    "db_attendance" : {      
+        "attendance_id"            : "",          # Unique identifier for each attendance record
+        "fk_meeting_id"            : "",          # Foreign key referencing the meeting
+        "fk_user_id"               : "",          # Foreign key referencing the user
+        "status"                   : "",          # Status of attendance: PRESENT, ABSENT, NOT_STARTED        
+        "reason"                   : "",          # Optional field for user to specify reason for absence (if applicable)        
+        "updated_at"               : 0            # Timestamp for the last update to the record
+    },
 
     # CLASS LEVEL
     "db_level_class"                : {        

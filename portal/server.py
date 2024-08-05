@@ -143,6 +143,7 @@ from manager_class      import public_class_proc
 from view               import view_register_test
 from view               import view_register_test_add
 from view               import view_register_test_edit
+from view               import view_register_test_detail
 
 from manager_test       import register_test_proc
 
@@ -154,6 +155,7 @@ from manager_test       import register_test_proc
 from view               import view_register_meeting
 from view               import view_register_meeting_add
 from view               import view_register_meeting_edit
+from view               import view_register_meeting_detail
 
 from manager_meeting       import register_meeting_proc
 
@@ -3240,6 +3242,141 @@ def proc_register_test_delete():
         return redirect(url_for("view_error_page_html" , data=err_message ))
 # end def
 
+@app.route("/register_test/detail/<test_id>")
+def view_register_test_detail_html(test_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+    
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )            
+    params["test_id"        ] = test_id
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_register_test_detail.view_register_test_detail(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/pengelolaan_konten/proses"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/add_score_test/add", methods=["POST"])
+def proc_add_score_test():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+    
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id" ] = session.get("fk_user_id")
+    params["files"      ] = files
+    app.logger.debug(files)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_register_test_ADD"
+    })
+
+
+    response   = register_test_proc.register_test_proc(app)._add_score_test(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/update_score_test/update", methods=["POST"])
+def proc_update_score_test():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+    
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id" ] = session.get("fk_user_id")
+    params["files"      ] = files
+    app.logger.debug(files)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_register_test_update"
+    })
+
+
+    response   = register_test_proc.register_test_proc(app)._update_score_test(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
 ##########################################################
 # MANAGER MEETING - Register Meeting
 ##########################################################
@@ -3351,8 +3488,7 @@ def proc_register_meeting_add():
     params["fk_user_id" ] = session.get("fk_user_id")
     params["files"      ] = files
     app.logger.debug(files)
-    print(params)
-    print("disini ada pengecekan params")
+   
     browser_resp = browser_security.browser_security(app).check_route({
         "fk_user_id"  : params["fk_user_id"],
         "route_name"  : "PROC_register_meeting_ADD"
@@ -3511,6 +3647,142 @@ def proc_register_meeting_delete():
 
     if "SUCCESS" in m_action:
         flash("delete success!!", "success")        
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/register_meeting/detail/<meeting_id>")
+def view_register_meeting_detail_html(meeting_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+    
+    params                    = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )            
+    params["meeting_id"        ] = meeting_id
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_register_meeting_detail.view_register_meeting_detail(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/pengelolaan_konten/proses"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/add_attendance_meeting/add", methods=["POST"])
+def proc_add_attendance_meeting():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+    
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id" ] = session.get("fk_user_id")
+    params["files"      ] = files
+    app.logger.debug(files)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_register_meeting_ADD"
+    })
+
+
+    response   = register_meeting_proc.register_meeting_proc(app)._add_attendance_meeting(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
+        return redirect(params["redirect"])
+    else:
+        err_message = {
+            "message_action"    : m_action,
+            "message_desc"      : m_desc,
+            "message_data"      : m_data["error_message"],
+            "redirect"          : params["redirect"]
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/update_attendance_meeting/update", methods=["POST"])
+def proc_update_attendance_meeting():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN", 'TUTOR']})
+    if dashboard_return:
+        return dashboard_return
+    # end if
+    
+    files                 = request.files
+    params                = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id" ] = session.get("fk_user_id")
+    params["files"      ] = files
+    app.logger.debug(files)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "PROC_register_meeting_update"
+    })
+
+
+    response   = register_meeting_proc.register_meeting_proc(app)._update_attendance_meeting(params)
+
+    m_action   = response.get("status"  )
+    m_title    = response.get("status"  )
+    m_desc     = response.get("desc"    )
+    m_data     = response.get("data"    )
+
+    # if m_title != "" or m_desc != "":
+        # flash(m_title,"title")
+        # flash(m_desc,"desc")
+    #end if
+
+    if "SUCCESS" in m_action:
         return redirect(params["redirect"])
     else:
         err_message = {
@@ -3818,9 +4090,6 @@ def view_topup_html():
 
     response = view_topup.view_topup(app).html( params )
     response_data  = response.get("data") 
-
-    print("response_data oi")
-    print(response_data["user_rec"]["ver_email"])
 
     if response_data["user_rec"]["ver_email"] == "FALSE":
         flash("please verify your email before topup!!", "danger")

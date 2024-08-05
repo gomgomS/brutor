@@ -28,8 +28,6 @@ def send() :
 def send_verification_email(params):
     try:
         # Your Gmail credentials
-        print(params)
-        print("oiii tunggu")
         my_email = "bersihinyabang@gmail.com"
         my_password = "mxfk ezha kgjh sixk"  # Replace with your actual password
         receiver_email = params["email"]  

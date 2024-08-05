@@ -6,6 +6,7 @@ import ast
 import time
 import random
 import re
+from datetime import datetime
 
 sys.path.append("pytavia_core"    )
 sys.path.append("pytavia_modules" )
@@ -370,3 +371,70 @@ class register_meeting_proc:
     # end def
 
 # end class
+
+    def _add_attendance_meeting(self, params):
+        response = helper.response_msg(
+            "ADD_ATTENDANCE_MEETING_SUCCESS", "ADD ATTENDANCE MEETING SUCCESS", {} , "0000"
+        )
+        try:     
+            # Get the current date
+            updated_at           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')    
+
+            
+            attendance_rec = database.new(self.mgdDB, "db_attendance")
+            attendance_rec.put("attendance_id",         attendance_rec.get()["pkey"          ])  # Unique identifier for each attendance record
+            attendance_rec.put("fk_meeting_id",         params["fk_meeting_id"               ])  # Foreign key referencing the meeting
+            attendance_rec.put("fk_user_id",            params["fk_student_id"                  ])  # Foreign key referencing the user
+            attendance_rec.put("status",                params["status"                      ])  # Status of attendance: PRESENT, ABSENT, NOT_STARTE        
+            attendance_rec.put("reason",                params["reason"                      ])  # Optional field for user to specify reason for absence (if applicable)            
+            attendance_rec.put("updated_at",            updated_at                           )  # Timestamp for the last update to the record
+            attendance_rec.insert() 
+
+        except :
+            trace_back_msg = traceback.format_exc() 
+            self.webapp.logger.debug(traceback.format_exc())
+
+            response.put( "status"      , "ADD_ATTENDANCE_MEETING_FAILED" )
+            response.put( "desc"        , "ADD ATTENDANCE MEETING FAILED" )
+            response.put( "status_code" , "9999" )
+            response.put( "data"        , { "error_message" : trace_back_msg })
+        # end try
+        return response
+    # end def
+
+    def _update_attendance_meeting(self, params):
+        response = helper.response_msg(
+            "UPDATE_ATTENDANCE_MEETING_SUCCESS", "UPDATE ATTENDANCE MEETING SUCCESS", {} , "0000"
+        )
+        try:     
+            # Get the current date
+            updated_at           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')               
+            
+                # Prepare the update object
+            update_obj = {
+                "fk_meeting_id": params["fk_meeting_id"],
+                "fk_user_id": params["fk_student_id"],
+                "status": params["status"],                
+                "reason": params["reason"],                
+                "updated_at": updated_at
+            }
+
+            # Update the attendance record
+            self.mgdDB.db_attendance.update_one(
+                {"attendance_id": params["attendance_id"]},
+                {"$set": update_obj}
+            )
+             
+        except :
+            trace_back_msg = traceback.format_exc() 
+            self.webapp.logger.debug(traceback.format_exc())
+
+            response.put( "status"      , "update_ATTENDANCE_MEETING_FAILED" )
+            response.put( "desc"        , "update ATTENDANCE MEETING FAILED" )
+            response.put( "status_code" , "9999" )
+            response.put( "data"        , { "error_message" : trace_back_msg })
+        # end try
+        return response
+    # end def
+
+

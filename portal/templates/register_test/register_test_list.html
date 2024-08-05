@@ -216,7 +216,10 @@
                                                         class="far fa-edit"></i> Edit</a>                                                                                       
                                                     <a class="dropdown-item text-primary" href="/register_test/delete?test_id={{ test_item.test_id }}&redirect=/register_test&type=DELETE">
                                                         <i class="fas fa-trash"></i> Delete
-                                                    </a>                                                
+                                                    </a>   
+                                                    <a href="/register_test/detail/{{test_item.test_id}}" type="button" class="btn btn-primary">
+                                                        see
+                                                     </a>                                               
                                                 </div>
                                             </td>                                                     
                                         </tr>

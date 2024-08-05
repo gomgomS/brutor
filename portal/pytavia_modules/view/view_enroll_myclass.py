@@ -155,7 +155,7 @@ class view_enroll_myclass:
             class_item['creator_name']          = creator_class['name']     
 
             #find inforamtion class and enrollment status   
-            class_info                          = self._find_class_and_enrollment_status(class_item['class_id'])
+            class_info                          = self._find_class_and_enrollment_status(class_item['class_id'],params['fk_user_id'])
             class_item['class_info']            = class_info
 
             # Convert price to Rupiah currency format
@@ -306,7 +306,7 @@ class view_enroll_myclass:
     # end def
         
         
-    def _find_class_and_enrollment_status(self, class_id):
+    def _find_class_and_enrollment_status(self, class_id, fk_student_id):
         # Find the class record
         class_rec = self.mgdDB.db_class.find_one({
             "class_id": class_id
@@ -324,10 +324,12 @@ class view_enroll_myclass:
         # Retrieve activation class data
         activation_class_data = list(self.mgdDB.db_activation_class.find({}))
         activation_class_map = {item['class_id']: item['activation_class_id'] for item in activation_class_data}
-
+     
         # Retrieve enrollment data
-        enrollment_data = list(self.mgdDB.db_enrollment.find({}))
+        enrollment_data = list(self.mgdDB.db_enrollment.find({'fk_user_id':fk_student_id}))
         enrollment_map = {item['activation_class_id']: item['enrollment_status'] for item in enrollment_data}
+        print(enrollment_map)
+        print("look above for check register status")
 
         # Insert enrollment status into prerequisite classes
         for prerequisite in class_rec['prerequisite_class']:

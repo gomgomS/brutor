@@ -93,8 +93,7 @@ class register_class_proc:
         )
         try:                 
             # Fetch the existing class record
-            print(params)
-            print("cek params above")
+
             # Process desc_class_html
             desc_class_html = su.unescape(params["desc_class"])
 

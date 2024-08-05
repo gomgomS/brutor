@@ -198,20 +198,53 @@
                     <div class="col-md-6 col-sm-12 main-content mb-3">
                         <div class="tab-content">
                             {% for meeting in meeting_list %}
+                            {% if meeting.attendance_information %}
                             <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="meeting-{{ loop.index }}">
                                 <h3>{{ meeting.name_meeting }}</h3>
-                                <p><strong>Date:</strong> {{ meeting.str_start_datetime }}</p>
-                                <p><strong>Time:</strong> {{ meeting.str_start_datetime }} - {{ meeting.str_end_datetime }}</p>
+
+                                {% if meeting.attendance_information.status == 'PRESENT'%}
+                                <p><strong>Status Attandance: </strong><span  class="badge badge-success">{{ meeting.attendance_information.status }}</span> </p>
+                                {% else %}
+                                <p><strong>Status Attandance: </strong><span class="badge badge-danger">{{ meeting.attendance_information.status }}</span></p>
+                                {% endif %}
+                                
+                                <p><strong>Updated at:</strong> {{ meeting.attendance_information.updated_at }}      
+                                <p><strong>Description:</strong> {{ meeting.desc_meeting_html }}</p>
+                                                                                        
+                            </div>
+                            {% else %}
+                            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="meeting-{{ loop.index }}">
+                                <h3>{{ meeting.name_meeting }}</h3>
+                                <p><strong>Date Start:</strong> {{ meeting.str_start_datetime }}</p>
+                                <!-- <p><strong>Time:</strong> {{ meeting.str_start_datetime }} - {{ meeting.str_end_datetime }}</p> -->
                                 <p><strong>Description:</strong> {{ meeting.desc_meeting_html }}</p>
                             </div>
+                            {% endif %}                           
                             {% endfor %}
                             {% for test in test_list %}
+                            {% if test.test_result_information %}
+                            
                             <div class="tab-pane fade" id="task-{{ loop.index }}">
-                                <h3>{{ test.desc_test }}</h3>
-                                <p><strong>Date:</strong> {{ test.str_start_datetime }}</p>
-                                <p><strong>Time:</strong> {{ test.str_start_datetime }} - {{ test.str_end_datetime }}</p>
+                                <h3>{{ test.name_test }}</h3>                                
+                                {% if test.test_result_information.status == 'PASS'%}
+                                <p><strong>Your Score:</strong> {{ test.test_result_information.score }}</p>
+                                <p><strong>Status Test: </strong><span  class="badge badge-success">PASSED</span> </p>
+                                {% else %}
+                                <p><strong>Status Test: </strong><span class="badge badge-danger">{{ test.test_result_information.status }}</span></p>
+                                {% endif %}
+                                
+                                <p><strong>Updated at:</strong> {{ test.test_result_information.updated_at }}      
+                                <p><strong>Description:</strong> {{ test.desc_meeting_html }}</p>
+                            </div>
+                            {% else %}
+                            <div class="tab-pane fade" id="task-{{ loop.index }}">
+                                <h3>{{ test.name_test }}</h3>
+                                <p><strong>Score to Pass:</strong> {{ test.score_to_pass }}</p>
+                                <p><strong>Deadline:</strong> {{ test.str_end_datetime }}</p>
+                                <!-- <p><strong>Time:</strong> {{ test.str_start_datetime }} - {{ test.str_end_datetime }}</p> -->
                                 <p><strong>Description:</strong> {{ test.desc_test }}</p>
                             </div>
+                            {% endif %}   
                             {% endfor %}
                         </div>
                     </div>

@@ -57,6 +57,11 @@ class view_myclass_detail:
         })   
 
         for test_item in test_recs:
+
+            # find result test
+            test_result_rec = self._find_test_result(params['fk_user_id'], test_item['test_id'])
+            test_item['test_result_information'] = test_result_rec
+
             test_list.append(test_item)
 
         response = {
@@ -65,18 +70,46 @@ class view_myclass_detail:
 
         return response 
     
+    def _find_test_result(self, fk_user_id, fk_test_id):     
+        
+        test_result_rec = self.mgdDB.db_test_result.find_one({ 
+            "fk_test_id" : fk_test_id,
+            "fk_user_id"    : fk_user_id
+        })          
+
+        response = test_result_rec    
+        
+        return response 
+    
     def _find_meeting(self, params):     
         meeting_list = [] 
+       
         meeting_recs = self.mgdDB.db_meeting.find({ 
             "activation_class_id" : params["activation_class_id"]
         })          
 
         for meeting_item in meeting_recs:
+
+            # find attendance absence meeting
+            attendance_rec = self._find_meeting_attendance(params['fk_user_id'], meeting_item['meeting_id'])
+            meeting_item['attendance_information'] = attendance_rec
+
             meeting_list.append(meeting_item)
 
         response = {
             "meeting_list"   : meeting_list
         }
+        
+        return response 
+    
+    def _find_meeting_attendance(self, fk_user_id, fk_meeting_id):     
+        
+        attendance_rec = self.mgdDB.db_attendance.find_one({ 
+            "fk_meeting_id" : fk_meeting_id,
+            "fk_user_id"    : fk_user_id
+        })          
+
+        response = attendance_rec    
         
         return response 
 

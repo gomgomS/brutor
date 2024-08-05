@@ -190,7 +190,7 @@
                                             </td>
                                             <td>{{ activation_class_item.student_limit }}</td>
                                             <td>
-                                                {% if activation_class_item.can_just_test_to_pass %}
+                                                {% if activation_class_item.can_just_test_to_pass == 'TRUE' %}
                                                     <span class="badge badge-success">Yes</span>
                                                 {% else %}
                                                     <span class="badge badge-danger">No</span>

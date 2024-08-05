@@ -6,6 +6,7 @@ import ast
 import time
 import random
 import re
+from datetime import datetime
 
 sys.path.append("pytavia_core"    )
 sys.path.append("pytavia_modules" )
@@ -296,8 +297,8 @@ class register_test_proc:
 
     def _update(self, params):
         response = helper.response_msg(
-    "UPDATE_REGISTER_TEST_SUCCESS", "UPDATE REGISTER TEST SUCCESS", {}, "0000"
-)
+            "UPDATE_REGISTER_TEST_SUCCESS", "UPDATE REGISTER TEST SUCCESS", {}, "0000"
+        )
         try:
             # Fetch the existing test record
             existing_test = self.mgdDB.db_test.find_one({"test_id": params["test_id"]})
@@ -375,6 +376,83 @@ class register_test_proc:
 
             response.put( "status"      , "DELETE_TEST_FAILED" )
             response.put( "desc"        , "DELETE TEST FAILED" )
+            response.put( "status_code" , "9999" )
+            response.put( "data"        , { "error_message" : trace_back_msg })
+        # end try
+        return response
+    # end def
+
+    def _add_score_test(self, params):
+        response = helper.response_msg(
+            "ADD_REGISTER_CLASS_SUCCESS", "ADD REGISTER CLASS SUCCESS", {} , "0000"
+        )
+        try:     
+            # Get the current date
+            updated_at           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')    
+
+            # check if pass or not
+            if params['score'] >= params["score_to_pass"]:
+                status_test = 'PASS'
+            else: 
+                status_test = 'FAILED'
+            
+            test_result_rec = database.new(self.mgdDB, "db_test_result")
+            test_result_rec.put("result_id",             test_result_rec.get()["pkey"          ])  # Unique identifier for each test result record
+            test_result_rec.put("fk_test_id",            params["fk_test_id"                  ])  # Foreign key referencing the test_id from the db_test table
+            test_result_rec.put("fk_user_id",            params["fk_student_id"                  ])  # Foreign key referencing the user_id from the user table
+            test_result_rec.put("score",                 params["score"                    ])  # The score the student obtained on the test
+            test_result_rec.put("status",                status_test                           )  # Status of the result: PASSED, FAILED, INCOMPLETE
+            test_result_rec.put("feedback",              params["feedback"                    ])  # Optional feedback or comments on the result        
+            test_result_rec.put("updated_at",            updated_at                           )  # Timestamp for the last update to the record
+            test_result_rec.insert()                 
+
+        except :
+            trace_back_msg = traceback.format_exc() 
+            self.webapp.logger.debug(traceback.format_exc())
+
+            response.put( "status"      , "ADD_REGISTER_CLASS_FAILED" )
+            response.put( "desc"        , "ADD REGISTER CLASS FAILED" )
+            response.put( "status_code" , "9999" )
+            response.put( "data"        , { "error_message" : trace_back_msg })
+        # end try
+        return response
+    # end def
+
+    def _update_score_test(self, params):
+        response = helper.response_msg(
+            "UPDATE_REGISTER_CLASS_SUCCESS", "UPDATE REGISTER CLASS SUCCESS", {} , "0000"
+        )
+        try:     
+            # Get the current date
+            updated_at           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')    
+
+            # check if pass or not
+            if int(params['score']) >= int(params["score_to_pass"]):
+                status_test = 'PASS'
+            else: 
+                status_test = 'FAILED'
+            
+            update_obj = {
+                "fk_test_id": params["fk_test_id"],
+                "fk_user_id": params["fk_student_id"],
+                "score": params["score"],
+                "status": status_test,
+                "feedback": params["feedback"],
+                "updated_at": updated_at
+            }
+
+            # Update the test result record
+            self.mgdDB.db_test_result.update_one(
+                {"result_id": params["result_id"]},
+                {"$set": update_obj}
+            )              
+
+        except :
+            trace_back_msg = traceback.format_exc() 
+            self.webapp.logger.debug(traceback.format_exc())
+
+            response.put( "status"      , "update_REGISTER_CLASS_FAILED" )
+            response.put( "desc"        , "update REGISTER CLASS FAILED" )
             response.put( "status_code" , "9999" )
             response.put( "data"        , { "error_message" : trace_back_msg })
         # end try
