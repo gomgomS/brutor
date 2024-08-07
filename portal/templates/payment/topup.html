@@ -7,7 +7,7 @@
     <!-- Favico -->
     <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-    <title>Brutor ADMIN - Pengelolaan Konten</title>
+    <title>Brutor|Topup</title>
     <!-- vendor css -->
     <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -284,6 +284,9 @@
                                                                 <strong>Status:</strong> {{ latest_topup_request_resp.request_status }}
                                                             </li>
                                                             <li class="list-group-item">
+                                                                <strong>amount:</strong> {{ latest_topup_request_resp.amount }}
+                                                            </li>
+                                                            <li class="list-group-item">
                                                                 <strong>Metode Pembayaran:</strong> {{ latest_topup_request_resp.payment_method }}
                                                             </li>
                                                             <li class="list-group-item">
@@ -347,7 +350,7 @@
                     </div>
                 </div>
             </div>
-            <footer class="text-center mg-t-auto font-weight-bold">©Brutor a,k,a BRUTAR TUTOR</footer>
+            <footer class="text-center mg-t-auto font-weight-bold">#Brutorsekarang</footer>
         </div>
     </div>
     <script src="../../static/lib/jquery/jquery.min.js"></script>

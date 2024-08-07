@@ -7,7 +7,7 @@
     <!-- Favico -->
     <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-    <title>Brutor ADMIN - Pengelolaan Konten</title>
+    <title>Brutor|MyClass Detail</title>
     <!-- vendor css -->
     <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -190,12 +190,20 @@
                         <ul class="nav flex-column nav-pills">
                             {% for meeting in meeting_list %}
                             <li class="nav-item">
-                                <a class="nav-link {% if loop.first %}active{% endif %}" id="meeting-{{ loop.index }}-tab" data-toggle="pill" href="#meeting-{{ loop.index }}">{{ meeting.name_meeting }}</a>
+                                <a class="nav-link {% if loop.first %}active{% endif %}" id="meeting-{{ loop.index }}-tab" data-toggle="pill" href="#meeting-{{ loop.index }}">{{ meeting.name_meeting }}
+                                    {% if meeting.attendance_information.status == 'PRESENT'%}
+                                    <span  class="badge badge-success">{{ meeting.attendance_information.status }}</span> 
+                                    {% elif meeting.attendance_information.status == 'ABSENT' %}
+                                    <span class="badge badge-danger">{{ meeting.attendance_information.status }}</span>
+                                    {% else %}
+                                    <span class="badge badge-info">not started</span>
+                                    {% endif %}
+                                </a>
                             </li>
                             {% endfor %}
                         </ul>
                     </div>
-                    <div class="col-md-6 col-sm-12 main-content mb-3">
+                    <div class="col-md-5 col-sm-12 main-content mb-3">
                         <div class="tab-content">
                             {% for meeting in meeting_list %}
                             {% if meeting.attendance_information %}
@@ -203,7 +211,7 @@
                                 <h3>{{ meeting.name_meeting }}</h3>
 
                                 {% if meeting.attendance_information.status == 'PRESENT'%}
-                                <p><strong>Status Attandance: </strong><span  class="badge badge-success">{{ meeting.attendance_information.status }}</span> </p>
+                                <p><strong>Status Attandance: </strong><span  class="badge badge-success">{{ meeting.attendance_information.status }}</span> 
                                 {% else %}
                                 <p><strong>Status Attandance: </strong><span class="badge badge-danger">{{ meeting.attendance_information.status }}</span></p>
                                 {% endif %}
@@ -248,12 +256,18 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-12 task-info mb-3">
+                    <div class="col-md-4 col-sm-12 task-info mb-3">
                         <h3>Class Tasks</h3>
                         <ul class="nav flex-column nav-pills">
                             {% for test in test_list %}
                             <li class="nav-item">
-                                <a class="nav-link" id="task-{{ loop.index }}-tab" data-toggle="pill" href="#task-{{ loop.index }}">Task: {{ test.desc_test }}</a>
+                                <a class="nav-link" id="task-{{ loop.index }}-tab" data-toggle="pill" href="#task-{{ loop.index }}">{{test.type_test}}: {{ test.name_test }}
+                                    {% if test.test_result_information.status == 'PASS'%}                                    
+                                    <span  class="badge badge-success">PASSED</span> 
+                                    {% else %}
+                                    <span class="badge badge-danger">{{ test.test_result_information.status }}</span>
+                                    {% endif %}
+                                </a>
                             </li>
                             {% endfor %}
                         </ul>                       

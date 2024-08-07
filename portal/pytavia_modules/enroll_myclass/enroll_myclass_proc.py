@@ -7,6 +7,7 @@ import time
 import random
 import re
 from datetime import datetime
+import string
 
 sys.path.append("pytavia_core"    )
 sys.path.append("pytavia_modules" )
@@ -36,9 +37,23 @@ class enroll_myclass_proc:
         result_url = "/enrollMyClass" 
 
         # find activation open class
-        buy_activation_class_rec           = self.mgdDB.db_activation_class.find_one(
-            {"activation_class_id"         : params["activation_class_id"]}
+        buy_activation_class_rec            = self.mgdDB.db_activation_class.find_one(
+            {"activation_class_id"          : params["activation_class_id"]}
         )
+
+        # check saldo first
+        check_saldo_buyer                   = self.mgdDB.db_user.find_one(
+            {"fk_user_id"                   : params["fk_user_id"]}
+        )
+
+        if check_saldo_buyer['balance'] < int(buy_activation_class_rec['price_class']):
+            response = {
+                    "result_url"   : result_url,
+                    "notif_type"   : "warning",
+                    "msg"   : "Your balance is not enough. Please top up first."        
+                }
+            return response
+            
 
         # find prerequisite_class_id, so before you can buy class you should pass prerequisite class
         class_rec = self.mgdDB.db_class.find_one({
@@ -87,13 +102,39 @@ class enroll_myclass_proc:
             # Get the current date
             today_date           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')       
 
+            # register student in db_enrollment
             enrollment_rec  = database.new(self.mgdDB, "db_enrollment")
             enrollment_rec.put("enrollment_id",                  enrollment_rec.get()["pkey"                  ])
             enrollment_rec.put("fk_user_id",                     params["fk_user_id"              ]) #pkey from db_user
             enrollment_rec.put("activation_class_id",            params["activation_class_id"     ])
             enrollment_rec.put("enrollment_date",                today_date  )        
             enrollment_rec.put("enrollment_status",              "REGISTERED"  )        
-            enrollment_rec.insert()     
+            enrollment_rec.insert()   
+            
+
+             # record data in db_trasaction
+            ref_transaction_id = self.generate_reference_id()
+
+            enrollment_rec  = database.new(self.mgdDB, "db_transaction")
+            enrollment_rec.put("transaction_id",                 enrollment_rec.get()["pkey"                  ])
+            enrollment_rec.put("ref_transaction_id",             ref_transaction_id)
+            enrollment_rec.put("name_db_product",                "db_activation_class") #pkey from db_user
+            enrollment_rec.put("fk_product_id",                  params["activation_class_id"])
+            enrollment_rec.put("fk_buyer_id",                    params["fk_user_id"])
+            enrollment_rec.put("type_product",                   "Enrollment Class")        
+            enrollment_rec.put("name_product",                   buy_activation_class_rec["active_class_name"]  )        
+            enrollment_rec.put("amount",                         int(buy_activation_class_rec["price_class"])  )        
+            enrollment_rec.put("transaction_date",               today_date )        
+            enrollment_rec.insert()    
+
+            # last UPDATE BALANCE USER
+            update_obj = {
+                "balance" : check_saldo_buyer['balance'] - int(buy_activation_class_rec['price_class']),                
+            }
+            self.mgdDB.db_user.update(
+                {"pkey" : params["fk_user_id"]},
+                {"$set" : update_obj }
+            ) 
 
             response = {
                 "result_url"   : result_url,
@@ -102,6 +143,18 @@ class enroll_myclass_proc:
             }                    
                 
         return response
+
+    def generate_reference_id(self, prefix='TRANSAC'):
+        # Get current date in YYYYMMDD format
+        today_date = datetime.now().strftime('%Y%m%d')
+        
+        # Generate random alphanumeric string
+        random_chars = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        
+        # Concatenate parts to form transaction ID
+        reference_id = f"{prefix}_{today_date}_{random_chars}"
+        
+        return reference_id    
 
         
 # end class

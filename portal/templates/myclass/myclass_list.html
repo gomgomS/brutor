@@ -7,7 +7,7 @@
     <!-- Favico -->
     <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-    <title>Brutor ADMIN - Pengelolaan Konten</title>
+    <title>Brutor|MyClass</title>
     <!-- vendor css -->
     <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -67,7 +67,7 @@
         <div class="aside-body">
             <ul class="nav nav-aside">
                 {% for menu_item in menu_list_html %}
-                    {%if menu_item.value == 'MANAGER_CLASS' %}
+                    {%if menu_item.value == 'My_Class' %}
                         <li class="nav-item nav-item-active ">
                             <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
                                 <span>{{menu_item.menu_name.title()}}</span></a>
@@ -222,7 +222,7 @@
                     </div>                                        
                 </div>
             </div>
-            <footer class="text-center mg-t-auto font-weight-bold">©Brutor a,k,a BRUTAR TUTOR</footer>
+            <footer class="text-center mg-t-auto font-weight-bold">#Brutorsekarang</footer>
         </div>
     </div>
 

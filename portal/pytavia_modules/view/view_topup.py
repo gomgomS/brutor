@@ -41,10 +41,18 @@ class view_topup:
                                      
         latest_topup_request = self.mgdDB.db_topup_request.find({
             "request_user_id" : params['fk_user_id']
-        }).sort("rec_timestamp", -1)
+        }).sort("rec_timestamp", -1).limit(1)
         
-        latest_topup_request_list = list(latest_topup_request)                               
-                  
+        latest_topup_request_list = []
+        for latest_topup_request_item in latest_topup_request:  
+                    
+            # Convert price to Rupiah currency format
+            if 'amount' in latest_topup_request_item:
+                latest_topup_request_item['amount'] = self.format_currency(latest_topup_request_item['amount'])
+
+        latest_topup_request_list.append(latest_topup_request_item)
+
+        # latest_topup_request_list = list(latest_topup_request)                                                 
 
         if latest_topup_request_list != []:
             response =  latest_topup_request_list[0]
@@ -124,6 +132,14 @@ class view_topup:
         user = self.mgdDB.db_user.find_one(query)             
 
         return user
+    
+    def format_currency(self,amount):
+        """Format the amount into Rupiah currency format."""
+        try:
+            amount = float(amount)  # Convert to float if it's a string
+            return f"Rp {amount:,.0f}".replace(',', '.')
+        except ValueError:
+            return "Rp 0"  # Default value if conversion fails
 
     
     

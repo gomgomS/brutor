@@ -7,7 +7,7 @@
     <!-- Favico -->
     <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-    <title>Brutor|Activation Class</title>
+    <title>Brutor|Transaction History Users</title>
     <!-- vendor css -->
     <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -35,7 +35,7 @@
         <div class="aside-body">
             <ul class="nav nav-aside">
                 {% for menu_item in menu_list_html %}
-                    {%if menu_item.value == 'MANAGER_CLASS' %}
+                    {%if menu_item.value == 'MANAGER_PAYMENT' %}
                         <li class="nav-item nav-item-active ">
                             <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
                                 <span>{{menu_item.menu_name.title()}}</span></a>
@@ -53,12 +53,12 @@
     </aside>
 
     <div class="content pd-0">
-        <!-- Navbar Top -->
+       <!-- Navbar Top -->
 		<div class="content-header">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb align-items-center">
-                <li class="breadcrumb-item active" aria-current="page">Manager Class</li>
-                <li class="breadcrumb-item active" aria-current="page">Activation Class List</li>
+                <li class="breadcrumb-item active" aria-current="page">Transaction</li>
+                <li class="breadcrumb-item active" aria-current="page">Transaction History</li>
                 </ol>
             </nav>
             <div class="d-flex align-items-center justify-content-between">
@@ -99,134 +99,79 @@
                 </div>
                 </div>
             </div>
-        </div>
+        </div>        
 
         <div class="contents-body">
             <div class="">             
                 <div class="">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="">Activation Class List</h4>
-                        <form action="/activation_class" method="GET" class="mg-t-30">
-                            <fieldset class="">
-                                <div class="d-flex flex-wrap">
-                                    <div class="form-group mg-t-8 mg-r-8">
-                                        <label for="">Entries/page:</label>
-                                        <br>
-                                        <select name="entry" id="" class="custom-select W(80px)">
-                                            {% for entry_item in entry_list%}
-                                                {% if entry|string == entry_item.misc %}
-                                                    <option value="{{ entry_item.misc }}" selected>{{ entry_item.misc }}</option>
-                                                {% else %}
-                                                    <option value="{{ entry_item.misc }}">{{ entry_item.misc }}</option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="form-group mg-t-8 mg-r-8">
-                                        <label for="">Sort By:</label>
-                                        <select name="sort_by" id="" class="custom-select ">
-                                            {% for sort_by_item in sort_by_list%}
-                                                {% if sort_by == sort_by_item.value %}
-                                                    <option value="{{ sort_by_item.value }}" selected>{{ sort_by_item.name }}</option>
-                                                {% else %}
-                                                    <option value="{{ sort_by_item.value }}">{{ sort_by_item.name }}</option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="form-group mg-t-8 mg-r-8">
-                                        <label for="">Order By:</label>
-                                        <select name="order_by" id="" class="custom-select ">
-                                            {% if order_by == "asc" %}
-                                                <option value="asc" selected>Ascending</option>
-                                                <option value="desc">Descending</option>
-                                            {% else %}
-                                                <option value="asc">Ascending</option>
-                                                <option value="desc" selected>Descending</option>
-                                            {% endif %}
-                                        </select>
-                                    </div>
-    
-                                    <div class="form-group mg-t-8 mg-r-8">
-                                        <label for="">Keyword</label>
-                                        <input id="keyword" name="keyword" value="{{ keyword }}" type="text" class="form-control ">
-                                    </div>
-    
-    
-                        
-                                    <div class="form-group d-flex mg-t-auto">
-                                        <button class="btn btn-info shadow-custom mg-r-8">Submit</button>
-                                        <a href="/activation_class" id="reset" class="btn btn-danger shadow-custom" style="color: white;">Reset</a>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
-                        <a href="/activation_class/activation_class_add_form?redirect=/activation_class" class="btn btn-sm pd-x-15 btn-primary btn-uppercase shadow-custom"><i
-                                class="fas fa-plus-square mg-r-5"></i> Tambah</a>
-                    </div>                  
-                    
+                        <h4 class="">List Transaction History <span class="badge badge-primary">All Users</span></h4>
+                      
+                    </div>
                     <div class="Ovy(a)--sm">
                         <div class="">
                             <table class="table table-striped">
                                 <thead class="thead-primary">
                                     <tr>
-                                        <th>Register Name</th>
-                                        <th>Activation Class Name </th>
-                                        <th>Start/Active Date</th>
-                                        <th>Student Limit</th>
-                                        <th>only for test?</th>
+                                        <th>Ref Transaction ID</th>
+                                        <th>Name Buyer</th>
+                                        <th>Name Product</th>
+                                        <th>Type Product</th>
                                         <th>Price</th>
-                                        <th>Status Activation</th>
-                                        <th></th>
+                                        <th>Date</th>                                                                               
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for activation_class_item in activation_class_list %}
-                                        <tr>
-                                            <td>{{ activation_class_item.name_class }}</td>
-                                            <td>{{ activation_class_item.active_class_name }}</td>                                            
-                                            <td>
-                                                <span class="badge badge-info">{{ activation_class_item.str_activate_timestamp }}</span>
-                                            </td>
-                                            <td>{{ activation_class_item.student_limit }}</td>
-                                            <td>
-                                                {% if activation_class_item.can_just_test_to_pass == 'TRUE' %}
-                                                    <span class="badge badge-success">Yes</span>
-                                                {% else %}
-                                                    <span class="badge badge-danger">No</span>
-                                                {% endif %}
-                                            </td>                                            
-                                            <td>{{ activation_class_item.price_class }}</td>
-                                            <td>
-                                                {% if activation_class_item.status_activation == "DEVELOPMENT" %}
-                                                    <span class="badge badge-warning">Development</span>
-                                                {% elif activation_class_item.status_activation == "OPEN" %}
-                                                    <span class="badge badge-success">Open</span>
-                                                {% else %}
-                                                    <span class="badge badge-secondary">{{ activation_class_item.status_activation }}</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    <a href="activation_class/detail/{{activation_class_item.activation_class_id}}" type="button" class="btn btn-primary">
-                                                        see
-                                                     </a>  
-                                                     <a class="dropdown-item text-primary" href="/activation_class/delete?activation_class_id={{ activation_class_item.activation_class_id }}&redirect=/activation_class&type=DELETE">
-                                                        <i class="fas fa-trash"></i> Delete
-                                                    </a> 
+                                    {% for transaction_history_users_item in transaction_history_users_list %}
+                                    <tr>
+                                        <td> <span class="badge badge-primary">{{ transaction_history_users_item.ref_transaction_id }}</span></td>
+                                        <td>{{ transaction_history_users_item.name }}</td>                                 
+                                        <td>{{ transaction_history_users_item.name_product }}</td>                                 
+                                        <td>{{ transaction_history_users_item.type_product }}</td>                                                                        
+                                        <td>{{ transaction_history_users_item.amount }}</td> 
+                                        <td>{{ transaction_history_users_item.rec_timestamp_str }}</td>                                                                                                                     
+                                    </tr>
+                                    
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="myModal{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="myModalLabel">CV Preview - {{ transaction_history_users_item.name }}</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
-
-                                            </td>                                           
-                                        </tr>
-                                        
-                                        <!-- MODAL -->
-                                            <!-- TAYANG MODAL -->
-                                               
-                                            
-                                            <!-- DELETE MODAL -->
-                                                
-                                        <!-- END MODAL -->
-                                    {% endfor %}
+                                                <div class="modal-body">
+                                                    {{ transaction_history_users_item.cv_user_html | safe }}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form action="/setMeeting" method="POST">
+                                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                                                        <input type="hidden" name="user_uuid" value="{{ transaction_history_users_item.user_uuid }}">
+                                                        <label for="datepicker" class="">When?</label>
+                                                        
+                                                            <div id="datepicker" class="d-flex align-items-center">
+                                                                <input id="datepicker" name="start_datetime" class="form-control" type="text" placeholder="Select Date.." data-input autocomplete="off" required>
+                                                                <i data-toggle id="calendar2"
+                                                                    class="fas fa-calendar-week Fz(28px) text-primary Cur(p) mg-l-5"></i>
+                                                            </div>
+                                                        
+                                                        
+                                                            <label for="link_meeting" class="">Link Meeting</label>
+                                                            <div class="">
+                                                                <input name="link_meeting" type="text" id="link_meeting"  class="form-control" required>
+                                                            </div>
+                                                                                                           
+                                                        <button type="submit" class="btn btn-primary">Set Meeting</button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                                     
                                 </tbody>
                             </table>
@@ -235,7 +180,7 @@
                     </div>
                     <div class="">
                     
-                        <div class="d-flex justify-content-end align-items-center">
+                        <!-- <div class="d-flex justify-content-end align-items-center">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination mg-b-0">
                                     <li class="page-item {{ prev_button.type }}">
@@ -253,7 +198,7 @@
                                     </li>
                                 </ul>
                             </nav>
-                            <form method="GET" action="/pengelolaan_konten/proses">
+                            <form method="GET" action="/transaction_history_users">
                                 <input type="hidden" name="order_by" value="{{ order_by }}">
                                 <input type="hidden" name="keyword" value="{{ keyword }}">
                                 <input type="hidden" name="entry" value="{{ entry }}">
@@ -263,7 +208,7 @@
                     
                                 <div class="input-group reset mg-l-15">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Jump to page</span>
+                                        <span class="input-group-text">Jump to pageS</span>
                                     </div>
                                     <div class="W(70px)">
                                         <select name="page" id="pageSearch" class="custom-select">
@@ -278,7 +223,7 @@
                                     </div>
                                 </div>
                             </form>
-                        </div>
+                        </div> -->
                     </div>
 
                 </div>
@@ -287,6 +232,7 @@
         </div>
     </div>
 
+    <script src="../../static/lib/select2/js/select2.min.js"></script>
     <script src="../../static/lib/jquery/jquery.min.js"></script>
     <script src="../../static/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../../static/lib/feather-icons/feather.min.js"></script>
@@ -294,7 +240,6 @@
     <script src="../../static/lib/flatpicker/flatpickr.js"></script>
     <script src="../../static/assets/js/dashforge.js"></script>
     <script src="../../static/assets/js/dashforge.aside.js"></script>
-    <script src="../../static/lib/select2/js/select2.min.js"></script>
     <script>
         window.addEventListener('load', () => {
             const loader = document.querySelector('.loader');
@@ -312,15 +257,15 @@
                 $('input.select2-search__field').prop('placeholder', 'page');
             });
 
-
-            $('#startDate').flatpickr({
-                "dateFormat": "d/m/Y"
-            })
-            $('#startDate:visible').prop('readonly', false)
-            $('#endDate').flatpickr({
-                "dateFormat": "d/m/Y"
-            })
-            $('#endDate:visible').prop('readonly', false)
+        
+            ['datepicker', 'datepicker2'].forEach(el => {
+                $(`#${el}`).flatpickr({
+                    enableTime: true,
+                    dateFormat: "d/m/Y H:i",
+                    wrap: true,
+                    allowInput: true
+                })
+            });
 
         });
 

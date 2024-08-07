@@ -176,6 +176,7 @@ from manager_users      import tutor_approval_proc
 # PAYMENT CONFIRMATION
 
 from view               import view_payment_confirmation
+from view               import view_transaction_history_users
 
 from manager_payment   import payment_confirmation_proc
 
@@ -185,6 +186,8 @@ from manager_payment   import payment_confirmation_proc
 # TOPUP
 
 from view               import view_topup
+from view               import view_topup_history
+from view               import view_transaction_history
 
 from payment            import topup_proc
 
@@ -4054,10 +4057,84 @@ def approval_topup(topup_request_id):
         "route_name" : ""
     })
 
-    landing_url = payment_confirmation_proc.payment_confirmation_proc(app).topup( params )
-    return redirect( landing_url )
+    response = payment_confirmation_proc.payment_confirmation_proc(app).topup( params )
+    
+    flash(response['msg'], response["notif_type"])   
 
+    return redirect( response['result_url'] )
 
+@app.route("/decline_topup/<topup_request_id>")
+def decline_topup(topup_request_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
+
+    # end if
+
+    params               = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"   ] = session.get("fk_user_id")
+    params["topup_request_id"  ] = topup_request_id
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    response = payment_confirmation_proc.payment_confirmation_proc(app).decline_topup( params )
+    
+    flash(response['msg'], response["notif_type"])   
+
+    return redirect( response['result_url'] )
+
+@app.route("/transaction_history_users")
+def view_transaction_history_users_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    
+    params                           = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["order_by"       ] = request.args.get('order_by'     )
+    params["keyword"        ] = request.args.get('keyword'      )
+    params["page"           ] = request.args.get('page'         )
+    params["entry"          ] = request.args.get('entry'        )
+    params["sort_by"        ] = request.args.get('sort_by'      )
+
+    params["start_date"     ] = request.args.get('start_date'   )
+    params["end_date"       ] = request.args.get('end_date'     )
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_transaction_history_users.view_transaction_history_users(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/transaction_history_users"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
 
 ##########################################################
 # PAYMENT - Topup
@@ -4135,7 +4212,97 @@ def topup():
     return redirect( landing_url )
    
     # end if
+#end def
 
+@app.route("/top_up_history")
+def view_topup_history_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    
+    params                           = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["order_by"       ] = request.args.get('order_by'     )
+    params["keyword"        ] = request.args.get('keyword'      )
+    params["page"           ] = request.args.get('page'         )
+    params["entry"          ] = request.args.get('entry'        )
+    params["sort_by"        ] = request.args.get('sort_by'      )
+
+    params["start_date"     ] = request.args.get('start_date'   )
+    params["end_date"       ] = request.args.get('end_date'     )
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_topup_history.view_topup_history(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/topup_history"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
+
+@app.route("/transaction_history")
+def view_transaction_history_html():
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    # end if
+    
+    params                           = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"     ] = session.get("fk_user_id"        )
+    params["role_position"  ] = session.get("role_position"     )
+    params["username"       ] = session.get("username"          )
+    params["order_by"       ] = request.args.get('order_by'     )
+    params["keyword"        ] = request.args.get('keyword'      )
+    params["page"           ] = request.args.get('page'         )
+    params["entry"          ] = request.args.get('entry'        )
+    params["sort_by"        ] = request.args.get('sort_by'      )
+
+    params["start_date"     ] = request.args.get('start_date'   )
+    params["end_date"       ] = request.args.get('end_date'     )
+    
+
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id"  : params["fk_user_id"],
+        "route_name"  : "VIEW_KONTEN_PROSES"
+    })
+
+    response = view_transaction_history.view_transaction_history(app).html( params )
+    response_data  = response.get("data") 
+
+    if "SUCCESS" in response.get("status"):
+        html        = response_data["html"]
+        html        = html_unescape.unescape( html )
+        html_resp   = make_response( html )
+        html_resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+        return html_resp
+    else:
+        err_message = {
+            "message_action"    : response.get("status" ),
+            "message_desc"      : response.get("desc"   ),
+            "message_data"      : response_data["error_message"],
+            "redirect"          : "/transaction_history"
+        }
+        return redirect(url_for("view_error_page_html" , data=err_message ))
+# end def
 ############### - S T D E N T         P O R T A L - ######################
 
 ##########################################################

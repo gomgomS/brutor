@@ -7,7 +7,7 @@
     <!-- Favico -->
     <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-    <title>Brutor ADMIN - Pengelolaan Konten</title>
+    <title>Brutor|Topup Payment Confirmation</title>
     <!-- vendor css -->
     <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -100,12 +100,81 @@
                 </div>
             </div>
         </div>        
-
+        <!-- Flash messages section -->
+		{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
         <div class="contents-body">
-            <div class="mg-b-100">             
-                <div class="mg-t-60">
+            <div class="">             
+                <div class="">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="font-weight-bold">Payment Confirmation</h1>
+                        <h4 class="">Payment Topup Confirmation</h4>
+                        <form action="/payment_confirmation" method="GET" class="mg-t-30">
+                            <fieldset class="">
+                                <div class="d-flex flex-wrap">
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Entries/page:</label>
+                                        <br>
+                                        <select name="entry" id="" class="custom-select W(80px)">
+                                            {% for entry_item in entry_list%}
+                                                {% if entry|string == entry_item.misc %}
+                                                    <option value="{{ entry_item.misc }}" selected>{{ entry_item.misc }}</option>
+                                                {% else %}
+                                                    <option value="{{ entry_item.misc }}">{{ entry_item.misc }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Sort By:</label>
+                                        <select name="sort_by" id="" class="custom-select ">
+                                            {% for sort_by_item in sort_by_list%}
+                                                {% if sort_by == sort_by_item.value %}
+                                                    <option value="{{ sort_by_item.value }}" selected>{{ sort_by_item.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ sort_by_item.value }}">{{ sort_by_item.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Order By:</label>
+                                        <select name="order_by" id="" class="custom-select ">
+                                            {% if order_by == "asc" %}
+                                                <option value="asc" selected>Ascending</option>
+                                                <option value="desc">Descending</option>
+                                            {% else %}
+                                                <option value="asc">Ascending</option>
+                                                <option value="desc" selected>Descending</option>
+                                            {% endif %}
+                                        </select>
+                                    </div>
+    
+                                    <div class="form-group mg-t-8 mg-r-8">
+                                        <label for="">Keyword</label>
+                                        <input id="keyword" name="keyword" value="{{ keyword }}" type="text" class="form-control ">
+                                    </div>
+    
+    
+                        
+                                    <div class="form-group d-flex mg-t-auto">
+                                        <button class="btn btn-info shadow-custom mg-r-8">Submit</button>
+                                        <a href="/register_test" id="reset" class="btn btn-danger shadow-custom" style="color: white;">Reset</a>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
                     </div>                  
                     
                     <div class="Ovy(a)--sm">
@@ -113,9 +182,11 @@
                             <table class="table table-striped">
                                 <thead class="thead-primary">
                                     <tr>
+                                        <th>Refrence ID</th>
                                         <th>Name</th>
                                         <th>Request topup</th>
                                         <th>Request Status</th>
+                                        <th>Payment Method</th>
                                         <th>Request Date</th>                                        
                                         <th>Action</th>
                                         
@@ -124,19 +195,34 @@
                                 <tbody>
                                     {% for payment_confirmation_item in payment_confirmation_list %}
                                         <tr>
+                                            <td> <span class="badge badge-primary">{{ payment_confirmation_item.reference_id }}</span></td>
                                             <td>{{ payment_confirmation_item.name }}</td>
-                                            <td>{{ payment_confirmation_item.amount }}</td>                                                                                      
-                                            <td>{{ payment_confirmation_item.request_status }}</td>
+                                            <td>{{ payment_confirmation_item.amount }}</td> 
+
+                                            <td>
+                                                {% if payment_confirmation_item.request_status == 'APPROVE' %}
+                                                <span class="badge badge-success">Approved</span>                                                                                             
+                                                {% else %}
+                                                <span class="badge badge-danger">{{ payment_confirmation_item.request_status }}</span>
+                                                {% endif %}
+                                                </td>
+                                            <td>
+                                                {{ payment_confirmation_item.payment_method }}
+                                            </td>
                                             <td>{{ payment_confirmation_item.request_date }}</td>
                                             
                                             
                                             <td>       
-                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{ loop.index }}">
-                                                    View CV
-                                                </button>                                                                                   
+                                                <!-- Updated buttons with icons -->
+                                                <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal{{ loop.index }}">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>                                                                                    -->
                                                 <a href="approve_topup/{{payment_confirmation_item.topup_request_id}}" type="button" class="btn btn-primary">
-                                                   Approve topup
-                                                </a>  
+                                                    <i class="fas fa-check"></i>
+                                                </a>
+                                                <a href="decline_topup/{{payment_confirmation_item.topup_request_id}}" type="button" class="btn btn-primary">
+                                                    <i class="">x</i>
+                                                </a>
                                             </td>                                           
                                         </tr>
                                         
@@ -205,7 +291,7 @@
                                     </li>
                                 </ul>
                             </nav>
-                            <form method="GET" action="/pengelolaan_konten/proses">
+                            <form method="GET" action="/payment_confirmation">
                                 <input type="hidden" name="order_by" value="{{ order_by }}">
                                 <input type="hidden" name="keyword" value="{{ keyword }}">
                                 <input type="hidden" name="entry" value="{{ entry }}">
@@ -215,7 +301,7 @@
                     
                                 <div class="input-group reset mg-l-15">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Jump to page</span>
+                                        <span class="input-group-text">Jump to pageS</span>
                                     </div>
                                     <div class="W(70px)">
                                         <select name="page" id="pageSearch" class="custom-select">
@@ -235,7 +321,7 @@
 
                 </div>
             </div>
-            <footer class="text-center mg-t-auto font-weight-bold">©Brutor a,k,a BRUTAR TUTOR</footer>
+            <footer class="text-center mg-t-auto font-weight-bold">#Brutorsekarang</footer>
         </div>
     </div>
 

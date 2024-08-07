@@ -7,7 +7,7 @@
     <!-- Favico -->
     <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-    <title>Brutor ADMIN - Pengelolaan Konten</title>
+    <title>Brutor|Activation Class Detail</title>
     <!-- vendor css -->
     <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -384,10 +384,10 @@
                                                 ">{{ cell }}</span>
                                             {% elif cell.endswith(' (PASS)') %}
                                                 {{ cell | replace(' (PASS)', '') }}
-                                                <span class="badge badge-success">PASS</span>
-                                            {% elif cell.endswith(' (FAIL)') %}
-                                                {{ cell | replace(' (FAIL)', '') }}
-                                                <span class="badge badge-danger">FAIL</span>
+                                                <span class="badge badge-success">PASSED</span>
+                                            {% elif cell.endswith(' (FAILED)') %}
+                                                {{ cell | replace(' (FAILED)', '') }}
+                                                <span class="badge badge-danger">FAILED</span>
                                             {% else %}
                                                 {{ cell }}
                                             {% endif %}

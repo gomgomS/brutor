@@ -40,6 +40,14 @@ class payment_confirmation_proc:
         response =  topup_request_rec
         return response
 
+    def _find_if_already_topup(self,params):                                         
+        topup_request_rec = self.mgdDB.db_topup_transaction.find_one({
+            "topup_request_id" : params['topup_request_id']
+        })
+        
+        response =  topup_request_rec
+        return response
+
     def topup(self, params):    
         result_url = "/payment_confirmation"
 
@@ -47,7 +55,18 @@ class payment_confirmation_proc:
         topup_request_rec                     = self._find_request_topup( params )     
 
         # Get the current date
-        today_date           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')    
+        today_date                            = datetime.now().strftime('%Y-%m-%d %H:%M:%S')    
+
+        # check if already topup or not
+        already_topup                         = self._find_if_already_topup( topup_request_rec )  
+
+        if already_topup:
+            response = {
+                "result_url"   : result_url,
+                "notif_type"   : "danger",
+                "msg"   : "You have top-up this request ",           
+            }
+            return response
 
         # Insert new top transaction in to db_topup_transaction
         topup_transaction_rec   = database.new(self.mgdDB, "db_topup_transaction")
@@ -95,7 +114,54 @@ class payment_confirmation_proc:
             }      
         )
         
-        return result_url
+        response = {
+                "result_url"   : result_url,
+                "notif_type"   : "success",
+                "msg"   : "Top-up Success ",           
+            }
+        return response
         
+    def decline_topup(self, params):    
+        result_url = "/payment_confirmation"
 
+        # FIND REQUEST TOPUP
+        topup_request_rec                     = self._find_request_topup( params )     
+
+        # Get the current date
+        today_date           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')    
+
+        # check if already topup or not
+        already_topup                         = self._find_if_already_topup( topup_request_rec )  
+
+        if already_topup:
+            response = {
+                "result_url"   : result_url,
+                "notif_type"   : "danger",
+                "msg"   : "You have already topped up or declined this request. Please check the 'Request Status' for more information.",           
+            }
+            return response
+
+        # Insert new top transaction in to db_topup_transaction
+        topup_transaction_rec   = database.new(self.mgdDB, "db_topup_transaction")
+        topup_transaction_rec.put("topup_transaction_id",           topup_transaction_rec.get()["pkey"          ])        
+        topup_transaction_rec.put("topup_request_id",               topup_request_rec["topup_request_id"        ]) # 
+        topup_transaction_rec.put("request_user_id",                topup_request_rec["request_user_id"         ]) #pkey from db_user
+        topup_transaction_rec.put("fk_admin_id",                    params["fk_user_id"                         ]) #pkey from db_user
+        topup_transaction_rec.put("amount",                         int(topup_request_rec["amount"              ]))
+        topup_transaction_rec.put("transaction_status",             "DECLINE"                                   )
+        topup_transaction_rec.put("transaction_date",               today_date                                  )
+        topup_transaction_rec.put("payment_method",                 topup_request_rec["payment_method"          ])
+        topup_transaction_rec.put("reference_id",                   topup_request_rec["reference_id"          ])                                
+        topup_transaction_rec.put("topup_request_date",             topup_request_rec["created_at"              ])
+        topup_transaction_rec.put("update_by_admin_at",             today_date                                  )                    
+        topup_transaction_rec.insert()  
+
+        response = {
+                "result_url"   : result_url,
+                "notif_type"   : "success",
+                "msg"   : "Decline Success ",           
+            }
+
+        return response 
+        
 # end class

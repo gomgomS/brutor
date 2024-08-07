@@ -467,6 +467,19 @@ db = {
         "topup_request_date"        : "",
         "update_by_admin_at"        : ""        
     },
+
+    "db_transaction"              : {
+        "transaction_id"        : "",
+        "ref_transaction_id"    : "",
+        "name_db_product"       : "",
+        "fk_product_id"         : "",
+        "fk_buyer_id"           : "",
+        "type_product"          : "",
+        "name_product"          : "",
+        "amount"                : 0,
+        "transaction_status"    : "",
+        "transaction_date"      : ""       
+    },
     
     # ENROLMENT CLASS
     "db_enrollment"           : {

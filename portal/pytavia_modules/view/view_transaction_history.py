@@ -28,7 +28,7 @@ from view import view_core_css
 from view import view_core_dialog_message
 
 
-class view_payment_confirmation:
+class view_transaction_history:
 
     mgdDB = database.get_db_conn(config.mainDB)
 
@@ -38,7 +38,7 @@ class view_payment_confirmation:
 
     
 
-    def _find_payment_confirmation(self, params):
+    def _find_transaction_history(self, params):
         #PAGINATION
         page            = params["page"         ]
         keyword         = params["keyword"      ]
@@ -55,6 +55,7 @@ class view_payment_confirmation:
             "sort_by"       : params["sort_by"      ]
         }
 
+        order_by = 'desc' # i add this because there is no filter
         if order_by == "asc":
             order = pymongo.ASCENDING
         else:
@@ -62,7 +63,7 @@ class view_payment_confirmation:
         
 
         query = { 
-            # "is_deleted"        : False, 
+            "fk_buyer_id"        : params['fk_user_id'],
             # "status_value"      : "PROSES"
         }
 
@@ -102,15 +103,15 @@ class view_payment_confirmation:
         # konten_view = self.mgdDB.db_class.find(query).sort(order).skip(block_skip).limit(entry)
         # block_count = utils.ceildiv(konten_view.count(), entry)
 
-        payment_confirmation_list = []
-        payment_confirmation_view = self.mgdDB.db_topup_request.find(query).sort(sort_by, order).skip(block_skip).limit(entry)
-        block_count = utils.ceildiv(payment_confirmation_view.count(), entry)
+        transaction_history_list = []
+        transaction_history_view = self.mgdDB.db_transaction.find(query).sort('rec_timestamp', order)
+        block_count = utils.ceildiv(transaction_history_view.count(), entry)
 
         
         # PROCESS THE BUTTONS
         pagination_params = {
             "url_params"    : url_params,
-            "url"           : "/payment_confirmation",
+            "url"           : "/transaction_history",
             "page"          : page,
             "block_count"   : block_count
         }
@@ -121,19 +122,18 @@ class view_payment_confirmation:
 
         # END OF PAGINATION
 
-        for payment_confirmation_item in payment_confirmation_view:
-
-            find_name_user                      = self._get_requester_information(payment_confirmation_item["request_user_id"] )            
-            payment_confirmation_item["name"]   = find_name_user["name"     ]
+        for transaction_history_item in transaction_history_view:
+            # find_name_user                      = self._get_requester_information(transaction_history_item["request_user_id"] )            
+            # transaction_history_item["name"]          = find_name_user["name"     ]
 
             # Convert amount to Rupiah currency format
-            if 'amount' in payment_confirmation_item: 
-                payment_confirmation_item['amount'] = self.format_currency(payment_confirmation_item['amount'])
+            if 'amount' in transaction_history_item: 
+                transaction_history_item['amount'] = self.format_currency(transaction_history_item['amount'])
 
-            payment_confirmation_list.append(payment_confirmation_item)
+            transaction_history_list.append(transaction_history_item)
 
         response = {
-            "payment_confirmation_list"   : payment_confirmation_list,
+            "transaction_history_list"   : transaction_history_list,
             "block_count"   : block_count,
             "prev_button"   : prev_button,
             "next_button"   : next_button
@@ -145,7 +145,7 @@ class view_payment_confirmation:
 
     def html(self, params):
         response = helper.response_msg(
-            "FIND_payment_confirmation_PROSES_SUCCESS", "FIND KONTEN PROSES SUCCESS", {} , "0000"
+            "FIND_transaction_history_PROSES_SUCCESS", "FIND KONTEN PROSES SUCCESS", {} , "0000"
         )
         try:
             menu_list_html         = view_core_menu.view_core_menu().html(params)
@@ -186,37 +186,22 @@ class view_payment_confirmation:
 
 
 
-            sort_by_list = [
-                { 
-                    "name" : "Reference ID" ,
-                    "value" : "reference_id" 
-                },
-                { 
-                    "name" : "Status Request" ,
-                    "value" : "request_status" 
-                },{ 
-                    "name" : "Payment Method",
-                    "value" : "payment_method" 
-                }
-                
-            ] 
-
             entry_resp              = utils._find_table_entries()
             entry_list              = entry_resp["entry_list"]
 
             # FIND user
             user_rec                = self._data_user(params)       
 
-            # FIND payment_confirmation
-            payment_confirmation_resp             = self._find_payment_confirmation( params )
-            payment_confirmation_list             = payment_confirmation_resp["payment_confirmation_list"     ]
-            block_count             = payment_confirmation_resp["block_count"     ]
-            prev_button             = payment_confirmation_resp["prev_button"     ]
-            next_button             = payment_confirmation_resp["next_button"     ]
+            # FIND transaction_history
+            transaction_history_resp             = self._find_transaction_history( params )
+            transaction_history_list             = transaction_history_resp["transaction_history_list"     ]
+            block_count             = transaction_history_resp["block_count"     ]
+            prev_button             = transaction_history_resp["prev_button"     ]
+            next_button             = transaction_history_resp["next_button"     ]
 
             
             html = render_template(
-                "payment_confirmation/payment_confirmation_list.html",
+                "payment/transaction_history_list.html",
                 menu_list_html          = menu_list_html,
                 core_display            = core_display,
                 core_header             = core_header, 
@@ -237,9 +222,9 @@ class view_payment_confirmation:
                 next_button             = next_button,                
                 start_date              = params["start_date"   ],
                 end_date                = params["end_date"     ],
-                payment_confirmation_list  = payment_confirmation_list,
+                transaction_history_list      = transaction_history_list,
                 user_rec                = user_rec,
-                sort_by_list            = sort_by_list
+                # sort_by_list            = sort_by_list
             )
 
 
