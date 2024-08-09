@@ -167,6 +167,12 @@
                             <input name="" type="text" id="creator" value="{{data_user.name}}" class="form-control" readonly>
                         </div>
                     </div>
+					<div class="form-group row">
+						<label for="phone" class="col-sm-2 col-form-label text-right">No Hp</label>
+						<div class="col-sm-10">
+							<input name="phone" type="text" id="phone" value="{{data_user.phone}}" class="form-control" readonly>
+						</div>
+					</div>
                     <div class="form-group row">
                         <label for="creator" class="col-sm-2 col-form-label text-right">Username</label>
                         <div class="col-sm-10">
@@ -257,13 +263,7 @@
 								<h2><span class="badge bg-light text-dark">Your CV is under review, but you can still update your information below.</span></h2>							
 							</div>
 							{% endif %}
-						</div>
-						<div class="form-group row">
-							<label for="phone" class="col-sm-2 col-form-label text-right">No Hp</label>
-							<div class="col-sm-10">
-								<input name="phone" type="text" id="phone" value="{{data_user.phone}}" class="form-control" required>
-							</div>
-						</div>
+						</div>					
 						<div class="form-group row">
 							<label for="cv_user" class="col-sm-2 col-form-label text-right">Copas your CV Here</label>
 							<div class="col-sm-10">
@@ -343,6 +343,12 @@
 									<label for="name" class="col-sm-2 col-form-label text-right">Name</label>
 									<div class="col-sm-10">
 										<input name="name" type="text" id="name"  value="{{data_user.name}}" class="form-control" required>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label for="phone" class="col-sm-2 col-form-label text-right">No Hp</label>
+									<div class="col-sm-10">
+										<input name="phone" type="text" id="phone" value="{{data_user.phone}}" class="form-control" required>
 									</div>
 								</div>
 								<div class="form-group row">

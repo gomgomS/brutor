@@ -151,8 +151,14 @@
                                         <!-- Card Content -->
                                         <div class="card-body">
                                             <div class="mb-2">
-                                                <span class="font-weight-bold"><i class="fas fa-info-circle mr-2"></i>Status:</span>
-                                                <span>{{ class_item.enrollment_status }}</span>
+                                                <span class="font-weight-bold"><i class="fas fa-info-circle mr-2"></i>Status:</span>                                                
+                                                {% if class_item.enrollment_status == 'PASS'%}
+                                               <span  class="badge badge-success">Passed</span>
+                                                {% elif class_item.enrollment_status == 'FAILED' %}
+                                                <span class="badge badge-danger">Failed</span>   
+                                                {% else %}            
+                                                <span class="badge badge-info">{{class_item.enrollment_status}}</span>               
+                                                {% endif %}
                                             </div>
                                             <div class="mb-2">
                                                 <span class="font-weight-bold"><i class="fas fa-calendar-alt mr-2"></i>Class starts at:</span>

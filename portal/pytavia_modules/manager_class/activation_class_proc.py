@@ -6,6 +6,8 @@ import ast
 import time
 import random
 import re
+import uuid
+import string
 
 sys.path.append("pytavia_core"    )
 sys.path.append("pytavia_modules" )
@@ -341,6 +343,66 @@ class activation_class_proc:
         # end try
         return response
     # end def
+
+    def student_pass(self, params):    
+        result_url = "/activation_class/detail/"+params["activation_class_id"]
+        
+
+        # update progress top up in db_topup_request 
+        update_rec = {
+                "enrollment_status"   : "PASS",
+                "certified_id"        : self.generate_custom_certified_id()
+        }   
+
+        
+        request_rec           = self.mgdDB.db_enrollment.update_one(
+            {"enrollment_id"   : params["enrollment_id"]},            
+            {
+                '$set'            : update_rec                
+            }      
+        )
+
+        response = {
+                "result_url"   : result_url,
+                "notif_type"   : "success",
+                "msg"   : "Congratulation!!, Student Pass this class",
+            }
+        return response
+    # end def  
+
+    def student_failed(self, params):    
+        result_url = "/activation_class/detail/"+params["activation_class_id"]                
+        # if pass
+                
+        update_rec = {
+                "enrollment_status"   : "FAILED",                    
+        }   
+
+        
+        request_rec           = self.mgdDB.db_enrollment.update_one(
+            {"enrollment_id"   : params["enrollment_id"]},            
+            {
+                '$set'            : update_rec                
+            }      
+        )
+
+        response = {
+                "result_url"   : result_url,
+                "notif_type"   : "danger",
+                "msg"   : "your student faild successfully!!",
+            }
+
+            
+        return response
+    # end def    
+
+    def generate_custom_certified_id(self, prefix='Brutor', length=28):
+        if len(prefix) >= length:
+            return prefix[:length]
+        
+        random_suffix = str(uuid.uuid4()).replace('-', '')[:length - len(prefix)]
+        return prefix + random_suffix
     # end def
+
 
 # end class

@@ -185,6 +185,7 @@ class view_myclass_detail:
                 meeting_list            = meeting_list,
                 user_rec                = user_rec,
                 tutor_rec               = tutor_rec,
+                enrollment_rec          = enrollment_rec
             )
 
 

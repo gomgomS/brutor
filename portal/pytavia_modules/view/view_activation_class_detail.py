@@ -231,6 +231,27 @@ class view_activation_class_detail:
         }
 
         return response
+    
+    def _find_registered_student(self, params):
+        # Fetch enrollment records
+        enrollment_recs = self.mgdDB.db_enrollment.find({
+            "activation_class_id": params.get("activation_class_id"),
+            "is_deleted": False
+        })
+        
+        list_student_registered = []
+        for enrollment_rec in enrollment_recs:
+            data_student = self.mgdDB.db_user.find_one({
+                "fk_user_id": enrollment_rec['fk_user_id'],
+                "is_deleted": False
+            })
+            enrollment_rec['detail_student'] = data_student
+
+            list_student_registered.append(enrollment_rec)
+        
+        response = list_student_registered
+
+        return response
 
     def html(self, params):
         response = helper.response_msg(
@@ -273,6 +294,9 @@ class view_activation_class_detail:
             # Test Report
             test_report_rec                     = self._test_report(params)     
 
+            # FIND REGISTERD STUDENT
+            list_student_registered_students    = self._find_registered_student(params)   
+
             
             html = render_template(
                 "activation_class/activation_class_detail.html",
@@ -291,7 +315,8 @@ class view_activation_class_detail:
                 meeting_list            = meeting_list,
                 user_rec                = user_rec,
                 meeting_report_rec      = meeting_report_rec,
-                test_report_rec         = test_report_rec
+                test_report_rec         = test_report_rec,
+                list_student_registered_students    = list_student_registered_students
             )
 
 

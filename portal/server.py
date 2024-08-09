@@ -2879,6 +2879,66 @@ def view_activation_class_detail_html(activation_class_id):
         return redirect(url_for("view_error_page_html" , data=err_message ))
 # end def
 
+@app.route("/student_pass/<enrollment_id>/<activation_class_id>")
+def student_passed(enrollment_id, activation_class_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
+
+    # end if
+
+    params                          = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"   ]         = session.get("fk_user_id")
+    params["enrollment_id"  ]       = enrollment_id
+    params["activation_class_id"  ] = activation_class_id
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    response = activation_class_proc.activation_class_proc(app).student_pass( params )
+    
+    flash(response['msg'], response["notif_type"])   
+
+    return redirect( response['result_url'] )
+# end def
+
+@app.route("/student_failed/<enrollment_id>/<activation_class_id>")
+def student_failed(enrollment_id, activation_class_id):
+    redirect_return = login_precheck({})
+    if redirect_return:
+        return redirect_return
+    
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
+
+    # end if
+
+    params                          = sanitize.clean_html_dic(request.form.to_dict())
+    params["fk_user_id"   ]         = session.get("fk_user_id")
+    params["enrollment_id"  ]       = enrollment_id
+    params["activation_class_id"  ] = activation_class_id
+
+    logging_tm           = int(time.time() * 1000)
+    browser_resp = browser_security.browser_security(app).check_route({
+        "fk_user_id" : params["fk_user_id"],
+        "route_name" : ""
+    })
+
+    response = activation_class_proc.activation_class_proc(app).student_failed( params )
+    
+    flash(response['msg'], response["notif_type"])   
+
+    return redirect( response['result_url'] )
+# end def
+
 ##########################################################
 # MANAGER CLASS - Public Class
 ##########################################################
@@ -3997,6 +4057,10 @@ def view_payment_confirmation_html():
         return redirect_return
     # end if
 
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
+
     params                           = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )
     params["role_position"  ] = session.get("role_position"     )
@@ -4097,6 +4161,10 @@ def view_transaction_history_users_html():
     if redirect_return:
         return redirect_return
     # end if
+
+    dashboard_return = role_precheck({"role_with_access":["ADMIN"]})
+    if dashboard_return:
+        return dashboard_return
     
     params                           = sanitize.clean_html_dic(request.form.to_dict())
     params["fk_user_id"     ] = session.get("fk_user_id"        )

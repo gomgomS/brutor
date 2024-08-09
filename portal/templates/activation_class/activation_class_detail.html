@@ -300,107 +300,222 @@
             </div>
             
     
-            <!-- Class Details -->
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-chalkboard-teacher"></i> Class Details
-                </div>
-                <div class="card-body">
-                    <!-- <p><span class="data-title">Class ID:</span> <span class="data-value">{{ class_rec.class_id }}</span></p>
-                    <p><span class="data-title">Creator ID:</span> <span class="data-value">{{ class_rec.creator_id }}</span></p> -->
-                    <p><span class="data-title">Class Name:</span> <span class="data-value">{{ class_rec.name_class }}</span></p>
-                    <p><span class="data-title">Description:</span> <span class="data-value">{{ class_rec.desc_class_html }}</span></p>
-                    <p><span class="data-title">Status:</span> <span class="data-value">{{ class_rec.status_class }}</span></p>
-                    <p><span class="data-title">Price:</span> <span class="data-value">{{ class_rec.price_class }}</span></p>
-                </div>
-                <div class="container">
-                    <span class=" data-title">Meeting Report</span>
-                    <table class="table table-dark table-striped">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Status</th>
-                                {% for meeting in meeting_report_rec.header[2:-1] %}
-                                    <th>{{ meeting }}</th>
-                                {% endfor %}
-                                <th>Attendance %</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in meeting_report_rec.data %}
-                                <tr>
-                                    <td>{{ row[0] }}</td>
-                                    <td>
-                                        {% if row[1] == 'REGISTERED' %}
-                                            <span class="badge badge-info">{{ row[1] }}</span>
-                                        {% elif row[1] == 'FAILED' %}
-                                            <span class="badge badge-danger">{{ row[1] }}</span>
-                                        {% elif row[1] == 'PASSED' %}
-                                            <span class="badge badge-success">{{ row[1] }}</span>
-                                        {% endif %}
-                                    </td>
-                                    {% for status in row[2:-1] %}
-                                        <td>
-                                            {% if status == 'PRESENT' %}
-                                                <span class="badge badge-success">{{ status }}</span>
-                                            {% elif status == 'ABSENT' %}
-                                                <span class="badge badge-danger">{{ status }}</span>
-                                            {% else %}
-                                                <span class="">{{ status }}</span>
-                                            {% endif %}
-                                        </td>
-                                    {% endfor %}
-                                    <td>{{ row[-1] }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="container ">
-                    <span class=" data-title">Test Report</span>
-                    <table class="table table-dark table-bordered">
-                        <thead>
-                            <tr>
-                                {% for header in test_report_rec.header %}
-                                    <th>{{ header }}</th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in test_report_rec.data %}
-                                <tr>
-                                    {% for cell in row %}
-                                        <td>
-                                            {% if loop.index == 2 %} {# Second column, enrollment status #}
-                                                <span class="badge 
-                                                    {% if cell == 'REGISTERED' %}
-                                                        badge-info
-                                                    {% elif cell == 'PASS' %}
-                                                        badge-success
-                                                    {% else %}
-                                                        badge-danger
-                                                    {% endif %}
-                                                ">{{ cell }}</span>
-                                            {% elif cell.endswith(' (PASS)') %}
-                                                {{ cell | replace(' (PASS)', '') }}
-                                                <span class="badge badge-success">PASSED</span>
-                                            {% elif cell.endswith(' (FAILED)') %}
-                                                {{ cell | replace(' (FAILED)', '') }}
-                                                <span class="badge badge-danger">FAILED</span>
-                                            {% else %}
-                                                {{ cell }}
-                                            {% endif %}
-                                        </td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </body>
-            </body>
-            </div>
+            
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="">
+                        <div class="card card-custom shadow-sm">
+                            <div class="card-header card-header-custom text-center">
+                                <h4>Class Information</h4>
+                            </div>
+                            <div class="card-body">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs" id="classTab" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link active" id="class-details-tab" data-toggle="tab" href="#class-details"
+                                            role="tab" aria-controls="class-details" aria-selected="true">
+                                            <i class="fas fa-chalkboard-teacher"></i> Class Details
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="pass-req-tab" data-toggle="tab" href="#pass-req"
+                                            role="tab" aria-controls="pass-req" aria-selected="false">
+                                            <i class="fas fa-check-circle"></i> Pass Requirement
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="meeting-report-tab" data-toggle="tab" href="#meeting-report"
+                                            role="tab" aria-controls="meeting-report" aria-selected="false">
+                                            <i class="fas fa-calendar-alt"></i> Meeting Report
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="test-report-tab" data-toggle="tab" href="#test-report"
+                                            role="tab" aria-controls="test-report" aria-selected="false">
+                                            <i class="fas fa-file-alt"></i> Test Report
+                                        </a>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="final-report-tab" data-toggle="tab" href="#final-report"
+                                            role="tab" aria-controls="final-report" aria-selected="false">
+                                            <i class="fas fa-clipboard-check"></i> Final Report
+                                        </a>
+                                    </li>
+                                </ul>
+            
+                                <!-- Tab panes -->
+                                <div class="tab-content mt-4">
+                                    <!-- Class Details -->
+                                    <div class="tab-pane fade show active" id="class-details" role="tabpanel"
+                                        aria-labelledby="class-details-tab">
+                                        <h5><i class="fas fa-info-circle"></i> Class Details:</h5>
+                                        <div class="ml-3 mt-3">
+                                            <p><strong>Class Name:</strong> {{ class_rec.name_class }}</p>
+                                            <p><strong>Description:</strong> {{ class_rec.desc_class_html }}</p>
+                                            <p><strong>Status:</strong> {{ class_rec.status_class }}</p>
+                                            <p><strong>Price:</strong> {{ class_rec.price_class }}</p>
+                                        </div>
+                                    </div>
+            
+                                    <!-- Pass Requirement -->
+                                    <div class="tab-pane fade" id="pass-req" role="tabpanel"
+                                        aria-labelledby="pass-req-tab">
+                                        <h5><i class="fas fa-check-circle"></i> Pass Requirement:</h5>
+                                        <div class="ml-3 mt-3">
+                                            {{ class_rec.pass_requirement_html }}
+                                        </div>
+                                    </div>
+            
+                                    <!-- Meeting Report -->
+                                    <div class="tab-pane fade" id="meeting-report" role="tabpanel"
+                                        aria-labelledby="meeting-report-tab">
+                                        <h5><i class="fas fa-calendar-alt"></i> Meeting Report:</h5>
+                                        <div class="table-responsive mt-3">
+                                            <table class="table table-dark table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Status</th>
+                                                        {% for meeting in meeting_report_rec.header[2:-1] %}
+                                                            <th>{{ meeting }}</th>
+                                                        {% endfor %}
+                                                        <th>Attendance %</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in meeting_report_rec.data %}
+                                                        <tr>
+                                                            <td>{{ row[0] }}</td>
+                                                            <td>
+                                                                {% if row[1] == 'REGISTERED' %}
+                                                                    <span class="badge badge-info">{{ row[1] }}</span>
+                                                                {% elif row[1] == 'FAILED' %}
+                                                                    <span class="badge badge-danger">{{ row[1] }}</span>
+                                                                {% elif row[1] == 'PASSED' %}
+                                                                    <span class="badge badge-success">{{ row[1] }}</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            {% for status in row[2:-1] %}
+                                                                <td>
+                                                                    {% if status == 'PRESENT' %}
+                                                                        <span class="badge badge-success">{{ status }}</span>
+                                                                    {% elif status == 'ABSENT' %}
+                                                                        <span class="badge badge-danger">{{ status }}</span>
+                                                                    {% else %}
+                                                                        <span>{{ status }}</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                            {% endfor %}
+                                                            <td>{{ row[-1] }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+            
+                                    <!-- Test Report -->
+                                    <div class="tab-pane fade" id="test-report" role="tabpanel"
+                                        aria-labelledby="test-report-tab">
+                                        <h5><i class="fas fa-file-alt"></i> Test Report:</h5>
+                                        <div class="table-responsive mt-3">
+                                            <table class="table table-dark table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        {% for header in test_report_rec.header %}
+                                                            <th>{{ header }}</th>
+                                                        {% endfor %}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in test_report_rec.data %}
+                                                        <tr>
+                                                            {% for cell in row %}
+                                                                <td>
+                                                                    {% if loop.index == 2 %}
+                                                                        <span class="badge 
+                                                                            {% if cell == 'REGISTERED' %}
+                                                                                badge-info
+                                                                            {% elif cell == 'PASS' %}
+                                                                                badge-success
+                                                                            {% else %}
+                                                                                badge-danger
+                                                                            {% endif %}
+                                                                        ">{{ cell }}</span>
+                                                                    {% elif cell.endswith(' (PASS)') %}
+                                                                        {{ cell | replace(' (PASS)', '') }}
+                                                                        <span class="badge badge-success">PASSED</span>
+                                                                    {% elif cell.endswith(' (FAILED)') %}
+                                                                        {{ cell | replace(' (FAILED)', '') }}
+                                                                        <span class="badge badge-danger">FAILED</span>
+                                                                    {% else %}
+                                                                        {{ cell }}
+                                                                    {% endif %}
+                                                                </td>
+                                                            {% endfor %}
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+            
+                                    <!-- Final Report -->
+                                    <div class="tab-pane fade" id="final-report" role="tabpanel"
+                                        aria-labelledby="final-report-tab">
+                                        <h5><i class="fas fa-clipboard-check"></i> Final Report:</h5>
+                                        <div class="table-responsive mt-3">
+                                            <table class="table table-dark table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>Phone Number</th>
+                                                        <th>Enrollment Status</th>
+                                                        <th>Certified ID</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for student in list_student_registered_students %}
+                                                        <tr>
+                                                            <td>{{ student.detail_student.name }}</td>
+                                                            <td>{{ student.detail_student.email }}</td>
+                                                            <td>{{ student.detail_student.phone }}</td>
+                                                            <td>
+                                                                <span class="badge 
+                                                                    {% if student.enrollment_status == 'PASS' %}
+                                                                        badge-success
+                                                                    {% elif student.enrollment_status == 'FAILED' %}
+                                                                        badge-danger
+                                                                    {% else %}
+                                                                        badge-info
+                                                                    {% endif %}">
+                                                                    {{ student.enrollment_status }}
+                                                                </span>
+                                                            </td>
+                                                            <td><span class="badge badge-primary">{{ student.certified_id }}</span></td>
+                                                            <td>
+                                                                <a href="/student_pass/{{ student.enrollment_id }}/{{ activation_class_rec.activation_class_id }}" class="btn btn-success btn-sm" title="Pass">
+                                                                    <i class="fas fa-check"></i>
+                                                                </a>
+                                                                <a href="/student_failed/{{ student.enrollment_id }}/{{ activation_class_rec.activation_class_id }}" class="btn btn-danger btn-sm" title="Fail">
+                                                                    <i class="fas fa-times"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div> <!-- End of Tab Content -->
+                            </div> <!-- End of Card Body -->
+                        </div> <!-- End of Card -->
+                    </div> <!-- End of Col -->
+                </div> <!-- End of Row -->
+            </div> <!-- End of Container -->
+            
     
             <!-- Split Container for Meetings and Tests -->
             <div class="split-container">

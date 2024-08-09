@@ -55,8 +55,7 @@ class profile_proc:
         list_cv_user.append("...")
         cv_user_preview     = " ".join(list_cv_user)
 
-        query   = {
-            "phone"              : params["phone"],
+        query   = {            
             "cv_user"            : params["cv_user"],
             "cv_user_html"       : cv_user_html,
             "cv_user_preview"    : cv_user_preview,
@@ -95,6 +94,7 @@ class profile_proc:
         result_url = "/profile"       
 
         query   = {
+            "phone"            : params["phone"],
             "name"             : params["name"],
             "username"         : params["username"],     
             "email"            : params["email"]            

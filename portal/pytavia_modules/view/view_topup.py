@@ -43,18 +43,17 @@ class view_topup:
             "request_user_id" : params['fk_user_id']
         }).sort("rec_timestamp", -1).limit(1)
         
-        latest_topup_request_list = []
-        for latest_topup_request_item in latest_topup_request:  
-                    
-            # Convert price to Rupiah currency format
-            if 'amount' in latest_topup_request_item:
-                latest_topup_request_item['amount'] = self.format_currency(latest_topup_request_item['amount'])
+        check_exist = list(latest_topup_request)
+        if check_exist:
+            latest_topup_request_list = []
+            for latest_topup_request_item in latest_topup_request:  
+                        
+                # Convert price to Rupiah currency format
+                if 'amount' in latest_topup_request_item:
+                    latest_topup_request_item['amount'] = self.format_currency(latest_topup_request_item['amount'])
 
-        latest_topup_request_list.append(latest_topup_request_item)
-
-        # latest_topup_request_list = list(latest_topup_request)                                                 
-
-        if latest_topup_request_list != []:
+            latest_topup_request_list.append(latest_topup_request_item)        
+        
             response =  latest_topup_request_list[0]
         else:
             response =  {}
@@ -88,7 +87,8 @@ class view_topup:
 
             # FOR CHECK THE LATEST TOPUP REQUEST
             latest_topup_request_resp             = self._find_latest_topup_request( params )
-
+            print(latest_topup_request_resp)
+            print("air panas")
             user_rec         = self._data_user(params)                          
                         
             html = render_template(

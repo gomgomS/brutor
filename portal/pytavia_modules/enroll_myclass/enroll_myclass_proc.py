@@ -87,7 +87,7 @@ class enroll_myclass_proc:
             {
                 "activation_class_id"         : params["activation_class_id"],
                 "fk_user_id"                  : params["fk_user_id" ],
-                "enrollment_status"           : 'REGISTERED'
+                "enrollment_status"           : {'$in' : ['REGISTERED','PASS','FAILED']}
             }
         )        
 
@@ -95,7 +95,7 @@ class enroll_myclass_proc:
             response = {
                 "result_url"   : result_url,
                 "notif_type"   : "warning",
-                "msg"   : "You have already purchased "+buy_activation_class_rec["active_class_name"]+", you just only buy once every class ",           
+                "msg"   : "You have already purchased "+buy_activation_class_rec["active_class_name"]+", You can only buy each class once.",           
             }
         else:  
 

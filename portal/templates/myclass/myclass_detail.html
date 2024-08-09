@@ -150,8 +150,13 @@
         </div>
         
         <div class="contents-body">
-            <div class="header text-center">
-                <h1>Class Name: {{ class_rec.name_class }}</h1>
+            <div class="header text-center">                
+                {% if enrollment_rec.enrollment_status == 'PASS'%}
+                <span  class="badge badge-success">"Congratulations, you passed this Class."</span>
+                {% elif enrollment_rec.enrollment_status == 'FAILED' %}
+                <span class="badge badge-danger">"Sorry, you failed this Class."</span>               
+                {% endif %}
+                <h3>Class Name: {{ class_rec.name_class }}</h3>
                 <p>section name: {{activation_class_rec.active_class_name}}</p>
                 <p>tutor by: {{ tutor_rec.name }}</p>
             </div>
@@ -274,7 +279,7 @@
                     </div>
                 </div>
             </div>
-            <footer class="text-center mt-auto font-weight-bold">©Brutor a.k.a BRUTAR TUTOR</footer>
+            <footer class="text-center mt-auto font-weight-bold">#Brutorsekarang</footer>
         </div>
         
     </div>
