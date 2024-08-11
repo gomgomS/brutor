@@ -37,29 +37,29 @@ class view_topup:
     # end def
 
 
-    def _find_latest_topup_request(self,params):  
-                                     
-        latest_topup_request = self.mgdDB.db_topup_request.find({
-            "request_user_id" : params['fk_user_id']
+    def _find_latest_topup_request(self, params):  
+        # Fetch the latest topup request for the given user
+        latest_topup_request_cursor = self.mgdDB.db_topup_request.find({
+            "request_user_id": params['fk_user_id']
         }).sort("rec_timestamp", -1).limit(1)
         
-        check_exist = list(latest_topup_request)
-        if check_exist:
-            latest_topup_request_list = []
-            for latest_topup_request_item in latest_topup_request:  
-                        
-                # Convert price to Rupiah currency format
-                if 'amount' in latest_topup_request_item:
-                    latest_topup_request_item['amount'] = self.format_currency(latest_topup_request_item['amount'])
-
-            latest_topup_request_list.append(latest_topup_request_item)        
+        # Convert the cursor to a list
+        latest_topup_request_list = list(latest_topup_request_cursor)
         
-            response =  latest_topup_request_list[0]
-        else:
-            response =  {}
+        # Check if there are any results
+        if latest_topup_request_list:
+            latest_topup_request_item = latest_topup_request_list[0]  # Get the first (latest) request item
             
-
+            # Convert price to Rupiah currency format
+            if 'amount' in latest_topup_request_item:
+                latest_topup_request_item['amount'] = self.format_currency(latest_topup_request_item['amount'])
+            
+            response = latest_topup_request_item
+        else:
+            response = {}
+        
         return response
+
                           
     # end def
 

@@ -12,15 +12,19 @@
 	<link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 	<link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
 	<link href="../../static/lib/datatables.net-dt/css/jquery.dataTables.min.css" rel="stylesheet">
+	<link href="../../static/lib/fullcalendar/fullcalendar.min.css" rel="stylesheet">
 	<!-- DashForge CSS -->
 	<link rel="stylesheet" href="../../static/assets/css/dashforge.css">
 	<link rel="stylesheet" href="../../static/css/custom.css">	
 	<style>	 
-    
+		#calendar {
+			max-width: 600px;
+			margin: 40px auto;
+			padding: 0 10px;
+		}
 
-  </style>
-  </style>
-	</style>
+  	</style>
+
 
 	
 </head>
@@ -167,6 +171,38 @@
 			</button>
 		  </div>
 		{% endif %}
+		<div class="container-fluid">
+			<div class="row">
+				<!-- Information Section -->
+				<div class="col-md-4">
+					<h2>Event Information</h2>
+					<div class="info-container">
+						<!-- Cards will be dynamically generated here -->
+						
+						{% if event %}
+						{% for event in schedule_list %}
+						<div class="card">
+							<div class="card-body">
+								<p class="card-text"><strong>Section Name:</strong> {{ event.title }}
+									<a href="{{ event.detail_activation_class }}" class="btn btn-link" target="_blank">
+										<i class="fas fa-eye"></i>
+									</a>
+								</p>
+								
+								<p class="card-text"><strong>Class Name:</strong> {{ event.extendedProps.class_name }}</p>																								
+							</div>
+						</div>
+						{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+				<!-- Calendar Section -->
+				<div class="col-md-8">
+					<div id="calendar"></div>
+				</div>
+			</div>
+		</div>
+		
 	
 
 	<!-- END MAIN BODY -->
@@ -181,6 +217,8 @@
 	<script src="../../static/lib/feather-icons/feather.min.js"></script>
 	<script src="../../static/lib/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 	<script src="../../static/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="../../static/lib/moment/moment.js"></script>
+	<script src="../../static/lib/fullcalendar/fullcalendar.min.js"></script>
 	<script src="../../static/assets/js/dashforge.js"></script>
 	<script src="../../static/assets/js/dashforge.aside.js"></script>
 	<script src="../../static/js/sytem_param/port_distance_config.js"></script>
@@ -204,8 +242,94 @@
 		// Update the balance element with formatted value
 		document.getElementById('balance').textContent = formatRupiah(userBalance);
 		
+
+		// calender section
+		// calender section
+		$(document).ready(function() {
+			$('#calendar').fullCalendar({
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'month,basicWeek,basicDay'
+				},
+				editable: true,
+				eventLimit: true, // allow "more" link when too many events
+				events: {{ schedule_list|tojson }}
+			});
+    	});
+		// $(document).ready(function() {
+
+		// 	$('#calendar').fullCalendar({
+		// 	//locale: 'zh-cn',
+		// 	header: {
+		// 		left: 'prev,next today',
+		// 		center: 'title',
+		// 		right: 'month,basicWeek,basicDay'
+		// 	},
+		// 	defaultDate: '2018-03-12',
+		// 	navLinks: true, // can click day/week names to navigate views
+		// 	editable: true,
+		// 	eventLimit: true, // allow "more" link when too many events
+		// 	events: [
+		// 		{
+		// 		title: 'All Day Event',
+		// 		start: '2018-03-01'
+		// 		},
+		// 		{
+		// 		title: 'Long Event',
+		// 		start: '2018-03-07',
+		// 		end: '2018-03-10'
+		// 		},
+		// 		{
+		// 		id: 999,
+		// 		title: 'Repeating Event',
+		// 		start: '2018-03-09T16:00:00'
+		// 		},
+		// 		{
+		// 		id: 999,
+		// 		title: 'Repeating Event',
+		// 		start: '2018-03-16T16:00:00'
+		// 		},
+		// 		{
+		// 		title: 'Conference',
+		// 		start: '2018-03-11',
+		// 		end: '2018-03-13'
+		// 		},
+		// 		{
+		// 		title: 'Meeting',
+		// 		start: '2018-03-12T10:30:00',
+		// 		end: '2018-03-12T12:30:00'
+		// 		},
+		// 		{
+		// 		title: 'Lunch',
+		// 		start: '2018-03-12T12:00:00'
+		// 		},
+		// 		{
+		// 		title: 'Meeting',
+		// 		start: '2018-03-12T14:30:00'
+		// 		},
+		// 		{
+		// 		title: 'Happy Hour',
+		// 		start: '2018-03-12T17:30:00'
+		// 		},
+		// 		{
+		// 		title: 'Dinner',
+		// 		start: '2018-03-12T20:00:00'
+		// 		},
+		// 		{
+		// 		title: 'Birthday Party',
+		// 		start: '2018-03-13T07:00:00'
+		// 		},
+		// 		{
+		// 		title: 'Click for Google',
+		// 		url: 'http://google.com/',
+		// 		start: '2018-03-28'
+		// 		}
+		// 	]
+		// 	});
+		// });
 		
-	</script>
+	</script> 	
 
 
 

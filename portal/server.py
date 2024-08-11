@@ -607,6 +607,7 @@ def dashboard_html():
     params["fk_user_id"     ] = session.get("fk_user_id")
     params["username"       ] = session.get("username")
     params["role_position"  ] = session.get("role_position")
+    params["role"  ]          = session.get("role")
    
     logging_tm           = int(time.time() * 1000)
     browser_resp = browser_security.browser_security(app).check_route({
