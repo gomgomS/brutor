@@ -167,7 +167,7 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link active" id="desc-tab" data-toggle="tab" href="#desc" role="tab" aria-controls="desc" aria-selected="true">Class Description</a>
+                        <a class="nav-link active" id="desc-tab" data-toggle="tab" href="#desc" role="tab" aria-controls="desc" aria-selected="true">Desc</a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="pass-tab" data-toggle="tab" href="#pass" role="tab" aria-controls="pass" aria-selected="false">Pass Requirement</a>
@@ -193,14 +193,42 @@
             
             <div class="container">
                 <div class="row">
-                    <div class="col-md-3 col-sm-12 sidebar-mini mb-3">
-                        <h3>Class Meetings</h3>
+                     <!-- Meeting Details -->
+                    <div class="col-md-6 col-sm-12">
+                        <div class="tab-content mt-3">
+                            {% for meeting in meeting_list %}
+                            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="meeting-{{ loop.index }}">
+                                <div class="card bg-dark text-white">
+                                    <div class="card-body">
+                                        <div class=""><strong>{{ meeting.name_meeting }}</strong> </div>
+                                        {% if meeting.attendance_information %}
+                                        <p><strong>Status Attendance:</strong> 
+                                            <span class="badge {% if meeting.attendance_information.status == 'PRESENT' %}badge-success{% else %}badge-danger{% endif %}">
+                                                {{ meeting.attendance_information.status }}
+                                            </span>
+                                        </p>
+                                        <p><strong>Updated at:</strong> {{ meeting.attendance_information.updated_at }}</p>
+                                        {% else %}
+                                        <p><strong>Date Start:</strong> {{ meeting.str_start_datetime }}</p>
+                                        {% endif %}
+                                        <p><strong>Description:</strong> {{ meeting.desc_meeting_html }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Left Column: Meetings -->
+                    <div class="col-md-6 col-sm-12">
+                        <h2>Class Meetings</h2>
                         <ul class="nav flex-column nav-pills">
                             {% for meeting in meeting_list %}
                             <li class="nav-item">
-                                <a class="nav-link {% if loop.first %}active{% endif %}" id="meeting-{{ loop.index }}-tab" data-toggle="pill" href="#meeting-{{ loop.index }}">{{ meeting.name_meeting }}
-                                    {% if meeting.attendance_information.status == 'PRESENT'%}
-                                    <span  class="badge badge-success">{{ meeting.attendance_information.status }}</span> 
+                                <a class="nav-link {% if loop.first %}active{% endif %}" id="meeting-{{ loop.index }}-tab" data-toggle="pill" href="#meeting-{{ loop.index }}">
+                                    {{ meeting.name_meeting }}
+                                    {% if meeting.attendance_information.status == 'PRESENT' %}
+                                    <span class="badge badge-success">{{ meeting.attendance_information.status }}</span>
                                     {% elif meeting.attendance_information.status == 'ABSENT' %}
                                     <span class="badge badge-danger">{{ meeting.attendance_information.status }}</span>
                                     {% else %}
@@ -209,79 +237,57 @@
                                 </a>
                             </li>
                             {% endfor %}
-                        </ul>
+                        </ul>                           
                     </div>
-                    <div class="col-md-5 col-sm-12 main-content mb-3">
-                        <div class="tab-content">
-                            {% for meeting in meeting_list %}
-                            {% if meeting.attendance_information %}
-                            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="meeting-{{ loop.index }}">
-                                <h3>{{ meeting.name_meeting }}</h3>
-
-                                {% if meeting.attendance_information.status == 'PRESENT'%}
-                                <p><strong>Status Attandance: </strong><span  class="badge badge-success">{{ meeting.attendance_information.status }}</span> 
-                                {% else %}
-                                <p><strong>Status Attandance: </strong><span class="badge badge-danger">{{ meeting.attendance_information.status }}</span></p>
-                                {% endif %}
-                                
-                                <p><strong>Updated at:</strong> {{ meeting.attendance_information.updated_at }}      
-                                <p><strong>Description:</strong> {{ meeting.desc_meeting_html }}</p>
-                                                                                        
-                            </div>
-                            {% else %}
-                            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="meeting-{{ loop.index }}">
-                                <h3>{{ meeting.name_meeting }}</h3>
-                                <p><strong>Date Start:</strong> {{ meeting.str_start_datetime }}</p>
-                                <!-- <p><strong>Time:</strong> {{ meeting.str_start_datetime }} - {{ meeting.str_end_datetime }}</p> -->
-                                <p><strong>Description:</strong> {{ meeting.desc_meeting_html }}</p>
-                            </div>
-                            {% endif %}                           
-                            {% endfor %}
-                            {% for test in test_list %}
-                            {% if test.test_result_information %}
-                            
-                            <div class="tab-pane fade" id="task-{{ loop.index }}">
-                                <h3>{{ test.name_test }}</h3>                                
-                                {% if test.test_result_information.status == 'PASS'%}
-                                <p><strong>Your Score:</strong> {{ test.test_result_information.score }}</p>
-                                <p><strong>Status Test: </strong><span  class="badge badge-success">PASSED</span> </p>
-                                {% else %}
-                                <p><strong>Status Test: </strong><span class="badge badge-danger">{{ test.test_result_information.status }}</span></p>
-                                {% endif %}
-                                
-                                <p><strong>Updated at:</strong> {{ test.test_result_information.updated_at }}      
-                                <p><strong>Description:</strong> {{ test.desc_meeting_html }}</p>
-                            </div>
-                            {% else %}
-                            <div class="tab-pane fade" id="task-{{ loop.index }}">
-                                <h3>{{ test.name_test }}</h3>
-                                <p><strong>Score to Pass:</strong> {{ test.score_to_pass }}</p>
-                                <p><strong>Deadline:</strong> {{ test.str_end_datetime }}</p>
-                                <!-- <p><strong>Time:</strong> {{ test.str_start_datetime }} - {{ test.str_end_datetime }}</p> -->
-                                <p><strong>Description:</strong> {{ test.desc_test }}</p>
-                            </div>
-                            {% endif %}   
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-12 task-info mb-3">
-                        <h3>Class Tasks</h3>
+                     <!-- Test Details -->
+                     <div class="col-md-6 col-sm-12">
+                         <div class="tab-content mt-3">
+                             {% for test in test_list %}
+                             <div class="tab-pane fade" id="task-{{ loop.index }}">
+                                 <div class="card bg-dark text-white">
+                                     <div class="card-body">                                    
+                                         <div class=""><strong>{{ test.name_test }}</strong> </div>
+                                         {% if test.test_result_information %}
+                                         <p><strong>Your Score:</strong> {{ test.test_result_information.score }}</p>
+                                         <p><strong>Status Test:</strong> 
+                                             <span class="badge {% if test.test_result_information.status == 'PASS' %}badge-success{% else %}badge-danger{% endif %}">
+                                                 {{ test.test_result_information.status }}
+                                             </span>
+                                         </p>
+                                         <p><strong>Updated at:</strong> {{ test.test_result_information.updated_at }}</p>
+                                         {% else %}
+                                         <p><strong>Score to Pass:</strong> {{ test.score_to_pass }}</p>
+                                         <p><strong>Deadline:</strong> {{ test.str_end_datetime }}</p>
+                                         {% endif %}
+                                         <p><strong>Description:</strong> {{ test.desc_test }}</p>
+                                     </div>
+                                 </div>                            
+                             </div>
+                             {% endfor %}
+                         </div>
+                     </div>
+            
+                    <!-- Right Column: Tests -->
+                    <div class="col-md-6 col-sm-12">
+                        <h2>Class Tasks</h2>
                         <ul class="nav flex-column nav-pills">
                             {% for test in test_list %}
                             <li class="nav-item">
-                                <a class="nav-link" id="task-{{ loop.index }}-tab" data-toggle="pill" href="#task-{{ loop.index }}">{{test.type_test}}: {{ test.name_test }}
-                                    {% if test.test_result_information.status == 'PASS'%}                                    
-                                    <span  class="badge badge-success">PASSED</span> 
+                                <a class="nav-link" id="task-{{ loop.index }}-tab" data-toggle="pill" href="#task-{{ loop.index }}">
+                                    {{ test.type_test }}: {{ test.name_test }}
+                                    {% if test.test_result_information.status == 'PASS' %}
+                                    <span class="badge badge-success">PASSED</span>
                                     {% else %}
                                     <span class="badge badge-danger">{{ test.test_result_information.status }}</span>
                                     {% endif %}
                                 </a>
                             </li>
                             {% endfor %}
-                        </ul>                       
+                        </ul>                               
                     </div>
                 </div>
             </div>
+            
             <footer class="text-center mt-auto font-weight-bold">#Brutorsekarang</footer>
         </div>
         
