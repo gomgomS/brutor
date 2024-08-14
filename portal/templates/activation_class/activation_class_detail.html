@@ -106,17 +106,10 @@
     <div class="content pd-0">
          <!-- Navbar Top -->
 		<div class="content-header">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb align-items-center">
-                <li class="breadcrumb-item active" aria-current="page">Manager Class</li>
-                <li class="breadcrumb-item active" aria-current="page">Activation Class List</li>
-                <li class="breadcrumb-item active" aria-current="page">Activation Class Detail</li>
-                <li class="breadcrumb-item active" aria-current="page">{{ activation_class_rec.active_class_name }}</li>
-                </ol>
-            </nav>
+            <div></div>
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">			
-                    <div class="text-success font-weight-bold text-balance mr-3" id="balance"></div>
+                    <div class="text-success font-weight-bold mr-3" id="balance"></div>
                 </div>
                 <div class="dropdown">
                 <span class="font-weight-bold text-dark">{{ username | safe }}</span>
@@ -170,6 +163,16 @@
             {% endif %}
             {% endwith %}
             <!-- <h1 class="text-center mb-5">Class Data Display</h1> -->
+            <div class="pd-3 mg-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb align-items-center">
+                    <li class="breadcrumb-item active"><a href="/starter?menu_value=MANAGER_CLASS">Manager Class</a></li>
+                    <li class="breadcrumb-item active"><a href="/activation_class">Activation Class List</a></li>
+                    <li class="breadcrumb-item active">Activation Class Detail</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ activation_class_rec.active_class_name }}</li>
+                    </ol>
+                </nav>
+            </div>
     
             <!-- Activation Class Details -->
             <div class="card">
@@ -186,38 +189,38 @@
                     <p>
                     <span class="data-title">Class Name:</span> 
                     <span class="data-value">
-                        <span class="badge badge-secondary p-1" style="font-size: 0.9rem;">{{ activation_class_rec.active_class_name }}</span>
+                        <span class="badge badge-secondary">{{ activation_class_rec.active_class_name }}</span>
                     </span>
                     </p>
                     <p>
                     <span class="data-title">Activation Timestamp:</span> 
                     <span class="data-value">
-                        <span class="badge badge-secondary p-2" style="font-size: 0.9rem;">{{ activation_class_rec.str_activate_timestamp }}</span>
+                        <span class="badge badge-secondary p-2">{{ activation_class_rec.str_activate_timestamp }}</span>
                     </span>
                     </p>
                     <p>
                     <span class="data-title">Student Limit:</span> 
                     <span class="data-value">
-                        <span class="badge badge-secondary p-2" style="font-size: 0.9rem;">{{ activation_class_rec.student_limit }}</span>
+                        <span class="badge badge-secondary p-2">{{ activation_class_rec.student_limit }}</span>
                     </span>
                     </p>
                     <p>
                     <span class="data-title">Price:</span> 
                     <span class="data-value">
-                        <span class="badge badge-secondary p-2" style="font-size: 0.9rem;">{{ activation_class_rec.price_class }}</span>
+                        <span class="badge badge-secondary p-2">{{ activation_class_rec.price_class }}</span>
                     </span>
                     </p>
                     <p>
                     <span class="data-title">Status:</span> 
                     <span class="data-value">
                         {% if activation_class_rec.status_activation == 'DEVELOPMENT' %}
-                        <span class="badge badge-primary p-2" style="font-size: 0.9rem;">Development (class under maintenance)</span>
+                        <span class="badge badge-primary p-2">Development (class under maintenance)</span>
                         {% elif activation_class_rec.status_activation == 'OPEN_REGISTRATION' %}
-                        <span class="badge badge-success p-2" style="font-size: 0.9rem;">Open Registration (class is open for registration)</span>
+                        <span class="badge badge-success p-2">Open Registration (class is open for registration)</span>
                         {% elif activation_class_rec.status_activation == 'RUNNING' %}
-                        <span class="badge badge-warning p-2" style="font-size: 0.9rem;">Running (class already started)</span>
+                        <span class="badge badge-warning p-2">Running (class already started)</span>
                         {% elif activation_class_rec.status_activation == 'FINISHED' %}
-                        <span class="badge badge-secondary p-2" style="font-size: 0.9rem;">Finished (class completed)</span>
+                        <span class="badge badge-secondary p-2">Finished (class completed)</span>
                         {% endif %}
                     </span>
                     </p>
@@ -225,9 +228,9 @@
                     <span class="data-title">Only for Test:</span> 
                     <span class="data-value">
                         {% if activation_class_rec.can_just_test_to_pass == 'TRUE' %}
-                        <span class="badge badge-info p-2" style="font-size: 0.9rem;">YES</span>
+                        <span class="badge badge-info p-2">YES</span>
                         {% else %}
-                        <span class="badge badge-danger p-2" style="font-size: 0.9rem;">NO</span>
+                        <span class="badge badge-danger p-2">NO</span>
                         {% endif %}
                     </span>
                     </p>                                              
@@ -1009,6 +1012,22 @@
 
         CKEDITOR.replace( 'desc_meeting', { customConfig : 'config_toolbar_mnc_cs.js' } );            
         CKEDITOR.replace( 'desc_test', { customConfig : 'config_toolbar_mnc_cs.js' } );            
+
+        // Function to format number as Rupiah
+		function formatRupiah(value) {
+			const formatter = new Intl.NumberFormat('id-ID', {
+				style: 'currency',
+				currency: 'IDR',
+				minimumFractionDigits: 2
+			});
+			return formatter.format(value);
+		}
+
+		// Assuming user_rec.balance is passed from server to client-side as a JavaScript variable
+		const userBalance = {{ user_rec.balance }};
+		
+		// Update the balance element with formatted value
+		document.getElementById('balance').textContent = formatRupiah(userBalance);
             
  
     </script>

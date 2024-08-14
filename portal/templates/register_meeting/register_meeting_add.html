@@ -68,16 +68,10 @@
     <div class="content pd-0">
         <!-- Navbar Top -->
 		<div class="content-header">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb align-items-center">
-                <li class="breadcrumb-item active" aria-current="page">Manager Meeting</li>
-                <li class="breadcrumb-item active" aria-current="page">Register Meeting</li>
-                <li class="breadcrumb-item active" aria-current="page">Register Meeting add</li>
-                </ol>
-            </nav>
+            <div></div>
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">			
-                    <div class="text-success font-weight-bold text-balance mr-3" id="balance"></div>
+                    <div class="text-success font-weight-bold mr-3" id="balance"></div>
                 </div>
                 <div class="dropdown">
                 <span class="font-weight-bold text-dark">{{ username | safe }}</span>
@@ -116,6 +110,15 @@
         </div>        
 
         <div class="contents-body">
+            <div class="pd-3 mg-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb align-items-center">
+                    <li class="breadcrumb-item active"><a href="starter?menu_value=MANAGER_MEETING">Manager Meeting</a> </li>
+                    <li class="breadcrumb-item active"><a href="/register_meeting">Register Meeting</a></li>                
+                    <li class="breadcrumb-item active" aria-current="page">Register Meeting Add</li>                
+                    </ol>
+                </nav>
+            </div>
 
             <form action="/register_meeting/add" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">

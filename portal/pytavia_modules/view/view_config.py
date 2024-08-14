@@ -193,6 +193,7 @@ class view_config:
             config_all_msg         = self._find_config(params)
             config_list            = config_all_msg["message_data"]["config_all_list"]
 
+            user_rec               = self._data_user(params)                          
 
             return render_template(
                 "config/config-list.html",
@@ -205,7 +206,8 @@ class view_config:
                 core_css            = core_css,
                 core_dialog_message = core_dialog_message,
                 username            = params["username"      ],
-                role_position       = params["role" ]
+                role_position       = params["role" ],
+                user_rec            = user_rec
             )        
 
         except:
@@ -214,5 +216,11 @@ class view_config:
             response["message_action"] = "DISPLAY_ALL_CONFIG_FAILED: " + str(sys.exc_info())
         # end try
         return response
+
+    def _data_user(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
     # end def
 # end class

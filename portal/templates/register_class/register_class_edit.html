@@ -67,16 +67,10 @@
 
     <div class="content pd-0">
         <div class="content-header">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb align-items-center">                    
-                    <li class="breadcrumb-item active" aria-current="page">Manager Class</li>
-                    <li class="breadcrumb-item active" aria-current="page">Register Class</li>
-                    <li class="breadcrumb-item active" aria-current="page">Register Class Edit</li>
-                </ol>
-            </nav>
+            <div></div>
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">			
-                    <div class="text-success font-weight-bold text-balance mr-3" id="balance"></div>
+                    <div class="text-success font-weight-bold mr-3" id="balance"></div>
                 </div>
                 <div class="dropdown">
                 <span class="font-weight-bold text-dark">{{ username | safe }}</span>
@@ -115,7 +109,16 @@
         </div>
 
 
-        <div class="contents-body">            
+        <div class="contents-body">  
+            <div class="pd-3 mg-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb align-items-center">                    
+                        <li class="breadcrumb-item active"><a href="/starter?menu_value=MANAGER_CLASS">Manager Class</a></li>
+                        <li class="breadcrumb-item active"><a href="/register_class"> Register Class</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Register Class Edit</li>
+                    </ol>
+                </nav>          
+            </div>
 
             <form action="/register_class/update" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
@@ -124,7 +127,7 @@
 
                 <fieldset class="form-fieldset pd-x-50 field-shadow">
                     <legend>
-                        <h1 class="font-weight-bold mg-b-0">ADD REGISTER CLASS</h1>
+                        <h1 class="font-weight-bold mg-b-0">EDIT REGISTER CLASS</h1>
                     </legend>
                     <div class="form-group row">
                         <label for="creator" class="col-sm-2 col-form-label text-right">Creator Class Name</label>

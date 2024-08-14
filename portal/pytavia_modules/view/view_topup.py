@@ -86,10 +86,9 @@ class view_topup:
             core_dialog_message    = view_core_dialog_message.view_core_dialog_message().html(params)
 
             # FOR CHECK THE LATEST TOPUP REQUEST
-            latest_topup_request_resp             = self._find_latest_topup_request( params )
-            print(latest_topup_request_resp)
-            print("air panas")
-            user_rec         = self._data_user(params)                          
+            latest_topup_request_resp             = self._find_latest_topup_request( params )            
+            
+            user_rec                = self._data_user(params)
                         
             html = render_template(
                 "payment/topup.html",

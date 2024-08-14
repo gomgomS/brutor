@@ -66,7 +66,9 @@ class view_profile:
         core_css                = view_core_css.view_core_css().html(params)
         core_dialog_message     = view_core_dialog_message.view_core_dialog_message().html(params)
 
-        data_user         = self._data_user()                          
+        data_user               = self._data_user()      
+
+        user_rec                = self._data_user_for_header(params)                    
 
         return render_template(
             "profile/profile.html",
@@ -79,11 +81,16 @@ class view_profile:
             core_dialog_message = core_dialog_message     ,
             username            = params["username"      ],
             role_position       = params["role_position" ],
-
-            data_user  = data_user
+            user_rec            = user_rec,
+            data_user           = data_user
 
            # users_total         = users_total,
             
         )                
     # end def
+    def _data_user_for_header(self,params):              
+        query = { "fk_user_id": params["fk_user_id"]}
+        user = self.mgdDB.db_user.find_one(query)             
+
+        return user
 # end class

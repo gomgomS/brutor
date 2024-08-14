@@ -7,7 +7,7 @@
     <!-- Favico -->
     <link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
     <link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-    <title>Brutor|MyClass Detail</title>
+    <title>Brutor|MyClass Blackboard</title>
     <!-- vendor css -->
     <link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -83,7 +83,7 @@
         <div class="aside-body">
             <ul class="nav nav-aside">
                 {% for menu_item in menu_list_html %}
-                    {%if menu_item.value == 'MANAGER_CLASS' %}
+                    {%if menu_item.value == 'My_Class' %}
                         <li class="nav-item nav-item-active ">
                             <a href="{{menu_item.url}}" class="nav-link nav-link-active"><i data-feather="{{ menu_item.icon_class }}"></i>
                                 <span>{{menu_item.menu_name.title()}}</span></a>
@@ -102,16 +102,11 @@
 
     <div class="content pd-0">
         <!-- Navbar Top -->
-		<div class="content-header">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb align-items-center">
-                <li class="breadcrumb-item active" aria-current="page">MyClass</li>
-                <li class="breadcrumb-item active" aria-current="page">Detail</li>
-                </ol>
-            </nav>
+		<div class="content-header">   
+            <div></div>         
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">			
-                    <div class="text-success font-weight-bold text-balance mr-3" id="balance"></div>
+                    <div class="text-success font-weight-bold mr-3" id="balance"></div>
                 </div>
                 <div class="dropdown">
                 <span class="font-weight-bold text-dark">{{ username | safe }}</span>
@@ -150,6 +145,14 @@
         </div>
         
         <div class="contents-body">
+            <div class="pd-3 mg-5">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb align-items-center">
+                    <li class="breadcrumb-item active"><a href="/myClass">myClass</a></li>                                  
+                    <li class="breadcrumb-item active" aria-current="page">myClass Blackboard</li>                
+                    </ol>
+                </nav>
+            </div>
             <div class="header text-center">                
                 {% if enrollment_rec.enrollment_status == 'PASS'%}
                 <span  class="badge badge-success">"Congratulations, you passed this Class."</span>
