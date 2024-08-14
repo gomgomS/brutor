@@ -245,6 +245,10 @@ from flask_wtf.csrf     import CSRFError
 #
 # Main app configurations
 #
+# Set configuration values
+app.config['SECRET_KEY'] = config.G_FLASK_SECRET # new improvement from flask, aug 2024
+app.config['SESSION_COOKIE_NAME'] = 'your_session_cookie_name'  # new improvement from flask, aug 2024
+
 app                   = Flask( __name__, config.G_STATIC_URL_PATH )
 app.secret_key        = config.G_FLASK_SECRET
 app.session_interface = cookie_engine.MongoSessionInterface()

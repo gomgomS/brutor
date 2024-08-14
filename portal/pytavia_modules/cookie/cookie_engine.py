@@ -41,6 +41,7 @@ class MongoSessionInterface(SessionInterface):
     # end if
 
     def open_session(self, app, request):
+        session_cookie_name = app.config.get('SESSION_COOKIE_NAME', 'session') # new improvement from flask, aug 2024
         sid = request.cookies.get(app.session_cookie_name)
         if sid:
             stored_session = self.store.find_one({'sid': sid})
