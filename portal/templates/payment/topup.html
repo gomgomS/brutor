@@ -176,22 +176,31 @@
                                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link active" id="bca-tab" data-toggle="tab" href="#bca"
-                                                    role="tab" aria-controls="bca" aria-selected="true">via
-                                                    BCA</a>
+                                                    role="tab" aria-controls="bca" aria-selected="true">BCA</a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link" id="gopay-tab" data-toggle="tab" href="#gopay"
-                                                    role="tab" aria-controls="gopay" aria-selected="false">via GoPay</a>
+                                                    role="tab" aria-controls="gopay" aria-selected="false">GoPay</a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link" id="shopeepay-tab" data-toggle="tab"
                                                     href="#shopeepay" role="tab" aria-controls="shopeepay"
-                                                    aria-selected="false">via ShopeePay</a>
+                                                    aria-selected="false">ShopeePay</a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link" id="lainnya-tab" data-toggle="tab"
                                                     href="#lainnya" role="tab" aria-controls="lainnya"
                                                     aria-selected="false">Lainnya</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" id="voucher-tab" data-toggle="tab"
+                                                    href="#voucher" role="tab" aria-controls="voucher"
+                                                    aria-selected="false">Voucher</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" id="help-tab" data-toggle="tab"
+                                                    href="#help" role="tab" aria-controls="help"
+                                                    aria-selected="false">Bantuan</a>
                                             </li>
                                         </ul>
 
@@ -252,6 +261,37 @@
                                                     </ol>
                                                 </div>
                                             </div>
+                                            <div class="tab-pane fade" id="voucher" role="tabpanel"
+                                            aria-labelledby="lainnya-tab">
+                                                <div class="mt-3">
+                                                    <h5>Instruksi by Voucher:</h5>
+                                                    <ol>
+                                                        <li>Silahkan Masukan Voucher dibawah ini dan submit</li>
+                                                        <li>
+                                                            <form id="" action="/topup/submit" method="POST" enctype="multipart/form-data">
+                                                                <div class="form-group">
+                                                                    <label for="amount">Voucher Code</label>
+                                                                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                                                                    <input type="text" class="form-control" id="voucher" name="voucher" >
+                                                                    <button type="submit" class="btn btn-custom btn-block"
+                                                                        id="">Submit</button>
+                                                                </div>
+                                                            </form>
+                                                        </li>                                                                                                                                                                        
+                                                        </li>                                                    
+                                                    </ol>
+                                                </div>                                            
+                                            </div>
+                                            <div class="tab-pane fade" id="help" role="tabpanel"
+                                                aria-labelledby="help-tab">
+                                                <div class="mt-3">
+                                                    <h5>Butuh Bantuan</h5>
+                                                    <ol>
+                                                        <li>Silahkan Chat ke 0877-6298-0338</li>
+                                                        <li>dengan message: "MAYDE BRUTOR"</li>
+                                                    </ol>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <!-- Form Section -->
@@ -262,6 +302,7 @@
                                                     <label for="amount">Jumlah Saldo</label>
                                                     <input type="hidden" name="_csrf_token"
                                                         value="{{ csrf_token() }}">
+                                                        <input type="hidden" name="voucher" value="">
                                                     <input type="number" class="form-control" id="amount" name="amount" required>
                                                 </div>
                                                 <div class="form-group">
@@ -289,6 +330,10 @@
                                             <div class="card-header bg-success text-white">
                                                 <h5 class="card-title mb-0">Latest Topup request Information</h5>
                                             </div>
+                                            {% elif latest_topup_request_resp.request_status == 'DECLINE'  %}
+                                            <div class="card-header bg-danger text-white">
+                                                <h5 class="mb-0">Latest Topup request Information</h5>
+                                            </div>                                            
                                             {% else %}
                                             <div class="card-header bg-primary text-white">
                                                 <h5 class="card-title mb-0">Latest Topup request Information</h5>

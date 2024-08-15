@@ -480,6 +480,14 @@ db = {
         "transaction_status"    : "",
         "transaction_date"      : ""       
     },
+
+    # TOPUP VOUCHER
+    "db_voucher_log"                : {
+        "voucher_id"            : "",        
+        "fk_user_id"            : "",        
+        "amount_voucher"        : "",
+        "voucher_name"          : "", 
+    },
     
     # ENROLMENT CLASS
     "db_enrollment"           : {

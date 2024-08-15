@@ -156,6 +156,20 @@ class payment_confirmation_proc:
         topup_transaction_rec.put("update_by_admin_at",             today_date                                  )                    
         topup_transaction_rec.insert()  
 
+        # update progress top up in db_topup_request 
+        update_rec = {
+                "request_status"            : "DECLINE",
+                "update_by_admin_at"        : today_date
+        }   
+
+        
+        request_rec           = self.mgdDB.db_topup_request.update_one(
+            {"topup_request_id"   : params["topup_request_id"]},            
+            {
+                '$set'            : update_rec                
+            }      
+        )
+
         response = {
                 "result_url"   : result_url,
                 "notif_type"   : "success",
