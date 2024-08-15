@@ -176,18 +176,22 @@
                                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link active" id="bca-tab" data-toggle="tab" href="#bca"
-                                                    role="tab" aria-controls="bca" aria-selected="true">Cara Topup via
+                                                    role="tab" aria-controls="bca" aria-selected="true">via
                                                     BCA</a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link" id="gopay-tab" data-toggle="tab" href="#gopay"
-                                                    role="tab" aria-controls="gopay" aria-selected="false">Cara Topup
-                                                    via GoPay</a>
+                                                    role="tab" aria-controls="gopay" aria-selected="false">via GoPay</a>
                                             </li>
                                             <li class="nav-item" role="presentation">
                                                 <a class="nav-link" id="shopeepay-tab" data-toggle="tab"
                                                     href="#shopeepay" role="tab" aria-controls="shopeepay"
-                                                    aria-selected="false">Cara Topup via ShopeePay</a>
+                                                    aria-selected="false">via ShopeePay</a>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link" id="lainnya-tab" data-toggle="tab"
+                                                    href="#lainnya" role="tab" aria-controls="lainnya"
+                                                    aria-selected="false">Lainnya</a>
                                             </li>
                                         </ul>
 
@@ -196,11 +200,13 @@
                                             <div class="tab-pane fade show active" id="bca" role="tabpanel"
                                                 aria-labelledby="bca-tab">
                                                 <div class="mt-3">
-                                                    <h5>Instruksi Topup via BCA:</h5>
+                                                    <h5>Instruksi Topup via BCA</h5>
                                                     <ol>
-                                                        <li>Masuk ke aplikasi BCA Mobile.</li>
-                                                        <li>Pilih menu Transfer.</li>
-                                                        <li>Masukkan nomor rekening tujuan dan jumlah yang akan diisi.
+                                                        <li>Masuk ke aplikasi BCA Mobile. atau ATM BCA</li>
+                                                        <li>Pilih menu Transfer.</li>                                                        
+                                                        <li>Masukkan nomor rekening berikut <i class="fas fa-copy copy-icon" onclick="copyToClipboard('3160234741')"></i>
+                                                            3160234741 a/n Go** Yos** Ba**.
+                                                                                                                                                                                        
                                                         </li>
                                                         <li>Upload bukti transfer pada form di bawah ini.</li>
                                                     </ol>
@@ -211,11 +217,12 @@
                                                 <div class="mt-3">
                                                     <h5>Instruksi Topup via GoPay:</h5>
                                                     <ol>
-                                                        <li>Masuk ke aplikasi GoJek.</li>
-                                                        <li>Pilih menu GoPay dan klik Isi Saldo.</li>
-                                                        <li>Pilih metode pembayaran dan masukkan jumlah yang akan diisi.
+                                                        <li>Masuk ke aplikasi Gojek atau Gopay</li>
+                                                        <li>Pilih menu Bayar.</li>                                                        
+                                                        <li>Pilih Bayar Lewat Nomor HP.</li>                                                          
+                                                        <li>Masukkan nomor HP berikut <i class="fas fa-copy copy-icon" onclick="copyToClipboard('087762980338')"></i> 087762980338
                                                         </li>
-                                                        <li>Upload bukti transfer pada form di bawah ini.</li>
+                                                        <li>Upload Screenshot pada form di bawah ini.</li>
                                                     </ol>
                                                 </div>
                                             </div>
@@ -224,11 +231,24 @@
                                                 <div class="mt-3">
                                                     <h5>Instruksi Topup via ShopeePay:</h5>
                                                     <ol>
-                                                        <li>Masuk ke aplikasi Shopee.</li>
-                                                        <li>Pilih menu ShopeePay dan klik Isi Saldo.</li>
-                                                        <li>Pilih metode pembayaran dan masukkan jumlah yang akan diisi.
+                                                        <li>Masuk ke aplikasi ShopeePay</li>
+                                                        <li>Pilih Transfer</li>                                                        
+                                                        <li>Pilih Sesama ShopeePay</li>                                                          
+                                                        <li>Masukkan nomor HP berikut <i class="fas fa-copy copy-icon" onclick="copyToClipboard('087762980338')"></i> 087762980338
                                                         </li>
-                                                        <li>Upload bukti transfer pada form di bawah ini.</li>
+                                                        <li>Upload Screenshot transfer pada form di bawah ini.</li>
+                                                    </ol>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="lainnya" role="tabpanel"
+                                                aria-labelledby="lainnya-tab">
+                                                <div class="mt-3">
+                                                    <h5>Instruksi Topup via Apps Lain:</h5>
+                                                    <ol>
+                                                        <li>Silahkan transfer menggunakan platform atau aplikasi lain</li>
+                                                        <li>dapat diterima via BCA, Gopay dan ShopeePay</li>                                                                                                                                                                        
+                                                        </li>
+                                                        <li>Upload Screenshot transfer pada form di bawah ini.</li>
                                                     </ol>
                                                 </div>
                                             </div>
@@ -242,13 +262,11 @@
                                                     <label for="amount">Jumlah Saldo</label>
                                                     <input type="hidden" name="_csrf_token"
                                                         value="{{ csrf_token() }}">
-                                                    <input type="number" class="form-control" id="amount"
-                                                        name="amount" required>
+                                                    <input type="number" class="form-control" id="amount" name="amount" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="payment_method">Pilih Metode Pembayaran</label>
-                                                    <select class="form-control" id="payment_method"
-                                                        name="payment_method" required>
+                                                    <select class="form-control" id="payment_method" name="payment_method" required>
                                                         <option value="">Pilih Metode</option>
                                                         <option value="BCA">BCA</option>
                                                         <option value="GoPay">GoPay</option>
@@ -258,7 +276,7 @@
                                                 <div class="form-group">
                                                     <label for="bukti">Bukti Transfer</label>
                                                     <input type="file" class="form-control-file" id="bukti"
-                                                        name="bukti" required>
+                                                        name="bukti" >
                                                 </div>
                                                 <button type="button" class="btn btn-custom btn-block"
                                                     id="submitBtn">Submit</button>
@@ -383,9 +401,13 @@
 
             $('#submitBtn').click(function () {
                 var amount = $('#amount').val();
-                $('#saldoKonfirmasi').text(amount); // Mengisi nilai saldo ke dalam modal
+                // Format the amount as Indonesian currency
+                var formattedAmount = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
+
+                $('#saldoKonfirmasi').text(formattedAmount); // Set the formatted amount to the modal
                 $('#konfirmasiModal').modal('show');
             });
+
 
             // Aksi saat tombol "Confirm Transfer" ditekan
             $('#confirmTransferBtn').click(function () {
@@ -416,6 +438,29 @@
 		
 		// Update the balance element with formatted value
 		document.getElementById('balance').textContent = formatRupiah(userBalance);
+
+        function copyToClipboard(copyText) {
+            // var copyText = "3160234741";  // The text you want to copy
+
+            // Create a temporary textarea element to hold the text
+            var textArea = document.createElement("textarea");
+            textArea.value = copyText;
+            
+            // Append the textarea to the body
+            document.body.appendChild(textArea);
+
+            // Select the text in the textarea
+            textArea.select();
+
+            // Execute the copy command
+            document.execCommand("copy");
+
+            // Remove the textarea from the body
+            document.body.removeChild(textArea);
+
+            // Optionally, show an alert or message
+            // alert("Copied: " + copyText);
+        }
     </script>
 
 </body>

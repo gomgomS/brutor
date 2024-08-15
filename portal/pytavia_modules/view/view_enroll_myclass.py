@@ -158,6 +158,10 @@ class view_enroll_myclass:
             class_info                          = self._find_class_and_enrollment_status(class_item['class_id'],params['fk_user_id'])
             class_item['class_info']            = class_info
 
+            #find inforamtion class and enrollment status   
+            total_already_registered                  = self._total_already_registered(class_item['activation_class_id'])
+            class_item['total_already_registered']    = total_already_registered
+
             # Convert price to Rupiah currency format
             if 'price_class' in class_item:
                 class_item['price_class'] = self.format_currency(class_item['price_class'])
@@ -302,6 +306,15 @@ class view_enroll_myclass:
         })
         
         response =  user_rec
+        return response
+    # end def
+
+    def _total_already_registered(self,activation_class_id):                                    
+        total_already_registered = self.mgdDB.db_enrollment.find({
+            "activation_class_id" : activation_class_id
+        }).count()
+        
+        response =  total_already_registered
         return response
     # end def
         

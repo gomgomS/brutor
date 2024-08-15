@@ -200,6 +200,13 @@
                                                 <span class="font-weight-bold">Price:</span> 
                                                 <span class="ml-1">{{ class_item.price_class }}</span>
                                             </p>
+                                            <p class="card-subtitle mb-2 text-muted-custom">
+                                                <span class="font-weight-bold">Kuota Registration:</span> 
+                                                <span class="ml-1">{{ class_item.total_already_registered }}/{{ class_item.student_limit }}</span>
+                                                {% if class_item.total_already_registered|int == class_item.student_limit|int %}
+                                                <span class="badge badge-danger ml-2">Fully Booked</span>
+                                                {% endif %}                                                
+                                            </p>
                                             <p class="card-text">
                                                 <span class="font-weight-bold">Class starts at:</span> 
                                                 <span>{{ class_item.str_activate_timestamp }}</span>

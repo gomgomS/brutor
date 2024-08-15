@@ -41,6 +41,19 @@ class enroll_myclass_proc:
             {"activation_class_id"          : params["activation_class_id"]}
         )
 
+        # check kuota class first
+        total_already_registered = self.mgdDB.db_enrollment.find({
+            "activation_class_id" : params["activation_class_id"]
+        }).count()
+
+        if total_already_registered >= int(buy_activation_class_rec['student_limit']):
+            response = {
+                "result_url"   : result_url,
+                "notif_type"   : "warning",
+                "msg"   : "Sorry, the class is fully booked. for more information check on the card below"        
+            }
+            return response        
+
         # check saldo first
         check_saldo_buyer                   = self.mgdDB.db_user.find_one(
             {"fk_user_id"                   : params["fk_user_id"]}

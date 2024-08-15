@@ -4277,10 +4277,11 @@ def topup():
         "route_name" : ""
     })
 
-    landing_url = topup_proc.topup_proc(app).topup_submit( params )
+    response = topup_proc.topup_proc(app).topup_submit( params, request.files )
 
-    flash("Your payment of "+params['amount']+" has been successfully processed. Please wait for confirmation.", "success")   
-    return redirect( landing_url )
+    flash(response['msg'], response["notif_type"])   
+
+    return redirect( response['result_url'] )
    
     # end if
 #end def
