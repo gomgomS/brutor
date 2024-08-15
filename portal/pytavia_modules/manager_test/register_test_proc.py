@@ -391,7 +391,7 @@ class register_test_proc:
             updated_at           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')    
 
             # check if pass or not
-            if params['score'] >= params["score_to_pass"]:
+            if int(params['score']) >= int(params["score_to_pass"]):
                 status_test = 'PASS'
             else: 
                 status_test = 'FAILED'
