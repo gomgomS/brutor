@@ -318,65 +318,6 @@ class auth_proc:
         return response
     # end def
 
-    def register(self, params):
-        call_id  = idgen._get_api_call_id()
-        response = {
-            "message_id"     : call_id,
-            "message_action" : "REGISTER_SUCCESS",
-            "message_code"   : "0",
-            "message_title"  : "",
-            "message_desc"   : "",
-            "message_data"   : {}
-        }
-        try:
-            username        = params["username"]
-            password        = params["password"]
-            email           = params["email"]
-            
-            hashed_password = utils._get_passwd_hash({
-                "id"        : username,
-                "password"  : password
-            })
-
-            user_rec = self.mgdDB.db_user.find_one({
-                "$or": [
-                    {
-                        "email": email
-                    },
-                    {
-                        "username": username
-                    }
-                ]
-            })
-
-            if user_rec != None:
-                response["message_action"] = "REGISTER_USER_FAILED"
-                response["message_code"  ] = "1"
-                response["message_desc"  ] = "username or email already taken"
-                return response
-           # end if                     
-            
-            mdl_register_user   = database.new(self.mgdDB, "db_user")            
-            fk_user_id          = mdl_register_user.get()["pkey"]
-            
-            
-            mdl_register_user.put( "fk_user_id", fk_user_id )
-            mdl_register_user.put( "user_uuid", str(uuid4()) )
-            mdl_register_user.put( "username", username    )
-            mdl_register_user.put( "email"   , email)
-            mdl_register_user.put( "name"   , "")
-            mdl_register_user.put( "role"   , "STUDENT")
-            mdl_register_user.put( "password" , hashed_password)
-            mdl_register_user.insert()         
-        except:
-            print (traceback.format_exc())
-            response["message_action"] = "REGISTER_USER_FAILED"
-            response["message_action"] = "REGISTER_USER_FAILED: " + str(sys.exc_info())
-        # end try
-        return response
-    # end def
-
-
     def get_landing_url(self, params):
         result_url = "/user/dashboard"
         try :
@@ -467,6 +408,33 @@ class auth_proc:
         return response
     # end def
 
+    def send_verification_email(self, params):
+        result_url = "/user/dashboard"
+        
+        unique_4_number             = random.randint(1000,9999)
+        params["unique_4_number"]   = str(unique_4_number)
+
+        # Get the current date
+        verification_date           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Create the new verification record
+        ver_rec_entry = {
+            "unique_4_number"       : unique_4_number,
+            "verification_date"     : verification_date
+        }
+
+        # Update the document in MongoDB
+        user_rec                    = self.mgdDB.db_user.update_one(
+            {"fk_user_id"           : params["fk_user_id"]},
+            {"$push"                : {"ver_rec": ver_rec_entry}}
+        )
+
+        #for send email
+        html                        = emailproc.send_verification_email(params)
+
+        return result_url
+
+    
     def check_verification_email(self, params):
         result_url = "/user/dashboard"
 
