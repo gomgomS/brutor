@@ -341,8 +341,6 @@ class view_enroll_myclass:
         # Retrieve enrollment data
         enrollment_data = list(self.mgdDB.db_enrollment.find({'fk_user_id':fk_student_id}))
         enrollment_map = {item['activation_class_id']: item['enrollment_status'] for item in enrollment_data}
-        print(enrollment_map)
-        print("look above for check register status")
 
         # Insert enrollment status into prerequisite classes
         for prerequisite in class_rec['prerequisite_class']:

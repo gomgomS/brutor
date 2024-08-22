@@ -5,6 +5,7 @@ import time
 import ast # use to convert string to dictionary 
 from   datetime import datetime
 import random
+import string
 
 from view   import view_core_menu
 
@@ -390,31 +391,81 @@ class auth_proc:
         return result_url
     #end def
 
-    def send_verification_email(self, params):
-        result_url = "/user/dashboard"
-        
-        unique_4_number             = random.randint(1000,9999)
-        params["unique_4_number"]   = str(unique_4_number)
+    import string
 
-        # Get the current date
-        verification_date           = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        # Create the new verification record
-        ver_rec_entry = {
-            "unique_4_number"       : unique_4_number,
-            "verification_date"     : verification_date
+    def register(self, params):
+        call_id  = idgen._get_api_call_id()
+        response = {
+            "message_id"     : call_id,
+            "message_action" : "REGISTER_SUCCESS",
+            "message_code"   : "0",
+            "message_title"  : "",
+            "message_desc"   : "",
+            "message_data"   : {}
         }
+        try:
+            username = params["username"]
+            password = params["password"]
+            email = params["email"]
 
-        # Update the document in MongoDB
-        user_rec                    = self.mgdDB.db_user.update_one(
-            {"fk_user_id"           : params["fk_user_id"]},
-            {"$push"                : {"ver_rec": ver_rec_entry}}
-        )
+            # Validate password length
+            if len(password) < 8:
+                response["message_action"] = "REGISTER_USER_FAILED"
+                response["message_code"] = "1"
+                response["message_desc"] = "Password must be at least 8 characters long"
+                return response
 
-        #for send email
-        html                        = emailproc.send_verification_email(params)
+            # Validate password length
+            if len(username) < 5:
+                response["message_action"] = "REGISTER_USER_FAILED"
+                response["message_code"] = "1"
+                response["message_desc"] = "Username must be at least 5 characters long"
+                return response
 
-        return result_url
+            # Validate username contains no punctuation
+            if any(char in string.punctuation for char in username):
+                response["message_action"] = "REGISTER_USER_FAILED"
+                response["message_code"] = "1"
+                response["message_desc"] = "Username should not contain any punctuation"
+                return response
+
+            hashed_password = utils._get_passwd_hash({
+                "id": username,
+                "password": password
+            })
+
+            user_rec = self.mgdDB.db_user.find_one({
+                "$or": [
+                    {"email": email},
+                    {"username": username}
+                ]
+            })
+
+            if user_rec is not None:
+                response["message_action"] = "REGISTER_USER_FAILED"
+                response["message_code"] = "1"
+                response["message_desc"] = "Username or email already taken"
+                return response
+            # end if                     
+
+            mdl_register_user = database.new(self.mgdDB, "db_user")            
+            fk_user_id = mdl_register_user.get()["pkey"]
+
+            mdl_register_user.put("fk_user_id", fk_user_id)
+            mdl_register_user.put("user_uuid", str(uuid4()))
+            mdl_register_user.put("username", username)
+            mdl_register_user.put("email", email)
+            mdl_register_user.put("name", "")
+            mdl_register_user.put("role", "STUDENT")
+            mdl_register_user.put("password", hashed_password)
+            mdl_register_user.insert()         
+        except:
+            print(traceback.format_exc())
+            response["message_action"] = "REGISTER_USER_FAILED"
+            response["message_desc"] = "REGISTER_USER_FAILED: " + str(sys.exc_info())
+        # end try
+        return response
+    # end def
 
     def check_verification_email(self, params):
         result_url = "/user/dashboard"

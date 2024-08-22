@@ -4238,9 +4238,9 @@ def view_topup_html():
 
     response = view_topup.view_topup(app).html( params )
     response_data  = response.get("data") 
-
-    if response_data["user_rec"]["ver_email"] == "FALSE":
-        flash("please verify your email before topup!!", "danger")
+  
+    if response_data["user_rec"]["ver_email"] == "FALSE" or response_data["user_rec"]["name"] == "" or response_data["user_rec"]["phone"] == "" :
+        flash("please verify your email and complete you profile before topup!!", "danger")
         return redirect(url_for("profile_html"))
 
     if "SUCCESS" in response.get("status"):
