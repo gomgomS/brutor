@@ -186,7 +186,13 @@
                                 <tbody>
                                     {% for activation_class_item in activation_class_list %}
                                         <tr>
-                                            <td>{{ activation_class_item.name_class }}</td>
+                                            <td>                                                
+                                                {% if activation_class_item.name_class == 'DELETED' %}
+                                                    <span class="badge badge-danger">Deleted</span>
+                                                {% else %}
+                                                    {{ activation_class_item.name_class }}
+                                                {% endif %}            
+                                            </td>
                                             <td>{{ activation_class_item.active_class_name }}</td>                                            
                                             <td>
                                                 <span class="badge badge-info">{{ activation_class_item.str_activate_timestamp }}</span>

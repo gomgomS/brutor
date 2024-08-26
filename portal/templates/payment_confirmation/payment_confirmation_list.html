@@ -186,6 +186,7 @@
                                 <thead class="thead-primary">
                                     <tr>
                                         <th>Refrence ID</th>
+                                        <th>Bukti TF</th>
                                         <th>Name</th>
                                         <th>Request topup</th>
                                         <th>Request Status</th>
@@ -199,6 +200,7 @@
                                     {% for payment_confirmation_item in payment_confirmation_list %}
                                         <tr>
                                             <td> <span class="badge badge-primary">{{ payment_confirmation_item.reference_id }}</span></td>
+                                            <td><img src="{{ payment_confirmation_item.source }}" alt="bukti tf" style="max-width: 150px; max-height: 150px;"></td>
                                             <td>{{ payment_confirmation_item.name }}</td>
                                             <td>{{ payment_confirmation_item.amount }}</td> 
 

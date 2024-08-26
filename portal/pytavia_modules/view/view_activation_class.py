@@ -264,6 +264,10 @@ class view_activation_class:
             "class_id" : class_id
         })   
         
+        if class_rec is None:
+            class_rec = {}
+            class_rec["name_class"] = "DELETED"            
+          
         response = {
             "name_class"   : class_rec["name_class"]
         }                
