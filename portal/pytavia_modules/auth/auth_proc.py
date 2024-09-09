@@ -353,21 +353,21 @@ class auth_proc:
             if len(password) < 8:
                 response["message_action"] = "REGISTER_USER_FAILED"
                 response["message_code"] = "1"
-                response["message_desc"] = "Password must be at least 8 characters long"
+                response["message_desc"] = "Password min 8 karakter"
                 return response
 
             # Validate password length
             if len(username) < 5:
                 response["message_action"] = "REGISTER_USER_FAILED"
                 response["message_code"] = "1"
-                response["message_desc"] = "Username must be at least 5 characters long"
+                response["message_desc"] = "Username min 5 karakter"
                 return response
 
             # Validate username contains no punctuation
             if any(char in string.punctuation for char in username):
                 response["message_action"] = "REGISTER_USER_FAILED"
                 response["message_code"] = "1"
-                response["message_desc"] = "Username should not contain any punctuation"
+                response["message_desc"] = "Username tidak mengadung tanda baca"
                 return response
 
             hashed_password = utils._get_passwd_hash({
@@ -385,7 +385,7 @@ class auth_proc:
             if user_rec is not None:
                 response["message_action"] = "REGISTER_USER_FAILED"
                 response["message_code"] = "1"
-                response["message_desc"] = "Username or email already taken"
+                response["message_desc"] = "Username atau email sudah ada"
                 return response
             # end if                     
 
