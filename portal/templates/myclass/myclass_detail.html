@@ -153,6 +153,40 @@
                     </ol>
                 </nav>
             </div>
+            <!-- Button to trigger modal documentation page -->
+            <div class="m-4">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <span>Jadi ini yang dipanggil BLACKBOARD. Disini akan ada informasi tentang tugas, status class kamu, nilai kamu dll
+                    deh yang penting mengenai progress kamu di kelas ini. Seperti biasa kalau binggung</span>
+                    <a href="#">
+                    <span class="badge badge-info" data-toggle="modal" data-target="#imageModal">
+                    baca dulu nih
+                    </span>
+                    </a>
+                    <span>Jangan malas baca yee... Programmer itu 80% baca dokumentasi atau baca chat gpt kwkwk, 20% baru coding, jadi jangan malas baca ya kamu :V </span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>                    
+                </div>
+            </div>   
+            <!-- Modal Structure -->
+            <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    <img src="../../static/img/penjelasan_myclass_detail_1.png" alt="Explanation of Enroll My Class" class="img-fluid">
+                    <img src="../../static/img/penjelasan_myclass_detail_2.png" alt="Explanation of Enroll My Class" class="img-fluid">
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>                
             <div class="header text-center">                
                 {% if enrollment_rec.enrollment_status == 'PASS'%}
                 <span  class="badge badge-success">"Congratulations, you passed this Class."</span>
@@ -167,10 +201,11 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link active" id="desc-tab" data-toggle="tab" href="#desc" role="tab" aria-controls="desc" aria-selected="true">Desc</a>
+                        <a class="nav-link active" id="desc-tab" data-toggle="tab" href="#desc" role="tab" aria-controls="desc" aria-selected="true" ><span style="color:black">Desc
+                        </span></a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="pass-tab" data-toggle="tab" href="#pass" role="tab" aria-controls="pass" aria-selected="false">Pass Requirement</a>
+                        <a class="nav-link" id="pass-tab" data-toggle="tab" href="#pass" role="tab" aria-controls="pass" aria-selected="false" ><span style="color:black">Pass Requirement</span> </a>
                     </li>
                 </ul>
             
@@ -212,6 +247,7 @@
                                         <p><strong>Date Start:</strong> {{ meeting.str_start_datetime }}</p>
                                         {% endif %}
                                         <p><strong>Description:</strong> {{ meeting.desc_meeting_html }}</p>
+                                        <p><strong>Link Meeting:</strong> {{ meeting.source }}</p>
                                     </div>
                                 </div>
                             </div>

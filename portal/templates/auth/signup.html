@@ -58,7 +58,7 @@ right: -30px;
 bottom: -80px;
 }
 form{
-height: 520px;
+height: 580px;
 width: 400px;
 background-color: rgba(255,255,255,0.13);
 position: absolute;
@@ -139,6 +139,22 @@ margin-left: 25px;
 margin-right: 4px;
 }
 
+.login{
+  font-size: 16px;
+  color: white;
+  margin: 10px 0;
+}
+
+.login a{
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.login a:hover{
+  text-decoration: underline;
+}
+
 </style>
 
 <body>
@@ -163,17 +179,25 @@ margin-right: 4px;
         {% endif %}
     {% endwith %}
       <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">                
-      <label for="username">Username</label>
-      <input type="text" placeholder="username" id="username" name="username">
-
-      <label for="email">Email</label>
+      <!-- <label for="username">Username</label> -->
+      <input type="text" placeholder="username" id="username" name="username">   
+      <div>        
+          <div><strong> ◾  harus terdiri dari 5 karakter </strong> </div>   
+          <div><strong> ◾  tidak mengandung tanda baca</strong> </div>        
+      </div>              
+      <!-- <label for="email">Email</label> -->
       <input type="email" placeholder="email" id="email" name="email">
 
-      <label for="password">Password</label>
+      <!-- <label for="password">Password</label> -->
       <input type="password" placeholder="Password" id="password" name="password">
+      
+        <div>◾ min 8 character</div>        
+      
   
       <button>Sign up</button>    
-      <a href="/login" class="text-center">login here</a>
+      <div class="login">sudah member?
+        <a href="/login">login now</a>
+      </div>
      
   </form>
   </section>

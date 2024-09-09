@@ -138,6 +138,22 @@ margin-left: 25px;
 margin-right: 4px;
 }
 
+.signup{
+  font-size: 16px;
+  color: white;
+  margin: 10px 0;
+}
+
+.signup a{
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.signup a:hover{
+  text-decoration: underline;
+}
+
 </style>
 
 <body>  
@@ -168,8 +184,10 @@ margin-right: 4px;
     <label for="password">Password</label>
     <input type="password" placeholder="Password" id="password"name="txt_l_password">
 
-    <button>Log In</button>    
-    <a href="/signup" class="text-center">signup here</a>
+    <button>Log In</button>        
+    <div class="signup">Belum member?
+      <a href="/signup">signup now</a>
+    </div>
    
 </form>
 </section>

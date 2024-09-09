@@ -7,7 +7,7 @@
 	<!-- Favico -->
 	<link rel="shortcut icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
 	<link rel="icon" href="../../static/assets/img/favicon.png" type="image/x-icon">
-	<title>Brutor ADMIN - Laporan Online</title>
+	<title>Brutor - Dashboard</title>
 	<!-- vendor css -->
 	<link href="../../static/lib/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
 	<link href="../../static/lib/ionicons/css/ionicons.min.css" rel="stylesheet">
@@ -22,6 +22,24 @@
 			margin: 40px auto;
 			padding: 0 10px;
 		}
+		
+        .wa-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #25D366;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .wa-button:hover {
+            background-color: #20b557;
+        }
+    </style>
 
   	</style>
 
@@ -111,7 +129,7 @@
 	
 					<!-- Modal Header -->
 					<div class="modal-header">
-						<h4 class="modal-title">Please enter a 4-digit number verification code we sent to {{user_rec["email"]}}. </h4>
+						<h4 class="modal-title">silahkan masukan 4-digit nomor verifikasi, yang kami kirim ke {{user_rec["email"]}}. </h4>
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 					</div>
 	
@@ -159,19 +177,27 @@
 		{% if user_rec["ver_email"] == "FALSE" %}		
 		<div class="card bg-danger text-white">
 			<div class="flex-wrap">
-				<div class="card-body">please verification your email first!! verification email already sent to <b>{{user_rec["email"]}}</b> or 
+				<div class="card-body">Haii <strong>{{ username | safe }}</strong>, email kamu belum <b>diverifikasi</b> nih... <br>
+				caranya buka email kamu yang ini <b>{{user_rec["email"]}}</b>. cek email dari admin <b>bersihinyabang@gmail.com</b>, lalu masukan kode konfirmasi
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#numberModal">
+					disini 
+				</button>				
 				<form action="/auth/send_verification_email" method="POST" enctype="multipart/form-data" class="mx-2">
 					<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 					<input type="hidden" name="redirect" value="/user/dashboard">
+					<span>masih belum dapat email verifikasi silahkan kirim ulang</span>
 					<button type="submit" class="btn btn-primary position-relative">
 						<i class="fas fa-envelope"></i> Send Verification Email
-					</button>
+					</button>										
 				</form>
+				<span>masih kendala silahkan</span>
+				<a href="https://wa.me/089512345592?text=Halo%20admin%20saya%20ada%20kendala%20di%20brutor%20bisa%20bantu%20saya" class="wa-button" target="_blank">
+					Chat on WhatsApp
+				</a>
 			</div>
-			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#numberModal">
-				input verify number here
-			</button>
+			
 		  </div>
+		</div>
 		{% endif %}
 		<div class="container-fluid">
 			<div class="row">

@@ -50,7 +50,7 @@ class enroll_myclass_proc:
             response = {
                 "result_url"   : result_url,
                 "notif_type"   : "warning",
-                "msg"   : "Sorry, the class is fully booked. for more information check on the card below"        
+                "msg"   : "Sorry, the class is fully booked (sudah penuh). for more information check on the card below"        
             }
             return response        
 
@@ -63,7 +63,7 @@ class enroll_myclass_proc:
             response = {
                     "result_url"   : result_url,
                     "notif_type"   : "warning",
-                    "msg"   : "Your balance is not enough. Please top up first."        
+                    "msg"   : "Your balance is not enough (saldo tidak cukup). Please top up first."        
                 }
             return response
             
@@ -92,7 +92,7 @@ class enroll_myclass_proc:
                 response = {
                     "result_url"   : result_url,
                     "notif_type"   : "warning",
-                    "msg"   : "You need to pass prerequisite class first, check on 'read more' ",           
+                    "msg"   : "You need to pass prerequisite class first (lulus kelas prerequisite dulu), check on 'read more' ",           
                 }
                 return response
         
@@ -108,7 +108,7 @@ class enroll_myclass_proc:
             response = {
                 "result_url"   : result_url,
                 "notif_type"   : "warning",
-                "msg"   : "You have already purchased "+buy_activation_class_rec["active_class_name"]+", You can only buy each class once.",           
+                "msg"   : "You have already purchased "+buy_activation_class_rec["active_class_name"]+", You can only buy each section once. IDN: Kamu sudah pernah beli section ini, tiap section hanya dapat enroll sekali, Tunggu section selanjutnya pada class ini.",           
             }
         else:  
 
