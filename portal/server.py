@@ -8,6 +8,11 @@ import urllib
 import ast
 import pdfkit
 import html as html_unescape
+import os
+import random
+import csv
+from datetime import datetime
+
 
 from urllib.parse import urlencode
 
@@ -4536,3 +4541,41 @@ def view_myclass_detail_html(enrollment_id):
         }
         return redirect(url_for("view_error_page_html" , data=err_message ))
         # end def
+
+
+# mnc nebeng
+# Define the route
+@app.route("/api/link-cc-number")
+def link_cc_number(activation_class_id=None):
+    # Define static folder and filename
+    static_folder = 'static'
+    filename = 'cc_numbers.csv'
+    
+    # Ensure the static folder exists
+    if not os.path.exists(static_folder):
+        os.makedirs(static_folder)
+    
+    # Prepare the data (unchanged first and second rows)
+    data = [
+        ["9998.2247.0014.0", "6282165556100", "CC_NUMBER_001"],
+        ["9998.2248.0001.0", "6282165556100", "CC_NUMBER_010"]
+    ]
+    
+    # Write the CSV file
+    file_path = os.path.join(static_folder, filename)
+    with open(file_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        for row in data:
+            writer.writerow(row)
+
+    # Generate download link
+    download_link = f"{config.BASE_URL}/static/{filename}"
+
+    # Get today's date in ISO format (e.g., 2024-10-02)
+    today_date = datetime.now().strftime("%Y-%m-%d")
+    
+    # Return JSON response with a clear and concise message and download link
+    return jsonify({
+        'date': today_date,
+        'download_link': download_link
+    })
